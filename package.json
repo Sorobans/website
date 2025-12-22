@@ -1,0 +1,51 @@
+{
+  "name": "astro-snow-blog",
+  "version": "0.0.1",
+  "type": "module",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "pagefind": "pagefind --source ./dist",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.4.2",
+    "@pagefind/default-ui": "^1.4.0",
+    "@reactuses/core": "^6.1.6",
+    "astro": "^5.16.6",
+    "dayjs": "^1.11.19",
+    "highlight.js": "^11.11.1",
+    "i18next": "^25.7.3",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-i18next": "^16.5.0",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
+    "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@eslint/js": "^9.39.2",
+    "@stylexjs/babel-plugin": "^0.17.4",
+    "@stylexjs/rollup-plugin": "^0.17.4",
+    "@stylexjs/stylex": "^0.17.4",
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
+    "eslint": "^9.39.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "prettier": "^3.7.4",
+    "pagefind": "^1.4.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.1"
+  }
+}

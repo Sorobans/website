@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import ThemeToggle from '../components/ThemeToggle';
+import PagefindSearch from '../components/PagefindSearch';
+import PostGrid from '../components/PostGrid';
+import ReactStrictMode from '../components/ReactStrictMode';
+import { posts } from '../data/posts';
+import { renderMarkdown } from '../lib/markdown';
+
+const hydratedPosts = await Promise.all(
+  posts.map(async (post) => ({
+    ...post,
+    html: await renderMarkdown(post.content),
+  }))
+);
+---
+
+<BaseLayout title="Snow Blog" description="Astro + React 19 blog template">
+  <section class="hero">
+    <p class="eyebrow">Astro Islands · React 19 · Remark · Pagefind</p>
+    <h1>Snow Blog Template</h1>
+    <p class="lede">
+      依据《博客重构计划使用技术栈.md》准备的起始模板：Astro 外壳、React 19 岛屿、StyleX 原子化样式、Pagefind 零后端搜索。
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#posts">浏览文章</a>
+      <a class="btn ghost" href="https://docs.astro.build/" target="_blank" rel="noreferrer">
+        Astro 文档
+      </a>
+    </div>
+    <div class="controls">
+      <ReactStrictMode client:load>
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </ReactStrictMode>
+    </div>
+  </section>
+
+  <ReactStrictMode client:load>
+    <PagefindSearch />
+  </ReactStrictMode>
+
+  <section id="posts" class="post-section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">示例文章</p>
+        <h2>React 岛屿 + Markdown 渲染</h2>
+      </div>
+      <div class="hint">由 remark 渲染 Markdown，highlight.js 高亮代码</div>
+    </div>
+    <ReactStrictMode client:load>
+      <PostGrid posts={hydratedPosts} />
+    </ReactStrictMode>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 32px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.14), rgba(14, 165, 233, 0.1));
+    border: 1px solid rgba(59, 130, 246, 0.18);
+    box-shadow: 0 18px 40px rgba(59, 130, 246, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .eyebrow {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #2563eb;
+    font-size: 0.82rem;
+    margin: 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+  }
+
+  .lede {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #0f172a;
+    max-width: 70ch;
+  }
+
+  .cta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .btn {
+    text-decoration: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    color: #0f172a;
+  }
+
+  .btn.primary {
+    background: #0f172a;
+    color: #f8fafc;
+    border-color: transparent;
+  }
+
+  .btn.ghost {
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .post-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .section-head h2 {
+    margin: 4px 0 0;
+  }
+
+  .hint {
+    color: #475569;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 720px) {
+    .section-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
