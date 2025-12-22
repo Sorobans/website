@@ -1,12 +1,13 @@
 ---
 import "../styles/global.css";
+import {baseLayoutConfig} from "~/config/layoutConfig.ts";
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const { title = "Snow Blog", description = "Astro + React 19 starter" } = Astro.props;
+const { title = baseLayoutConfig.title, description = baseLayoutConfig.description } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,18 +18,9 @@ const { title = "Snow Blog", description = "Astro + React 19 starter" } = Astro.
     <title>{title}</title>
     <meta name="description" content={description} />
   </head>
-  <body>
-    <div class="page-shell">
-      <header class="topbar">
-        <a class="logo" href="/">Snow</a>
-        <span class="pill">Astro · React 19 · StyleX</span>
-      </header>
-      <main>
-        <slot />
-      </main>
-      <footer class="footer">
-        <p>Built with Astro, React 19, and friends.</p>
-      </footer>
-    </div>
+  <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-150 dark:bg-slate-950 dark:text-slate-50">
+    <main class="mx-auto flex min-h-screen max-w-5xl flex-col gap-12 px-6 py-10 lg:px-10 lg:py-16">
+      <slot />
+    </main>
   </body>
 </html>

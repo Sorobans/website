@@ -1,84 +1,43 @@
-:root {
-  color-scheme: light;
-  font-family: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at 10% 20%, #dff3ff 0, #f4f7fb 50%, #f7f9fc 100%);
-  color: #0f172a;
-}
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600&display=swap");
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  margin: 0;
-  min-height: 100vh;
-}
+@layer base {
+  :root {
+    color-scheme: light;
+    font-family: "Space Grotesk", "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at 12% 20%, #eef2ff 0, #f7f9ff 42%, #fdfbf6 100%);
+    color: #0f172a;
+  }
 
-.page-shell {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 32px 18px 64px;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-}
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: #0f172a;
+    background: repeating-linear-gradient(90deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.02) 1px, transparent 1px, transparent 90px),
+      repeating-linear-gradient(0deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.02) 1px, transparent 1px, transparent 90px);
+  }
 
-.logo {
-  text-decoration: none;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #111827;
-  font-size: 1.2rem;
-}
+  a {
+    text-decoration-thickness: 0.12em;
+    text-underline-offset: 0.16em;
+  }
 
-.pill {
-  padding: 6px 10px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.08);
-  color: #0f172a;
-  font-size: 0.85rem;
-}
+  [data-theme="dark"] {
+    color-scheme: dark;
+    background: radial-gradient(circle at 10% 20%, #111827 0, #0b1226 40%, #060b17 90%);
+    color: #e5e7eb;
+  }
 
-main {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.footer {
-  border-top: 1px solid rgba(15, 23, 42, 0.1);
-  margin-top: 48px;
-  padding-top: 24px;
-  color: #475569;
-  font-size: 0.9rem;
-}
-
-[data-theme="dark"] {
-  color-scheme: dark;
-  background: radial-gradient(circle at 10% 20%, #111827 0, #0b1226 40%, #060b17 90%);
-  color: #e5e7eb;
-}
-
-[data-theme="dark"] .page-shell {
-  color: #e5e7eb;
-}
-
-[data-theme="dark"] .logo {
-  color: #e5e7eb;
-}
-
-[data-theme="dark"] .pill {
-  background: rgba(255, 255, 255, 0.08);
-  color: #e5e7eb;
-}
-
-[data-theme="dark"] .footer {
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #cbd5e1;
+  [data-theme="dark"] body {
+    color: #e5e7eb;
+    background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 90px),
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 90px);
+  }
 }

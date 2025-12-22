@@ -14,23 +14,21 @@ export const posts: Post[] = [
     title: "Astro + React 19 开篇",
     description: "使用 Astro 作为壳、React 19 作为交互层，快速把博客搬到岛屿架构。",
     date: "2024-06-02",
-    tags: ["astro", "react19", "stylex"],
+    tags: ["astro", "react19", "tailwind"],
     content: `
 让页面保持 **静态生成** 的同时，用 React 19 的 Islands 来兜住交互。
 
 - 在 \`src/pages/index.astro\` 用 Astro 组织页面。
 - 用 \`client:load\` 或 \`client:idle\` 将 React 组件挂载。
-- 样式采用 \`stylex\` 原子化，保持 bundle 极小。
+- 样式采用 \`Tailwind CSS\` 实用类，保持迭代快速。
     `,
     code: `
-import * as stylex from "@stylexjs/stylex";
-
-const styles = stylex.create({
-  badge: { padding: 8, borderRadius: 12, backgroundColor: "#111827", color: "#fff" },
-});
-
 export function Badge({ label }) {
-  return <span {...stylex.props(styles.badge)}>{label}</span>;
+  return (
+    <span className="inline-flex items-center rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">
+      {label}
+    </span>
+  );
 }
     `.trim(),
   },
