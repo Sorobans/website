@@ -1,13 +1,18 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { homePageLinks, homePageProfile } from '../../config/homePageConfig';
 
-const HomePage = () => {
+interface HomePageProps {
+  profile?: typeof homePageProfile;
+  links?: typeof homePageLinks;
+}
+
+const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePageProps) => {
   return (
     <section className="relative h-screen overflow-hidden bg-gradient-to-br">
       <div className="absolute inset-0">
         <div
           className="fixed inset-0 h-screen w-screen bg-cover bg-center bg-fixed opacity-70"
-          style={{ backgroundImage: `url('${homePageProfile.backgroundUrl}')` }}
+          style={{ backgroundImage: `url('${profile.backgroundUrl}')` }}
         />
       </div>
 
@@ -17,8 +22,8 @@ const HomePage = () => {
             <div className="flex justify-center">
               <div className="relative mb-6 h-[150px] w-[150px] rounded-full border-4 border-pink-border shadow-pink-avatar">
                 <img
-                  src={homePageProfile.avatarUrl}
-                  alt={homePageProfile.avatarAlt}
+                  src={profile.avatarUrl}
+                  alt={profile.avatarAlt}
                   className="h-full w-full rounded-full object-cover"
                 />
               </div>
@@ -29,17 +34,17 @@ const HomePage = () => {
               className="text-[2.5rem] font-bold tracking-[1px] text-pink-main"
               style={{ textShadow: '2px 2px 8px rgba(255,105,180,0.3)' }}
             >
-              {homePageProfile.name}
+              {profile.name}
             </h1>
               <p className="mx-auto mt-3 max-w-[560px] px-5 text-[1.1rem] italic text-[#666]">
-                {homePageProfile.tagline}
+                {profile.tagline}
               </p>
             </div>
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#24292e] to-[#1f2327] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(36,41,46,0.3)] transition hover:-translate-y-0.5"
-                href={homePageLinks.githubUrl}
+                href={links.githubUrl}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -58,7 +63,7 @@ const HomePage = () => {
         </div>
 
         <footer className="pb-6 text-center text-sm text-pink-main">
-          {homePageProfile.footerText}
+          {profile.footerText}
         </footer>
       </div>
     </section>

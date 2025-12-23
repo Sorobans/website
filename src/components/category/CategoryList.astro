@@ -1,8 +1,7 @@
 ---
-import { categoryMap } from '@constants/category';
 import { CONTENT_PADDING } from '@constants/layout';
 import { Routes } from '@constants/router';
-import type { Category } from '@lib/content';
+import { buildCategoryPath, type Category } from '@lib/content';
 import CategoryTitle from './CategoryTitle.astro';
 import SubCategory from './SubCategory.astro';
 
@@ -29,7 +28,7 @@ const { categories, countMap, totalCount } = Astro.props;
           <CategoryTitle
             title={category.name}
             count={countMap[category.name]}
-            href={`${Routes.Categories}/${categoryMap[category.name]}`}
+            href={buildCategoryPath(category.name)}
             className={category?.children?.length ? 'has-children' : ''}
           />
           {category?.children?.length && (

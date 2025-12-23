@@ -1,6 +1,7 @@
 ---
 import EmptySvg from '@components/svg/EmptySvg';
 import { defaultCoverList } from '@/config/blogLayoutConfig';
+import { getBackgroundImages } from '@lib/backgrounds';
 import type { Page } from 'astro';
 import { shuffle } from 'es-toolkit';
 import type { BlogPost } from 'types/blog';
@@ -17,7 +18,8 @@ interface Props {
 }
 
 const { posts, page, showPaginator = true, baseUrl, isHomePage = false, isSimple = false } = Astro.props;
-const covers = shuffle(defaultCoverList);
+const backgroundImages = await getBackgroundImages();
+const covers = shuffle(backgroundImages.length ? backgroundImages : defaultCoverList);
 ---
 
 {

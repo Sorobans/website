@@ -11,7 +11,13 @@ import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Layout from '@layouts/Layout.astro';
 import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
-import { buildCategoryPath, getCategoryArr, getPostDescription, getPostSummary, getSortedPosts } from '@lib/content';
+import {
+  buildCategoryPath,
+  getCategoryArr,
+  getPostDescription,
+  getPostSummary,
+  getSortedPosts,
+} from '@lib/content';
 import { parseDate } from '@lib/datetime';
 
 export async function getStaticPaths() {
@@ -32,12 +38,14 @@ const { title, categories = [], tags = [], date } = post?.data ?? {};
 // 使用统一的工具函数获取文章描述
 const finalDescription = getPostDescription(post);
 
+const categoryKeywords = getCategoryArr(categories);
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: title,
   description: finalDescription,
-  keywords: categories?.length ? tags.concat(categories[0]) : tags,
+  keywords: categoryKeywords.length ? tags.concat(categoryKeywords) : tags,
   author: {
     '@type': 'Person',
     name: blogLayoutConfig.author ?? blogLayoutConfig.name,
@@ -46,7 +54,7 @@ const jsonLd = {
   datePublished: parseDate(date, 'YYYY-MM-DD'),
 };
 
-const categoryArr = getCategoryArr(categories?.[0]);
+const categoryArr = getCategoryArr(categories);
 const categoryStr = categoryArr?.length ? ` | ${categoryArr.join(' / ')}` : '';
 
 // Generate breadcrumb data for categories

@@ -10,7 +10,8 @@ import type { BlogPost } from 'types/blog';
 export const getAllTags = (posts: BlogPost[]) => {
   return posts.reduce<Record<string, number>>((acc, post) => {
     const postTags = post.data.tags || [];
-    postTags.forEach((tag: string) => {
+    const tags = Array.isArray(postTags) ? postTags : [postTags];
+    tags.forEach((tag: string) => {
       if (!acc[tag]) {
         acc[tag] = 0;
       }

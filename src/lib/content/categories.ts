@@ -8,6 +8,30 @@ import { getCollection } from 'astro:content';
 
 import type { Category, CategoryListResult } from './types';
 
+export const DEFAULT_CATEGORY_NAME = '技术教程';
+
+function normalizeSegment(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
+function normalizeCategories(categories?: string | string[] | string[][]): string[] | string[][] {
+  if (!categories) return [DEFAULT_CATEGORY_NAME];
+  if (Array.isArray(categories)) {
+    return categories.length ? categories : [DEFAULT_CATEGORY_NAME];
+  }
+  return [categories];
+}
+
+export function getCategorySlug(name: string): string {
+  const mapped = categoryMap[name];
+  if (mapped) return mapped;
+  return encodeURIComponent(name.trim());
+}
+
 /**
  * Get hierarchical category list with counts (excluding drafts in production)
  */
@@ -23,11 +47,12 @@ export async function getCategoryList(): Promise<CategoryListResult> {
   for (let i = 0; i < allBlogPosts.length; ++i) {
     const post = allBlogPosts[i];
     const { catalog, categories } = post.data;
-    if (!catalog || !categories?.length) {
+    if (catalog === false) {
       continue;
     }
 
-    const firstCategory = categories[0];
+    const normalizedCategories = normalizeCategories(categories);
+    const firstCategory = normalizedCategories[0];
     if (Array.isArray(firstCategory)) {
       // categories[0] = ['笔记', '算法']
       if (!firstCategory.length) continue;
@@ -90,7 +115,7 @@ export function getCategoryLinks(categories?: Category[], parentLink?: string): 
   if (!categories?.length) return [];
   const res: string[] = [];
   categories.forEach((category: Category) => {
-    const link = categoryMap[category.name];
+    const link = getCategorySlug(category.name);
     const fullLink = parentLink ? `${parentLink}/${link}` : link;
     res.push(fullLink);
     if (category?.children?.length) {
@@ -117,27 +142,33 @@ export function getCategoryNameByLink(link: string): string {
   if (segments.length === 0) return '';
 
   const lastSegment = segments[segments.length - 1];
-  const res = Object.keys(categoryMap).find((key) => categoryMap[key] === lastSegment) ?? '';
-  return res;
+  const reverseCategoryMap = Object.fromEntries(Object.entries(categoryMap).map(([key, value]) => [value, key]));
+  return reverseCategoryMap[lastSegment] ?? normalizeSegment(lastSegment);
 }
 
 /**
  * Get category by link
  */
 export function getCategoryByLink(categories: Category[], link?: string): Category | null {
-  const name = getCategoryNameByLink(link ?? '');
-  if (!name || !categories?.length) return null;
-  for (let i = 0; i < categories.length; ++i) {
-    const category = categories[i];
-    if (category.name === name) {
-      return category;
-    }
-    if (category?.children?.length) {
-      const res = getCategoryByLink(category.children, link);
-      if (res) return res;
-    }
+  if (!link || !categories?.length) return null;
+  const cleanLink = link.replace(/^\/+|\/+$/g, '');
+  if (!cleanLink) return null;
+
+  const segments = cleanLink.split('/').filter(Boolean);
+  let currentCategories = categories;
+  let currentCategory: Category | null = null;
+
+  for (const segment of segments) {
+    const normalized = normalizeSegment(segment);
+    const nextCategory = currentCategories.find(
+      (category) => getCategorySlug(category.name) === segment || category.name === normalized,
+    );
+    if (!nextCategory) return null;
+    currentCategory = nextCategory;
+    currentCategories = nextCategory.children ?? [];
   }
-  return null;
+
+  return currentCategory;
 }
 
 /**
@@ -176,16 +207,24 @@ export function buildCategoryPath(categoryNames: string | string[]): string {
   const names = Array.isArray(categoryNames) ? categoryNames : [categoryNames];
   if (names.length === 0) return '';
 
-  const slugs = names.map((name) => categoryMap[name]);
+  const slugs = names.map((name) => getCategorySlug(name));
   return withBlogBase(`/categories/${slugs.join('/')}`);
 }
 
 /**
  * 统一 ['分类1', '分类2'] 和 '分类'
  */
-export function getCategoryArr(categories?: string[] | string) {
-  if (!categories) return [];
-  if (Array.isArray(categories) && categories.length) {
-    return categories as string[];
-  } else return [categories as string];
+export function getCategoryArr(categories?: string | string[] | string[][]) {
+  const normalizedCategories = normalizeCategories(categories);
+  const firstCategory = normalizedCategories[0];
+
+  if (Array.isArray(firstCategory)) {
+    return firstCategory.length ? firstCategory : [DEFAULT_CATEGORY_NAME];
+  }
+
+  if (typeof firstCategory === 'string') {
+    return [firstCategory];
+  }
+
+  return [DEFAULT_CATEGORY_NAME];
 }

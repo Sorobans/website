@@ -1,10 +1,13 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import HomePage from "~/components/home/HomePage";
+import { getHomePageProfile, homePageLinks } from "@/config/homePageConfig";
+
+const profile = await getHomePageProfile();
 ---
 
 <BaseLayout title="Snowの小窝" description="欢迎来到Snow的博客" fullScreen={true}>
-  <HomePage />
+  <HomePage profile={profile} links={homePageLinks} />
 </BaseLayout>
 
 <style>

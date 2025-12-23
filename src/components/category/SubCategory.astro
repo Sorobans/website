@@ -1,8 +1,7 @@
 ---
 import type { Category } from '@lib/content';
 import CategoryTitle from './CategoryTitle.astro';
-import { categoryMap } from '@constants/category';
-import { Routes } from '@constants/router';
+import { buildCategoryPath } from '@lib/content';
 
 interface Props {
   category: Category;
@@ -13,7 +12,7 @@ interface Props {
 const { category, parentName, countMap } = Astro.props;
 
 function getCategoryLink(names: string[]): string {
-  return names.map((name) => categoryMap[name]).join('/');
+  return buildCategoryPath(names);
 }
 ---
 
@@ -21,7 +20,7 @@ function getCategoryLink(names: string[]): string {
 <CategoryTitle
   title={category.name}
   count={countMap[category.name]}
-  href={`${Routes.Categories}/${categoryMap[parentName]}/${categoryMap[category.name]}`}
+  href={buildCategoryPath([parentName, category.name])}
   level="h3"
 />
 {
@@ -30,7 +29,7 @@ function getCategoryLink(names: string[]): string {
       {category.children.map((grandChild) => (
         <p class="shoka-decoration-circle relative px-7.5 py-2 text-base/9 text-primary hover:text-blue">
           <a
-            href={`${Routes.Categories}/${getCategoryLink([parentName, category.name, grandChild.name])}`}
+            href={getCategoryLink([parentName, category.name, grandChild.name])}
             class="dashed-border"
           >
             {grandChild.name}

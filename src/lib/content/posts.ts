@@ -6,7 +6,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 import summaries from '@assets/summaries.json';
 import type { BlogPost } from 'types/blog';
-import { buildCategoryPath } from './categories';
+import { buildCategoryPath, DEFAULT_CATEGORY_NAME, getCategoryArr } from './categories';
 import { extractTextFromMarkdown } from '../sanitize';
 
 /** AI 摘要数据类型 */
@@ -104,19 +104,20 @@ export async function getPostCount() {
  * @returns 文章列表
  */
 export async function getPostsByCategory(categoryName: string): Promise<BlogPost[]> {
+  const targetCategory = categoryName || DEFAULT_CATEGORY_NAME;
   const posts = await getSortedPosts();
   return posts.filter((post) => {
-    const { categories } = post.data;
-    if (!categories?.length) return false;
-
-    const firstCategory = categories[0];
+    const { categories, catalog } = post.data;
+    if (catalog === false) return false;
+    const categoryArr = getCategoryArr(categories as string[] | string | undefined);
+    const firstCategory = categoryArr;
     // 处理两种分类格式
     if (Array.isArray(firstCategory)) {
       // ['笔记', '算法']
-      return firstCategory.includes(categoryName);
+      return firstCategory.includes(targetCategory);
     } else if (typeof firstCategory === 'string') {
       // '工具'
-      return firstCategory === categoryName;
+      return firstCategory === targetCategory;
     }
     return false;
   });
@@ -127,11 +128,15 @@ export async function getPostsByCategory(categoryName: string): Promise<BlogPost
  */
 export function getPostLastCategory(post: BlogPost): { link: string; name: string } {
   const { categories } = post.data;
-  if (!categories?.length) return { link: '', name: '' };
-
-  const firstCategory = categories[0];
+  const categoryArr = getCategoryArr(categories as string[] | string | undefined);
+  const firstCategory = categoryArr;
   if (Array.isArray(firstCategory)) {
-    if (!firstCategory.length) return { link: '', name: '' };
+    if (!firstCategory.length) {
+      return {
+        link: buildCategoryPath(DEFAULT_CATEGORY_NAME),
+        name: DEFAULT_CATEGORY_NAME,
+      };
+    }
     return {
       link: buildCategoryPath(firstCategory),
       name: firstCategory[firstCategory.length - 1],
@@ -143,7 +148,7 @@ export function getPostLastCategory(post: BlogPost): { link: string; name: strin
     };
   }
 
-  return { link: '', name: '' };
+  return { link: buildCategoryPath(DEFAULT_CATEGORY_NAME), name: DEFAULT_CATEGORY_NAME };
 }
 
 /**
