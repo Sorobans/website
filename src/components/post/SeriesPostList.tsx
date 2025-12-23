@@ -2,12 +2,13 @@
  * SeriesPostList - 显示系列文章列表
  */
 import { cn } from '@lib/utils';
-import { routeBuilder } from '@lib/route';
-import { Routes } from '@constants/router';
 import type { BlogPost } from 'types/blog';
 
 interface SeriesPostListProps {
-  posts: BlogPost[];
+  posts: Array<{
+    post: BlogPost;
+    href: string;
+  }>;
   currentPostSlug?: string;
   className?: string;
 }
@@ -19,13 +20,12 @@ export function SeriesPostList({ posts, currentPostSlug, className }: SeriesPost
 
   return (
     <div className={cn('flex flex-col gap-1', className)}>
-      {posts.map((post) => {
-        const href = routeBuilder(Routes.Post, post);
+      {posts.map(({ post, href }) => {
         const isActive = post.slug === currentPostSlug;
 
         return (
           <a
-            key={post.slug}
+            key={post.slug ?? post.id}
             href={href}
             className={cn(
               'group relative flex items-start gap-3 rounded-md px-1 py-2 transition-colors',

@@ -1,8 +1,6 @@
 ---
 import { Button } from '@components/ui/button';
-import { Routes } from '@constants/router';
-import { buildCategoryPath, getCategoryList, getPostsByCategory, type Category } from '@lib/content';
-import { routeBuilder } from '@lib/route';
+import { buildCategoryPath, getCategoryList, getPostHref, getPostIndexMap, getPostsByCategory, type Category } from '@lib/content';
 import { cn } from '@lib/utils';
 import { getLqipStyle } from '@lib/lqip';
 import { getBackgroundImages } from '@lib/backgrounds';
@@ -17,6 +15,7 @@ interface CategoryWithPosts {
 
 const { categories } = await getCategoryList();
 const backgroundImages = await getBackgroundImages();
+const postIndexMap = await getPostIndexMap();
 const pickRandomBackground = () =>
   backgroundImages.length
     ? backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
@@ -80,7 +79,7 @@ const categoryPosts: CategoryWithPosts[] = await Promise.all(
                 : null}
               {posts.map((post) => (
                 <a
-                  href={routeBuilder(Routes.Post, post)}
+                  href={getPostHref(post, postIndexMap)}
                   class="text-primary hover:text-blue truncate text-left transition-colors duration-300"
                 >
                   {post.data.title}

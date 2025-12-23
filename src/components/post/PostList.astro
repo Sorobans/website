@@ -2,6 +2,7 @@
 import EmptySvg from '@components/svg/EmptySvg';
 import { defaultCoverList } from '@/config/blogLayoutConfig';
 import { getBackgroundImages } from '@lib/backgrounds';
+import { getPostHref, getPostIndexMap } from '@lib/content';
 import type { Page } from 'astro';
 import { shuffle } from 'es-toolkit';
 import type { BlogPost } from 'types/blog';
@@ -20,6 +21,7 @@ interface Props {
 const { posts, page, showPaginator = true, baseUrl, isHomePage = false, isSimple = false } = Astro.props;
 const backgroundImages = await getBackgroundImages();
 const covers = shuffle(backgroundImages.length ? backgroundImages : defaultCoverList);
+const postIndexMap = await getPostIndexMap();
 ---
 
 {
@@ -43,6 +45,7 @@ const covers = shuffle(backgroundImages.length ? backgroundImages : defaultCover
             randomCover={covers[index % covers.length]}
             hideCover={isSimple}
             isSimple={isSimple}
+            href={getPostHref(post, postIndexMap)}
           />
         ))}
       </div>

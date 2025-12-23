@@ -8,7 +8,11 @@ export function routeBuilder<T extends Routes>(route: T, param: RouteParams<type
   if (!param) return href;
   switch (route) {
     case Routes.Post:
-      href += `/${param?.data?.link ?? param?.slug}`;
+      {
+        const slug = param?.data?.link || param?.slug || param?.id;
+        if (!slug) return href;
+        href += `/${slug}`;
+      }
       break;
     default:
       break;

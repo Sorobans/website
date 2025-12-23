@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { parseDate } from '@lib/datetime';
+import { getPostHref, getPostIndexMap } from '@lib/content';
 import { CONTENT_PADDING } from '@constants/layout';
 import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
@@ -13,6 +14,7 @@ const posts = await getCollection('blog', ({ data }) => {
   // 在生产环境中，过滤掉草稿
   return import.meta.env.PROD ? data.draft !== true : true;
 });
+const postIndexMap = await getPostIndexMap();
 
 // 按年份对文章进行分组
 const postsByYear = posts
@@ -57,7 +59,7 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
                   <p class="shoka-decoration-circle group text-primary hover:text-blue relative px-6 py-2 text-base/9 md:flex md:flex-col md:items-stretch md:text-sm/9">
                     <span class="text-muted-foreground mr-2 text-xs">{parseDate(post.data.date, 'YYYY-MM-DD')}</span>
                     <a
-                      href={`${Routes.Post}/${post.data?.link ?? post.slug}`}
+                      href={getPostHref(post, postIndexMap)}
                       class="dashed-border text-primary hover:text-blue truncate transition-colors"
                     >
                       {post.data.title}

@@ -17,6 +17,8 @@ export interface PostItemCardProps {
   leftClip?: boolean;
   /** Random cover image URL */
   randomCover: string;
+  /** Precomputed post URL */
+  href?: string;
 }
 
 /**

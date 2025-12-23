@@ -1,8 +1,7 @@
 ---
 import { cn } from '@/lib/utils';
-import { getPostLastCategory } from '@lib/content';
+import { getPostHref, getPostIndexMap, getPostLastCategory } from '@lib/content';
 import type { BlogPost } from 'types/blog';
-import { Routes } from '@constants/router';
 
 interface Props {
   posts: BlogPost[];
@@ -10,6 +9,7 @@ interface Props {
 }
 
 const { posts, fallbackPosts = [] } = Astro.props;
+const postIndexMap = await getPostIndexMap();
 
 // Use related posts if available, otherwise fallback to random
 const hasRelatedPosts = posts.length > 0;
@@ -26,7 +26,7 @@ const title = hasRelatedPosts ? '相关文章' : '';
           const category = getPostLastCategory(post);
           return (
             <a
-              href={`${Routes.Post}/${post.data?.link ?? post.slug}`}
+              href={getPostHref(post, postIndexMap)}
               class="group hover:text-primary hover:bg-foreground/5 flex gap-3 rounded-md p-2 text-sm transition-colors duration-300"
             >
               <span class="text-foreground/30 shrink-0 font-mono">{index + (hasRelatedPosts ? 1 : 6)}</span>

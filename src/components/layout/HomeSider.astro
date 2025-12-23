@@ -7,7 +7,7 @@ import HomeSiderSegmented from '@components/ui/segmented/HomeSiderSegmented';
 import { SeriesPostList } from '@components/post/SeriesPostList';
 import { SeriesNavigation } from '@components/post/SeriesNavigation';
 import { ScrollProgress } from './ScrollProgress';
-import { getSeriesPosts, getAdjacentSeriesPosts } from '@lib/content/posts';
+import { getAdjacentSeriesPosts, getPostHref, getPostIndexMap, getSeriesPosts } from '@lib/content/posts';
 import type { BlogPost } from 'types/blog';
 
 interface Props {
@@ -22,10 +22,17 @@ const defaultSegmentType = type === HomeSiderType.POST ? HomeSiderSegmentType.DI
 
 // 获取系列文章
 const seriesPosts = post && type === HomeSiderType.POST ? await getSeriesPosts(post) : [];
+const postIndexMap = post && type === HomeSiderType.POST ? await getPostIndexMap() : null;
+const seriesPostItems = seriesPosts.map((seriesPost) => ({
+  post: seriesPost,
+  href: getPostHref(seriesPost, postIndexMap ?? undefined),
+}));
 
 // 获取上一篇和下一篇
 const { prevPost, nextPost } =
   post && type === HomeSiderType.POST ? await getAdjacentSeriesPosts(post) : { prevPost: null, nextPost: null };
+const prevPostItem = prevPost ? { post: prevPost, href: getPostHref(prevPost, postIndexMap ?? undefined) } : null;
+const nextPostItem = nextPost ? { post: nextPost, href: getPostHref(nextPost, postIndexMap ?? undefined) } : null;
 ---
 
 <div
@@ -59,7 +66,7 @@ const { prevPost, nextPost } =
       {type === HomeSiderType.POST && <TableOfContents client:load enableNumbering={post?.data.tocNumbering ?? true} />}
     </div>
     <div slot="series" class="sider-slot" data-slot-type="series">
-      {type === HomeSiderType.POST && <SeriesPostList client:load posts={seriesPosts} currentPostSlug={post?.slug} />}
+      {type === HomeSiderType.POST && <SeriesPostList client:load posts={seriesPostItems} currentPostSlug={post?.slug} />}
     </div>
   </sider-content>
 
@@ -83,7 +90,7 @@ const { prevPost, nextPost } =
 
   {
     type === HomeSiderType.POST && (
-      <SeriesNavigation client:load prevPost={prevPost} nextPost={nextPost} className="w-full px-2" />
+      <SeriesNavigation client:load prevPost={prevPostItem} nextPost={nextPostItem} className="w-full px-2" />
     )
   }
 

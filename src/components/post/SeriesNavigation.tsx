@@ -1,15 +1,13 @@
 /**
  * SeriesNavigation - 系列文章上一篇/下一篇导航
  */
-import { Routes } from '@constants/router';
-import { routeBuilder } from '@lib/route';
 import { cn } from '@lib/utils';
 import { RiArrowDownSLine, RiArrowLeftSLine, RiArrowRightSLine, RiArrowUpSLine } from 'react-icons/ri';
 import type { BlogPost } from 'types/blog';
 
 interface SeriesNavigationProps {
-  prevPost: BlogPost | null;
-  nextPost: BlogPost | null;
+  prevPost: { post: BlogPost; href: string } | null;
+  nextPost: { post: BlogPost; href: string } | null;
   className?: string;
 }
 
@@ -27,17 +25,17 @@ export function SeriesNavigation({ prevPost, nextPost, className }: SeriesNaviga
         {/* 上一篇 */}
         {prevPost ? (
           <a
-            href={routeBuilder(Routes.Post, prevPost)}
+            href={prevPost.href}
             className={cn(
               'group flex items-center gap-1.5 rounded-md px-2 py-1.5 transition-colors',
               'hover:bg-accent text-muted-foreground hover:text-primary',
               'max-w-[45%] min-w-0 flex-1',
             )}
-            title={prevPost.data.title}
+            title={prevPost.post.data.title}
             suppressHydrationWarning
           >
             <RiArrowLeftSLine className="h-4 w-4 shrink-0" />
-            <span className="truncate text-xs">{prevPost.data.title}</span>
+            <span className="truncate text-xs">{prevPost.post.data.title}</span>
           </a>
         ) : (
           <div className="max-w-[45%] flex-1" />
@@ -46,16 +44,16 @@ export function SeriesNavigation({ prevPost, nextPost, className }: SeriesNaviga
         {/* 下一篇 */}
         {nextPost ? (
           <a
-            href={routeBuilder(Routes.Post, nextPost)}
+            href={nextPost.href}
             className={cn(
               'group flex items-center gap-1.5 rounded-md px-2 py-1.5 transition-colors',
               'hover:bg-accent text-muted-foreground hover:text-primary',
               'max-w-[45%] min-w-0 flex-1 justify-end text-right',
             )}
-            title={nextPost.data.title}
+            title={nextPost.post.data.title}
             suppressHydrationWarning
           >
-            <span className="truncate text-xs">{nextPost.data.title}</span>
+            <span className="truncate text-xs">{nextPost.post.data.title}</span>
             <RiArrowRightSLine className="h-4 w-4 shrink-0" />
           </a>
         ) : (

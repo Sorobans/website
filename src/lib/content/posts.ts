@@ -6,6 +6,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 import summaries from '@assets/summaries.json';
 import type { BlogPost } from 'types/blog';
+import { Routes } from '@constants/router';
 import { buildCategoryPath, DEFAULT_CATEGORY_NAME, getCategoryArr } from './categories';
 import { extractTextFromMarkdown } from '../sanitize';
 
@@ -31,6 +32,50 @@ export function getPostDescription(post: BlogPost, maxLength: number = 150): str
 export function getPostSummary(slug: string): string | null {
   const data = summaries as SummariesData;
   return data[slug]?.summary ?? null;
+}
+
+function getPostKey(post: BlogPost): string {
+  return post.data?.link ?? post.slug ?? post.id ?? '';
+}
+
+/**
+ * Build a map of post key -> index, sorted by date asc (earliest = 1).
+ */
+export async function getPostIndexMap(): Promise<Map<string, number>> {
+  const posts = await getSortedPosts();
+  const sorted = [...posts].sort((a, b) => {
+    const dateDiff = new Date(a.data.date).getTime() - new Date(b.data.date).getTime();
+    if (dateDiff !== 0) return dateDiff;
+    const aKey = getPostKey(a);
+    const bKey = getPostKey(b);
+    return aKey.localeCompare(bKey);
+  });
+
+  const map = new Map<string, number>();
+  sorted.forEach((post, index) => {
+    const key = getPostKey(post);
+    if (key) {
+      map.set(key, index + 1);
+    }
+  });
+
+  return map;
+}
+
+export function getPostIndex(post: BlogPost, indexMap: Map<string, number>): number | null {
+  const key = getPostKey(post);
+  if (!key) return null;
+  return indexMap.get(key) ?? null;
+}
+
+export function getPostHref(post: BlogPost, indexMap?: Map<string, number>): string {
+  if (indexMap) {
+    const index = getPostIndex(post, indexMap);
+    if (index) return `${Routes.Post}/${index}`;
+  }
+
+  const key = getPostKey(post);
+  return key ? `${Routes.Post}/${key}` : Routes.Post;
 }
 
 /**

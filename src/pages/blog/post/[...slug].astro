@@ -15,24 +15,29 @@ import {
   buildCategoryPath,
   getCategoryArr,
   getPostDescription,
+  getPostIndex,
+  getPostIndexMap,
   getPostSummary,
   getSortedPosts,
 } from '@lib/content';
 import { parseDate } from '@lib/datetime';
+import { render } from 'astro:content';
 
 export async function getStaticPaths() {
   const postCollections = await getSortedPosts();
+  const postIndexMap = await getPostIndexMap();
 
   return postCollections.map((post) => {
-    const link = post.data?.link ?? post.slug;
+    const postIndex = getPostIndex(post, postIndexMap);
+    const slug = postIndex ? String(postIndex) : post.data?.link ?? post.slug ?? post.id;
     return {
-      params: { slug: link },
+      params: { slug },
       props: { post },
     };
   });
 }
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 const { title, categories = [], tags = [], date } = post?.data ?? {};
 
 // 使用统一的工具函数获取文章描述

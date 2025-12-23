@@ -6,7 +6,7 @@ import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Layout from '@layouts/Layout.astro';
 import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
-import { getPostLastCategory, getSortedPosts } from '@lib/content';
+import { getPostHref, getPostIndexMap, getPostLastCategory, getSortedPosts } from '@lib/content';
 import { parseDate } from '@lib/datetime';
 
 export async function getStaticPaths() {
@@ -14,20 +14,26 @@ export async function getStaticPaths() {
   const tags = new Set<string>();
 
   posts.forEach((post) => {
-    const postTags = post.data.tags || [];
+    const rawTags = post.data.tags;
+    const postTags = Array.isArray(rawTags) ? rawTags : rawTags ? [rawTags] : [];
     postTags.forEach((tag) => tags.add(tag));
   });
 
   return Array.from(tags).map((tag) => ({
     params: { tag: tag.replace(/\//g, '-') },
     props: {
-      posts: posts.filter((post) => post.data.tags?.includes(tag)),
+      posts: posts.filter((post) => {
+        const rawTags = post.data.tags;
+        const postTags = Array.isArray(rawTags) ? rawTags : rawTags ? [rawTags] : [];
+        return postTags.includes(tag);
+      }),
       tag,
     },
   }));
 }
 
 const { tag, posts } = Astro.props;
+const postIndexMap = await getPostIndexMap();
 ---
 
 <Layout title={`标签:${tag} | ${blogLayoutConfig.title}`} description={`标签 ${tag} 下的所有文章`}>
@@ -63,7 +69,7 @@ const { tag, posts } = Astro.props;
                     {name}
                   </a>
                   <a
-                    href={`${Routes.Post}/${post?.data?.link}`}
+                    href={getPostHref(post, postIndexMap)}
                     class="dashed-border md:absolute md:top-7 md:left-7"
                   >
                     {post?.data?.title}

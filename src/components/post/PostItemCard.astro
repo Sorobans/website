@@ -19,6 +19,7 @@ export interface PostItemCardProps {
   showTags?: boolean;
   hideCover?: boolean; // 隐藏图片，让内容铺满
   isSimple?: boolean; // 是否简单模式
+  href?: string;
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   hideCover: hideCoverProp,
   showTags: showTagsProp,
   isSimple = false,
+  href: hrefProp,
 } = Astro.props as PostItemCardProps;
 
 const showTags = showTagsProp ?? !isSimple;
@@ -40,7 +42,7 @@ const { body } = data ?? {};
 
 const readState = readingTime(body ?? '');
 const finalCover = cover ?? randomCover ?? defaultCoverList[0];
-const href = routeBuilder(Routes.Post, data as BlogPost);
+const href = hrefProp ?? routeBuilder(Routes.Post, data as BlogPost);
 const isDraft = import.meta.env.DEV && draft === true;
 
 const categoryArr = getCategoryArr(categories);
