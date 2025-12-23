@@ -42,7 +42,7 @@ export const blogLayoutConfig: BlogLayoutConfig = {
   alternate: 'snow',
   subtitle: '爬起仅仅只是因为不想输。',
   name: 'cos',
-  description: 'FE / ACG / 手工 / 深色模式强迫症 / INFP / 兴趣广泛养两只猫的老宅女 / remote',
+  description: 'ACG / 养猫人 / 菜逼 / 前端什锦',
   avatar: '/img/724d7fb480c8ac0db472ca5c7e36d239.jpg',
   showLogo: true,
   author: 'cos',

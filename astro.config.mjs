@@ -9,9 +9,9 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import svgr from 'vite-plugin-svgr';
 import { rm } from 'node:fs/promises';
 import { blogLayoutConfig } from './src/config/blogLayoutConfig.js';
-import { defaultContentConfig } from '@constants/content-config.js';
-import { remarkLinkEmbed } from '@lib/markdown/remark-link-embed.js';
-import { rehypeImagePlaceholder } from '@lib/markdown/rehype-image-placeholder.js';
+import { defaultContentConfig } from './src/constants/content-config.js';
+import { remarkLinkEmbed } from './src/lib/markdown/remark-link-embed.js';
+import { rehypeImagePlaceholder } from './src/lib/markdown/rehype-image-placeholder.js';
 
 const sourcePublicDir = {
   name: 'source-public-dir',
