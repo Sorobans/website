@@ -1,0 +1,158 @@
+<div id="floating-nav" class="text-primary fixed right-4 bottom-4 z-50 flex flex-col gap-2" data-expanded="true">
+  <div id="nav-content" class="flex scale-y-100 flex-col gap-2 opacity-100">
+    <button
+      id="scroll-to-top"
+      class="bg-background/80 hover:bg-background rounded-full p-2 shadow-lg backdrop-blur-sm transition-colors duration-200"
+      aria-label="回到顶部"
+      title="回到顶部"
+      data-tooltip-interactive="false"
+      data-tooltip-placement="left"
+    >
+      <i class="fa-solid fa-angle-up text-lg" aria-hidden="true"></i>
+    </button>
+    <button
+      id="scroll-to-bottom"
+      class="bg-background/80 hover:bg-background rounded-full p-2 shadow-lg backdrop-blur-sm transition-colors duration-200"
+      aria-label="滚到底部"
+      title="滚到底部"
+      data-tooltip-interactive="false"
+      data-tooltip-placement="left"
+    >
+      <i class="fa-solid fa-angle-down text-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <button
+    id="toggle-nav"
+    class="flex-center bg-background/80 hover:bg-background size-9 rounded-full shadow-lg backdrop-blur-sm transition-colors duration-200"
+    aria-label="展开/收起工具栏"
+    title="展开/收起工具栏"
+    data-tooltip-interactive="false"
+    data-tooltip-placement="left"
+  >
+    <i class="fa-solid fa-wand-magic-sparkles menu-nav-icon hidden text-sm transition-transform duration-300" aria-hidden="true"></i>
+    <i class="fa-solid fa-xmark close-nav-icon text-sm transition-transform duration-300" aria-hidden="true"></i>
+  </button>
+</div>
+
+<script>
+  import { drawerOpen } from '@store/ui';
+
+  function initFloatingNav() {
+    const scrollToTopEle = document.getElementById('scroll-to-top');
+    const scrollToBottomEle = document.getElementById('scroll-to-bottom');
+    const floatingNav = document.getElementById('floating-nav');
+    const toggleNav = document.getElementById('toggle-nav');
+    const menuNavIcon = toggleNav?.querySelector('.menu-nav-icon');
+    const closeNavIcon = toggleNav?.querySelector('.close-nav-icon');
+
+    let isExpanded = true; // 默认展开
+
+    const syncToggleState = () => {
+      if (!floatingNav) return;
+      floatingNav.setAttribute('data-expanded', String(isExpanded));
+      toggleNav?.setAttribute('aria-expanded', String(isExpanded));
+      menuNavIcon?.classList.toggle('hidden', isExpanded);
+      closeNavIcon?.classList.toggle('hidden', !isExpanded);
+    };
+
+    // 展开/收起功能
+    const handleToggleNav = () => {
+      isExpanded = !isExpanded;
+      syncToggleState();
+    };
+
+    syncToggleState();
+
+    toggleNav?.addEventListener('click', handleToggleNav);
+
+    // Subscribe to drawer state - hide FloatingGroup when drawer is open
+    const unsubscribe = drawerOpen.subscribe((isDrawerOpen) => {
+      if (!floatingNav) return;
+      // Hide floating nav when mobile drawer is open to prevent UI conflicts
+      if (isDrawerOpen) {
+        floatingNav.style.transform = 'translateX(200%)';
+        floatingNav.style.opacity = '0';
+        floatingNav.style.pointerEvents = 'none';
+      } else {
+        floatingNav.style.transform = '';
+        floatingNav.style.opacity = '';
+        floatingNav.style.pointerEvents = '';
+      }
+    });
+
+    // 回到顶部
+    const scrollToTop = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    };
+
+    scrollToTopEle?.addEventListener('click', scrollToTop);
+
+    // 滚动到底部
+    const scrollToBottom = () => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      });
+    };
+
+    scrollToBottomEle?.addEventListener('click', scrollToBottom);
+
+    // 清理函数
+    return () => {
+      scrollToTopEle?.removeEventListener('click', scrollToTop);
+      scrollToBottomEle?.removeEventListener('click', scrollToBottom);
+      toggleNav?.removeEventListener('click', handleToggleNav);
+      unsubscribe(); // Unsubscribe from drawer state
+    };
+  }
+
+  // 初始化时执行
+  let cleanup = initFloatingNav();
+
+  // 在每次页面加载时重新初始化
+  document.addEventListener('astro:page-load', () => {
+    if (cleanup) cleanup();
+    cleanup = initFloatingNav();
+  });
+
+  // 在页面卸载时清理
+  document.addEventListener('astro:before-preparation', () => {
+    if (cleanup) cleanup();
+  });
+</script>
+
+<style>
+  #floating-nav {
+    transition: transform 0.3s ease-in-out;
+    /* transform: translateY(200%); */
+  }
+
+  #nav-content {
+    transform-origin: bottom;
+    transition: all 0.15s ease-in-out;
+  }
+
+  #floating-nav[data-expanded='false'] #nav-content {
+    transform: translateY(150%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #floating-nav[data-expanded='true'] #nav-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  button {
+    opacity: 0.8;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  button:hover {
+    opacity: 1;
+  }
+</style>

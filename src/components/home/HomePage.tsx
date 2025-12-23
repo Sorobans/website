@@ -36,7 +36,7 @@ const HomePage = () => {
               </p>
             </div>
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#24292e] to-[#1f2327] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(36,41,46,0.3)] transition hover:-translate-y-0.5"
                 href={homePageLinks.githubUrl}
@@ -45,6 +45,13 @@ const HomePage = () => {
               >
                 <i className="fa-brands fa-github text-base" aria-hidden="true" />
                 GitHub
+              </a>
+              <a
+                className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#ff7aa2] to-[#ff4f87] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(255,79,135,0.3)] transition hover:-translate-y-0.5"
+                href="/blog"
+              >
+                <i className="fa-solid fa-pen-nib text-base" aria-hidden="true" />
+                进入博客
               </a>
             </div>
           </div>

@@ -1,7 +1,17 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import icon from 'astro-icon';
+import pagefind from 'astro-pagefind';
+import mermaid from 'astro-mermaid';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import svgr from 'vite-plugin-svgr';
 import { rm } from 'node:fs/promises';
+import { siteConfig } from '@constants/site-config.js';
+import { defaultContentConfig } from '@constants/content-config.js';
+import { remarkLinkEmbed } from '@lib/markdown/remark-link-embed.js';
+import { rehypeImagePlaceholder } from '@lib/markdown/rehype-image-placeholder.js';
 
 const sourcePublicDir = {
   name: 'source-public-dir',
@@ -20,14 +30,67 @@ export default defineConfig({
   alias: {
     '@': './src',
   },
+  site: siteConfig.site,
+  compressHTML: true,
+  markdown: {
+    gfm: true,
+    remarkPlugins: [
+      [
+        remarkLinkEmbed,
+        {
+          enableTweetEmbed: defaultContentConfig.enableTweetEmbed,
+          enableOGPreview: defaultContentConfig.enableOGPreview,
+        },
+      ],
+    ],
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: 'append',
+          properties: {
+            className: ['anchor-link'],
+          },
+        },
+      ],
+      rehypeImagePlaceholder,
+    ],
+    syntaxHighlight: {
+      type: 'shiki',
+      excludeLangs: ['mermaid'],
+    },
+    shikiConfig: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+    },
+  },
   integrations: [
     sourcePublicDir,
     react(),
     tailwind({
       config: './tailwind.config.mjs',
     }),
+    icon({
+      include: {
+        gg: ['*'],
+        'fa6-regular': ['*'],
+        'fa6-solid': ['*'],
+        ri: ['*'],
+      },
+    }),
+    pagefind(),
+    mermaid({
+      autoTheme: true,
+    }),
   ],
-  markdown: {
-    remarkPlugins: [],
+  vite: {
+    plugins: [svgr()],
+    ssr: {
+      noExternal: ['react-tweet'],
+    },
   },
+  trailingSlash: 'ignore',
 });

@@ -1,0 +1,53 @@
+---
+import CategoryCards from '@/components/post/CategoryCards.astro';
+import Divider from '@/components/ui/divider';
+import HomeSider from '@components/layout/HomeSider.astro';
+import PostList from '@components/post/PostList.astro';
+import Cover from '@components/ui/cover/Cover.astro';
+import { CONTENT_PADDING } from '@constants/layout';
+import { Routes } from '@constants/router';
+import { blogSeoConfig } from '@/config/blogLayoutConfig';
+import Layout from '@layouts/Layout.astro';
+import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
+import { getSortedPosts } from '@lib/content';
+import type { Page } from 'astro';
+import type { BlogPost } from 'types/blog';
+
+const allPosts = await getSortedPosts();
+const stickyPosts = allPosts.filter((post) => post.data?.sticky);
+const posts = allPosts.slice(0, 10);
+
+const page: Page<BlogPost> = {
+  data: posts,
+  start: 0,
+  end: Math.min(9, posts.length - 1),
+  size: 10,
+  total: allPosts.length,
+  currentPage: 1,
+  lastPage: Math.ceil(allPosts.length / 10),
+  url: {
+    current: Routes.Home,
+    prev: undefined,
+    next: allPosts.length > 10 ? `${Routes.Posts}/2` : undefined,
+    first: Routes.Home,
+    last: `${Routes.Posts}/${Math.ceil(allPosts.length / 10)}`,
+  },
+};
+---
+
+<Layout title={blogSeoConfig.title}>
+  <TwoColumnLayout>
+    <Cover slot="cover" />
+    <HomeSider slot="sider" />
+    <div
+      class={`bg-gradient-start shadow-box tablet:shadow-none flex flex-col gap-4 overflow-hidden  ${CONTENT_PADDING.standard}`}
+    >
+      <Divider>置顶文章</Divider>
+      {stickyPosts.length > 0 && <PostList posts={stickyPosts} showPaginator={false} />}
+      <Divider>文章列表</Divider>
+      <PostList posts={posts} page={page} showPaginator={true} baseUrl={Routes.Posts} isHomePage={true} />
+      <Divider>精选分类</Divider>
+      <CategoryCards />
+    </div>
+  </TwoColumnLayout>
+</Layout>

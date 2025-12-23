@@ -1,0 +1,20 @@
+---
+import CategoryList from '@components/category/CategoryList.astro';
+import HomeSider from '@components/layout/HomeSider.astro';
+import Cover from '@components/ui/cover/Cover.astro';
+import { blogSeoConfig } from '@/config/blogLayoutConfig';
+import Layout from '@layouts/Layout.astro';
+import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
+import { getCategoryLinks, getCategoryList } from '@lib/content';
+
+const { categories, countMap } = await getCategoryList();
+const links = getCategoryLinks(categories, '');
+---
+
+<Layout title={`全部分类 | ${blogSeoConfig.title}`}>
+  <TwoColumnLayout>
+    <Cover slot="cover" title="全部分类" />
+    <HomeSider slot="sider" />
+    <CategoryList categories={categories} countMap={countMap} totalCount={links.length ?? 0} />
+  </TwoColumnLayout>
+</Layout>
