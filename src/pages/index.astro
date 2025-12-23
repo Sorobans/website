@@ -1,8 +1,10 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import HomePage from "~/components/home/HomePage";
 ---
 
-<BaseLayout title="Snowの小窝" description="欢迎来到Snow的博客">
+<BaseLayout title="Snowの小窝" description="欢迎来到Snow的博客" fullScreen={true}>
+  <HomePage />
 </BaseLayout>
 
 <style>

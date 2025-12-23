@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@pagefind/default-ui": "^1.4.0",
     "@reactuses/core": "^6.1.6",
     "astro": "^5.16.6",

@@ -5,9 +5,21 @@ import {baseLayoutConfig} from "~/config/layoutConfig.ts";
 interface Props {
   title?: string;
   description?: string;
+  fullScreen?: boolean;
 }
 
-const { title = baseLayoutConfig.title, description = baseLayoutConfig.description } = Astro.props;
+const {
+  title = baseLayoutConfig.title,
+  description = baseLayoutConfig.description,
+  fullScreen = false,
+} = Astro.props;
+
+const bodyClass = `bg-slate-50 text-slate-900 antialiased transition-colors duration-150 dark:bg-slate-950 dark:text-slate-50${
+  fullScreen ? ' overflow-hidden' : ''
+}`;
+const mainClass = fullScreen
+  ? 'flex h-screen w-screen flex-col overflow-hidden p-0'
+  : 'mx-auto flex min-h-screen max-w-5xl flex-col gap-12 px-6 py-10 lg:px-10 lg:py-16';
 ---
 
 <!doctype html>
@@ -18,8 +30,8 @@ const { title = baseLayoutConfig.title, description = baseLayoutConfig.descripti
     <title>{title}</title>
     <meta name="description" content={description} />
   </head>
-  <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-150 dark:bg-slate-950 dark:text-slate-50">
-    <main class="mx-auto flex min-h-screen max-w-5xl flex-col gap-12 px-6 py-10 lg:px-10 lg:py-16">
+  <body class={bodyClass}>
+    <main class={mainClass}>
       <slot />
     </main>
   </body>
