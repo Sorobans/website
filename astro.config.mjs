@@ -8,7 +8,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import svgr from 'vite-plugin-svgr';
 import { rm } from 'node:fs/promises';
-import { siteConfig } from '@constants/site-config.js';
+import { blogLayoutConfig } from './src/config/blogLayoutConfig.js';
 import { defaultContentConfig } from '@constants/content-config.js';
 import { remarkLinkEmbed } from '@lib/markdown/remark-link-embed.js';
 import { rehypeImagePlaceholder } from '@lib/markdown/rehype-image-placeholder.js';
@@ -30,7 +30,7 @@ export default defineConfig({
   alias: {
     '@': './src',
   },
-  site: siteConfig.site,
+  site: blogLayoutConfig.site,
   compressHTML: true,
   markdown: {
     gfm: true,
