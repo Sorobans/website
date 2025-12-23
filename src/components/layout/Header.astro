@@ -22,6 +22,14 @@ const { alternate, title, showLogo } = blogLayoutConfig;
   class={`shadow-text fixed tablet:backdrop-blur inset-x-0 top-0 z-10 gap-4 py-2.5 text-white select-none tablet:py-2 tablet:pl-3 tablet:pr-0`}
   transition:name="site-header"
 >
+  <!-- 移动端菜单按钮 -->
+  <div
+    id="mobile-menu-container"
+    class="absolute top-0 left-3 z-10 hidden h-14 transition-transform tablet:flex"
+  >
+    <MenuIcon client:load />
+  </div>
+
   <div class={`mx-auto flex items-center justify-between tablet:w-full px-6 tablet:pl-10 tablet:pr-3 ${MAX_WIDTH.content}`}>
     <!-- Desktop: Always show logo -->
     <a
@@ -48,10 +56,3 @@ const { alternate, title, showLogo } = blogLayoutConfig;
     <Navigator transition:name="page-header" />
   </div>
 </div>
-
-<!-- 移动端菜单按钮 -->
-<MenuIcon
-  client:load
-  className="tablet:flex fixed top-0 left-3 z-52 hidden h-14 transition-transform"
-  id="mobile-menu-container"
-/>

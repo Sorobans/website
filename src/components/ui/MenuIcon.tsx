@@ -31,12 +31,7 @@ const iconVariants: Variants = {
   },
 };
 
-interface MenuIconProps {
-  className?: string;
-  id?: string;
-}
-
-const MenuIcon = ({ className, id }: MenuIconProps) => {
+const MenuIcon = () => {
   const isOpen = useStore(drawerOpen);
 
   const handleToggle = () => {
@@ -44,7 +39,7 @@ const MenuIcon = ({ className, id }: MenuIconProps) => {
   };
 
   return (
-    <div className={cn('flex-center', className)} id={id} style={{ viewTransitionName: 'home-menu-icon' }}>
+    <div className="flex-center" style={{ viewTransitionName: 'home-menu-icon' }}>
       <button
         className="flex-center text-shoka size-10 cursor-pointer rounded-full bg-white/20 select-none"
         onClick={handleToggle}
