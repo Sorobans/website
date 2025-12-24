@@ -7,7 +7,7 @@ import { cn } from '@lib/utils';
 <div class="mt-2 grid grid-cols-3 gap-2">
   {
     Object.entries(blogSocialConfig).map(([key, config]) => {
-      const { url, label, iconText, color } = config;
+      const { url, label, iconClass, color } = config;
       return (
         <div>
           <a
@@ -22,7 +22,7 @@ import { cn } from '@lib/utils';
             data-tooltip-placement="top"
             aria-label={label}
           >
-            <span class="social-icon-text">{iconText}</span>
+            {iconClass && <i class={`${iconClass} social-icon`} aria-hidden="true"></i>}
             <span class="absolute inset-0 -z-10 -translate-x-full translate-y-full rounded-xl transition-transform duration-300 group-hover:translate-x-0 group-hover:translate-y-0" />
           </a>
         </div>
@@ -36,11 +36,12 @@ import { cn } from '@lib/utils';
     /* background-color: color-mix(in srgb, var(--link-color) 20%, transparent); */
     color: var(--link-color);
   }
-  .social-icon-text {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
+  .social-icon {
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+  }
+  .social-link:hover .social-icon {
+    transform: scale(1.1);
   }
   .social-link span {
     background-color: var(--link-color);

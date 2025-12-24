@@ -160,7 +160,7 @@ export const friendsIntro = {
   subtitle: '改了一下,有时间顺序从新到旧排列～',
   applyTitle: '欢迎加友链',
   applyDesc: '在本页留言,格式如下',
-  exampleYaml: `- site: cosの博客 # 站点名称
+  exampleYaml: `- site: snowの博客 # 站点名称
   url: https://ysx.cosine.ren/ # 站点网址
   owner: cos # 昵称
   desc: WA的一声就哭了 # 站点简介

@@ -22,6 +22,7 @@ type SocialPlatform = {
   url: string;
   label: string;
   iconText: string;
+  iconClass?: string; // Font Awesome icon class
   color: string;
 };
 
@@ -56,18 +57,21 @@ export const blogSocialConfig: SocialConfig = {
     url: 'https://github.com/yusixian',
     label: 'GitHub',
     iconText: 'GH',
+    iconClass: 'fa-brands fa-github',
     color: '#191717',
   },
   x: {
     url: 'https://x.com/_cosine_x',
     label: 'X (推特)',
     iconText: 'X',
+    iconClass: 'fa-brands fa-x-twitter',
     color: '#4b9ae4',
   },
   email: {
     url: 'mailto:cosine_yu@qq.com',
     label: 'Email',
     iconText: '@',
+    iconClass: 'fa-regular fa-envelope',
     color: '#55acd5',
   },
 };
