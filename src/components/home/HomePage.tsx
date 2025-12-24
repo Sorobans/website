@@ -24,7 +24,7 @@ const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePage
                 <img
                   src={profile.avatarUrl}
                   alt={profile.avatarAlt}
-                  className="h-full w-full rounded-full object-cover"
+                  className="h-full w-full rounded-full object-cover transition-transform duration-700 ease-in-out hover:rotate-[360deg]"
                 />
               </div>
             </div>
@@ -59,6 +59,21 @@ const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePage
                 进入博客
               </a>
             </div>
+
+          </div>
+        </div>
+
+        <div className="fixed bottom-6 right-6 z-20 flex flex-col items-start gap-2">
+          <div className="w-[86px] h-[86px] overflow-hidden rounded-[14px] border border-pink-border/60 bg-white/80 shadow-[0_8px_18px_rgba(255,105,180,0.2)] backdrop-blur">
+            <iframe
+              title="网易云音乐播放器"
+              frameBorder="no"
+              marginWidth={0}
+              marginHeight={0}
+              width="86"
+              height="86"
+              src="//music.163.com/outchain/player?type=2&id=28283665&auto=1&height=66"
+            />
           </div>
         </div>
 
