@@ -1,13 +1,18 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { homePageLinks, homePageProfile } from '../../config/homePageConfig';
 
-const HomePage = () => {
+interface HomePageProps {
+  profile?: typeof homePageProfile;
+  links?: typeof homePageLinks;
+}
+
+const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePageProps) => {
   return (
     <section className="relative h-screen overflow-hidden bg-gradient-to-br">
       <div className="absolute inset-0">
         <div
           className="fixed inset-0 h-screen w-screen bg-cover bg-center bg-fixed opacity-70"
-          style={{ backgroundImage: `url('${homePageProfile.backgroundUrl}')` }}
+          style={{ backgroundImage: `url('${profile.backgroundUrl}')` }}
         />
       </div>
 
@@ -17,9 +22,9 @@ const HomePage = () => {
             <div className="flex justify-center">
               <div className="relative mb-6 h-[150px] w-[150px] rounded-full border-4 border-pink-border shadow-pink-avatar">
                 <img
-                  src={homePageProfile.avatarUrl}
-                  alt={homePageProfile.avatarAlt}
-                  className="h-full w-full rounded-full object-cover"
+                  src={profile.avatarUrl}
+                  alt={profile.avatarAlt}
+                  className="h-full w-full rounded-full object-cover transition-transform duration-700 ease-in-out hover:rotate-[360deg]"
                 />
               </div>
             </div>
@@ -29,29 +34,60 @@ const HomePage = () => {
               className="text-[2.5rem] font-bold tracking-[1px] text-pink-main"
               style={{ textShadow: '2px 2px 8px rgba(255,105,180,0.3)' }}
             >
-              {homePageProfile.name}
+              {profile.name}
             </h1>
               <p className="mx-auto mt-3 max-w-[560px] px-5 text-[1.1rem] italic text-[#666]">
-                {homePageProfile.tagline}
+                {profile.tagline}
               </p>
             </div>
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <a
+                className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#111111] to-[#2a2a2a] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(17,17,17,0.3)] transition hover:-translate-y-0.5"
+                href={links.xUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i className="fa-brands fa-x-twitter text-base" aria-hidden="true" />
+                X
+              </a>
               <a
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#24292e] to-[#1f2327] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(36,41,46,0.3)] transition hover:-translate-y-0.5"
-                href={homePageLinks.githubUrl}
+                href={links.githubUrl}
                 target="_blank"
                 rel="noreferrer"
               >
                 <i className="fa-brands fa-github text-base" aria-hidden="true" />
                 GitHub
               </a>
+              <a
+                className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#ff7aa2] to-[#ff4f87] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(255,79,135,0.3)] transition hover:-translate-y-0.5"
+                href="/blog"
+              >
+                <i className="fa-solid fa-pen-nib text-base" aria-hidden="true" />
+                进入博客
+              </a>
             </div>
+
+          </div>
+        </div>
+
+        <div className="fixed bottom-6 right-6 z-20 flex flex-col items-start gap-2">
+          <div className="w-[86px] h-[86px] overflow-hidden rounded-[14px] border border-pink-border/60 bg-white/80 shadow-[0_8px_18px_rgba(255,105,180,0.2)] backdrop-blur">
+            <iframe
+              title="网易云音乐播放器"
+              frameBorder="no"
+              marginWidth={0}
+              marginHeight={0}
+              width="86"
+              height="86"
+              src="//music.163.com/outchain/player?type=2&id=28283665&auto=1&height=66"
+            />
           </div>
         </div>
 
         <footer className="pb-6 text-center text-sm text-pink-main">
-          {homePageProfile.footerText}
+          {profile.footerText}
         </footer>
       </div>
     </section>

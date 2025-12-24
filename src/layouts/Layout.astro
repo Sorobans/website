@@ -1,0 +1,262 @@
+---
+import { HomeSiderType } from '@constants/enum';
+import type { BlogPost } from '@/types/blog';
+
+interface Props {
+  title: string;
+  description?: string;
+  siderType?: HomeSiderType;
+  post?: BlogPost;
+}
+
+import FloatingGroup from '@components/layout/FloatingGroup.astro';
+import Header from '@components/layout/Header.astro';
+import MobileDrawer from '@components/layout/MobileDrawer.astro';
+import SearchDialog from '@components/layout/SearchDialog.astro';
+import CodeBlockFullscreen from '@components/markdown/CodeBlockFullscreen.astro';
+import MermaidFullscreen from '@components/markdown/MermaidFullscreen.astro';
+import { blogSeoConfig, blogLayoutConfig } from '@/config/blogLayoutConfig';
+import { Routes } from '@constants/router';
+import LoadingIndicator from 'astro-loading-indicator/component';
+import { Tooltips } from 'astro-tooltips';
+import { ClientRouter } from 'astro:transitions';
+
+import '@styles/index.css';
+
+const { title = blogSeoConfig.title, description = blogSeoConfig.description, siderType, post } = Astro.props;
+// TODO: siderType should be custom in router file, not in layout
+
+// Detect if current page is a post page for mobile header
+const isPostPage = Astro.url.pathname.startsWith(`${Routes.Post}/`);
+---
+
+<!doctype html>
+<html transition:name="root" lang="zh-CN" class="vertical-scrollbar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!-- Preconnect to third-party origins for faster resource loading -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://chinese-font.netlify.app" crossorigin />
+    <link rel="dns-prefetch" href="https://chinese-font.netlify.app" />
+
+    <!-- Async load Chinese fonts to avoid render-blocking -->
+    <link rel="stylesheet" href="/fonts/ChillRoundFRegular/result.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="/fonts/ChillRoundFBold/result.css" media="print" onload="this.media='all'" />
+
+    <ClientRouter />
+    <LoadingIndicator color="#e9536a" />
+    <Tooltips />
+    <!-- metadata -->
+    <meta name="description" content={description} />
+    <meta name="author" content={blogLayoutConfig.author} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={blogLayoutConfig.name} />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <!-- <meta property="og:image" content="/opengraph.png?v=1" /> TODO: og image-->
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta charset="UTF-8" />
+
+
+    <script is:inline>
+      // 立即执行主题检查 否则会闪烁
+      if (
+        localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        document.documentElement.dataset.theme = 'dark';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+    <script>
+      function checkTheme() {
+        if (
+          localStorage.theme === 'dark' ||
+          (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light'); // 本来是没有 light 的，这样是为了触发 MutationObserver
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+          document.documentElement.dataset.theme = 'light';
+        }
+      }
+      // 在每次页面加载时检查
+      document.addEventListener('astro:page-load', checkTheme);
+    </script>
+    <script>
+      // CodePen embed initialization for Astro page transitions
+      // https://blog.codepen.io/documentation/embedded-pens/
+
+      declare global {
+        interface Window {
+          __CPEmbed?: () => void;
+        }
+      }
+
+      let codepenScriptLoaded = false;
+
+      function loadCodePenScript() {
+        return new Promise<void>((resolve, reject) => {
+          // Check if already loaded
+          if (codepenScriptLoaded || window.__CPEmbed) {
+            resolve();
+            return;
+          }
+
+          const script = document.createElement('script');
+          script.src = 'https://cpwebassets.codepen.io/assets/embed/ei.js';
+          script.async = true;
+          script.onload = () => {
+            codepenScriptLoaded = true;
+            resolve();
+          };
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+
+      async function initializeCodePenEmbeds() {
+        // Check if there are any CodePen embeds on the page
+        const codepenElements = document.querySelectorAll('.codepen');
+        if (codepenElements.length === 0) {
+          return;
+        }
+
+        try {
+          // Load the CodePen script if not already loaded
+          await loadCodePenScript();
+
+          // Initialize all CodePen embeds
+          if (window.__CPEmbed) {
+            window.__CPEmbed();
+          }
+        } catch (error) {
+          console.error('[CodePen Embed] Failed to load CodePen embed script:', error);
+        }
+      }
+
+      // Initialize on initial page load
+      if (document.readyState !== 'loading') {
+        initializeCodePenEmbeds();
+      }
+
+      // Re-initialize on Astro page transitions
+      document.addEventListener('astro:page-load', initializeCodePenEmbeds);
+    </script>
+    <script>
+      /**
+       * Mermaid Navigation Fix
+       * 修复从无 mermaid 页面导航到有 mermaid 页面时的渲染问题
+       *
+       * 问题根源：astro-mermaid 的 astro:after-swap 监听器被注册在 import().then() 内部
+       * 当首页没有 mermaid 图表时，监听器不会被注册，导致客户端导航时无法渲染
+       */
+      const themeMap = { light: 'default', dark: 'dark' } as const;
+      type MermaidTheme = (typeof themeMap)[keyof typeof themeMap];
+      let mermaidModule: typeof import('mermaid').default | null = null;
+      let themeObserverSetup = false;
+
+      function hasUnprocessedDiagrams() {
+        return document.querySelectorAll('pre.mermaid:not([data-processed])').length > 0;
+      }
+
+      function getCurrentTheme(): MermaidTheme {
+        const dataTheme = document.documentElement.getAttribute('data-theme') || document.body?.getAttribute('data-theme');
+        if (dataTheme === 'dark' || dataTheme === 'light') {
+          return themeMap[dataTheme];
+        }
+        return 'default';
+      }
+
+      async function initMermaidDiagrams() {
+        const diagrams = document.querySelectorAll('pre.mermaid:not([data-processed])');
+        if (diagrams.length === 0) return;
+
+        if (!mermaidModule) {
+          const { default: mermaid } = await import('mermaid');
+          mermaidModule = mermaid;
+        }
+
+        mermaidModule.initialize({
+          startOnLoad: false,
+          theme: getCurrentTheme(),
+          gitGraph: { mainBranchName: 'main', showCommitLabel: true, showBranches: true, rotateCommitLabel: true },
+        });
+
+        for (const diagram of diagrams) {
+          const pre = diagram as HTMLElement;
+          if (!pre.hasAttribute('data-diagram')) {
+            pre.setAttribute('data-diagram', pre.textContent || '');
+          }
+          const definition = pre.getAttribute('data-diagram') || '';
+          const id = 'mermaid-' + Math.random().toString(36).slice(2, 11);
+
+          try {
+            const { svg } = await mermaidModule.render(id, definition);
+            pre.innerHTML = svg;
+            pre.setAttribute('data-processed', 'true');
+          } catch (error) {
+            console.error('[mermaid-nav-fix] Error:', error);
+            pre.setAttribute('data-processed', 'true');
+          }
+        }
+
+        window.dispatchEvent(new CustomEvent('mermaid:rendered'));
+
+        if (!themeObserverSetup && mermaidModule) {
+          const observer = new MutationObserver(() => {
+            document.querySelectorAll('pre.mermaid[data-processed]').forEach((d) => d.removeAttribute('data-processed'));
+            initMermaidDiagrams();
+          });
+          observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+          themeObserverSetup = true;
+        }
+      }
+
+      // 关键：始终注册监听器，不依赖当前页面内容
+      // 只处理客户端导航场景，直接访问时由 astro-mermaid 处理
+      document.addEventListener('astro:after-swap', () => {
+        requestAnimationFrame(() => {
+          if (hasUnprocessedDiagrams()) {
+            initMermaidDiagrams();
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="flex min-h-screen flex-col text-black dark:text-white">
+      <Header isPostPage={isPostPage} tocNumbering={post?.data.tocNumbering ?? true} />
+      <main class="relative flex grow flex-col gap-4">
+        {(<slot />)}
+      </main>
+      <FloatingGroup />
+      <MobileDrawer type={siderType} post={post} />
+      <SearchDialog />
+      <CodeBlockFullscreen />
+      <MermaidFullscreen />
+    </div>
+  </body>
+</html>
