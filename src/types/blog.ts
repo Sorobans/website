@@ -20,6 +20,7 @@ export interface BlogSchema {
   categories?: string[] | string[][];
   subtitle?: string; // 文章副标题
   catalog?: boolean; // 是否分离
+  tocNumbering?: boolean; // 目录是否编号
   sticky?: boolean; // 是否置顶
   draft?: boolean; // 是否为草稿（开发环境可见，生产环境隐藏）
 }

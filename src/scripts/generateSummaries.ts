@@ -168,7 +168,7 @@ async function generateSummary(text: string, model: string): Promise<string> {
     maxTokens: 200,
   });
 
-  return summary.trim();
+  return summary?.trim() ?? '';
 }
 
 // --------- File Processing ---------
@@ -349,4 +349,4 @@ async function main() {
   }
 }
 
-main();
+void main();

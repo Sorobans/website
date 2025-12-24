@@ -339,7 +339,7 @@ export function remarkLinkEmbed(options: RemarkLinkEmbedOptions = {}) {
     const embedNodes = await Promise.all(fetchPromises);
 
     // Replace nodes with their embed counterparts
-    nodesToReplace.forEach(({ node, index, parent }, i) => {
+    nodesToReplace.forEach(({ index, parent }, i) => {
       const embedNode = embedNodes[i];
       if (embedNode) {
         parent.children[index] = embedNode;

@@ -1,4 +1,4 @@
-import React, { cloneElement, useRef, type JSX } from 'react';
+import React, { cloneElement, useEffect, useRef, type JSX } from 'react';
 import { FloatingPortal, useDismiss, useFocus, useHover, useInteractions, useRole, type Placement } from '@floating-ui/react';
 import { useControlledState } from '@hooks/useControlledState';
 import { useFloatingUI } from '@hooks/useFloatingUI';
@@ -30,7 +30,7 @@ function Tooltip({ children, title, placement = 'top', offsetX = 5, className, o
   const arrowRef = useRef<HTMLElement>(null);
 
   // Use useFloatingUI with arrow support
-  const { refs, context, middlewareData, x, y, strategy } = useFloatingUI({
+  const { refs, context, x, y, strategy } = useFloatingUI({
     open,
     onOpenChange: setOpen,
     placement,
@@ -46,6 +46,23 @@ function Tooltip({ children, title, placement = 'top', offsetX = 5, className, o
     useDismiss(context),
     useRole(context, { role: 'tooltip' }),
   ]);
+  const referenceRef = useRef<HTMLElement | null>(null);
+  const floatingRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (referenceRef.current) {
+      refs.setReference(referenceRef.current);
+    }
+  }, [refs]);
+
+  useEffect(() => {
+    if (open && floatingRef.current) {
+      refs.setFloating(floatingRef.current);
+    }
+  }, [open, refs]);
+
+  const referenceProps = getReferenceProps();
+  const floatingProps = getFloatingProps();
 
   // 如果不在浏览器环境，直接返回children
   if (!isBrowser) {
@@ -53,7 +70,7 @@ function Tooltip({ children, title, placement = 'top', offsetX = 5, className, o
   }
   return (
     <>
-      {cloneElement(children, getReferenceProps({ ref: refs.setReference, ...children.props }))}
+      {cloneElement(children, { ...referenceProps, ref: referenceRef })}
       <FloatingPortal id="floating-tooltip">
         {open && (
           <div
@@ -62,14 +79,14 @@ function Tooltip({ children, title, placement = 'top', offsetX = 5, className, o
               // ...fontVariants, // TODO: Font 迁移
               className,
             )}
-            ref={refs.setFloating}
+            ref={floatingRef}
             style={{
               position: strategy,
               zIndex: zIndex.tooltip,
               top: y ?? 0,
               left: x ?? 0,
             }}
-            {...getFloatingProps()}
+            {...floatingProps}
           >
             {title}
           </div>

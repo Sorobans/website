@@ -1,5 +1,5 @@
 import { friendsIntro } from '@config/friends-config';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useClipboard } from 'foxact/use-clipboard';
 import SakuraSVG from '../svg/SakuraSvg';
 
@@ -33,21 +33,18 @@ image: ${formData.image || 'https://example.com/avatar.jpg'}
 color: "${formData.color || '#ffc0cb'}"`;
   };
 
-  const handleCopy = useCallback(() => {
+  const handleCopy = () => {
     const yaml = generateText();
-    copy(yaml);
-  }, [copy]);
+    void copy(yaml);
+  };
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    },
-    [], // 空依赖 - 使用函数式更新
-  );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
     <div className="mb-4 w-full">
@@ -70,9 +67,12 @@ color: "${formData.color || '#ffc0cb'}"`;
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="group relative">
-                  <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">站点名称</label>
+                  <label htmlFor="friend-site" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                    站点名称
+                  </label>
                   <input
                     type="text"
+                    id="friend-site"
                     name="site"
                     value={formData.site}
                     onChange={handleChange}
@@ -81,9 +81,12 @@ color: "${formData.color || '#ffc0cb'}"`;
                   />
                 </div>
                 <div className="group relative">
-                  <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">昵称</label>
+                  <label htmlFor="friend-owner" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                    昵称
+                  </label>
                   <input
                     type="text"
+                    id="friend-owner"
                     name="owner"
                     value={formData.owner}
                     onChange={handleChange}
@@ -94,9 +97,12 @@ color: "${formData.color || '#ffc0cb'}"`;
               </div>
 
               <div className="group relative">
-                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">站点链接</label>
+                <label htmlFor="friend-url" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  站点链接
+                </label>
                 <input
                   type="url"
+                  id="friend-url"
                   name="url"
                   value={formData.url}
                   onChange={handleChange}
@@ -106,8 +112,11 @@ color: "${formData.color || '#ffc0cb'}"`;
               </div>
 
               <div className="group relative">
-                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">站点描述</label>
+                <label htmlFor="friend-desc" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  站点描述
+                </label>
                 <textarea
+                  id="friend-desc"
                   name="desc"
                   value={formData.desc}
                   onChange={handleChange}
@@ -119,9 +128,12 @@ color: "${formData.color || '#ffc0cb'}"`;
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="group relative">
-                  <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">头像链接</label>
+                  <label htmlFor="friend-image" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                    头像链接
+                  </label>
                   <input
                     type="url"
+                    id="friend-image"
                     name="image"
                     value={formData.image}
                     onChange={handleChange}
@@ -130,11 +142,14 @@ color: "${formData.color || '#ffc0cb'}"`;
                   />
                 </div>
                 <div className="group relative">
-                  <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">主题色</label>
+                  <label htmlFor="friend-color-picker" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                    主题色
+                  </label>
                   <div className="flex items-center gap-3">
                     <div className="relative h-10 w-10 overflow-hidden rounded-xl border-2 border-gray-100 shadow-sm transition-transform hover:scale-105 dark:border-gray-700">
                       <input
                         type="color"
+                        id="friend-color-picker"
                         name="color"
                         value={formData.color}
                         onChange={handleChange}
@@ -143,7 +158,9 @@ color: "${formData.color || '#ffc0cb'}"`;
                     </div>
                     <input
                       type="text"
+                      id="friend-color-text"
                       value={formData.color}
+                      aria-label="主题色值"
                       onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                       className="flex-1 rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
                     />

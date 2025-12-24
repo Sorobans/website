@@ -5,7 +5,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 import summaries from '@assets/summaries.json';
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 import { Routes } from '@constants/router';
 import { buildCategoryPath, DEFAULT_CATEGORY_NAME, getCategoryArr } from './categories';
 import { extractTextFromMarkdown } from '../sanitize';
@@ -21,12 +21,12 @@ type SummariesData = Record<string, { title: string; summary: string }>;
  * @returns 文章描述文本
  */
 export function getPostDescription(post: BlogPost, maxLength: number = 150): string {
-  return post.data.description || extractTextFromMarkdown(post.body, maxLength);
+  return post.data.description || extractTextFromMarkdown(post.body ?? '', maxLength);
 }
 
 /**
  * 获取文章的 AI 摘要
- * @param slug 文章 slug（通常是 post.data.link 或 post.slug）
+ * @param slug 文章 slug（通常是 post.data.link 或 post.id）
  * @returns AI 摘要文本，如果不存在则返回 null
  */
 export function getPostSummary(slug: string): string | null {
@@ -35,7 +35,7 @@ export function getPostSummary(slug: string): string | null {
 }
 
 function getPostKey(post: BlogPost): string {
-  return post.data?.link ?? post.slug ?? post.id ?? '';
+  return post.data?.link ?? post.id ?? '';
 }
 
 /**
@@ -86,8 +86,8 @@ export function getPostHref(post: BlogPost, indexMap?: Map<string, number>): str
  * @returns 文章描述文本
  */
 export function getPostDescriptionWithSummary(post: BlogPost, maxLength: number = 150): string {
-  const slug = post.data?.link ?? post.slug;
-  return post.data.description || getPostSummary(slug) || extractTextFromMarkdown(post.body, maxLength);
+  const slug = post.data?.link ?? post.id ?? '';
+  return post.data.description || getPostSummary(slug) || extractTextFromMarkdown(post.body ?? '', maxLength);
 }
 
 /**
@@ -247,7 +247,8 @@ export async function getAdjacentSeriesPosts(currentPost: BlogPost): Promise<{
     return { prevPost: null, nextPost: null };
   }
 
-  const currentIndex = seriesPosts.findIndex((post) => post.slug === currentPost.slug);
+  const currentKey = getPostKey(currentPost);
+  const currentIndex = seriesPosts.findIndex((post) => getPostKey(post) === currentKey);
 
   if (currentIndex === -1) {
     return { prevPost: null, nextPost: null };

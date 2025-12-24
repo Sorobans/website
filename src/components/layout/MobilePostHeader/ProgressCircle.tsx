@@ -21,13 +21,12 @@ export function ProgressCircle({ size = 28, strokeWidth = 2, className }: Progre
   const { scrollYProgress } = useScroll();
 
   // Apply spring smoothing unless user prefers reduced motion
-  const progress = shouldReduceMotion
-    ? scrollYProgress
-    : useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001,
-      });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  const progress = shouldReduceMotion ? scrollYProgress : smoothProgress;
 
   const radius = (size - strokeWidth) / 2;
   const center = size / 2;

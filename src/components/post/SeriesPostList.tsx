@@ -2,7 +2,7 @@
  * SeriesPostList - 显示系列文章列表
  */
 import { cn } from '@lib/utils';
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 
 interface SeriesPostListProps {
   posts: Array<{
@@ -21,11 +21,12 @@ export function SeriesPostList({ posts, currentPostSlug, className }: SeriesPost
   return (
     <div className={cn('flex flex-col gap-1', className)}>
       {posts.map(({ post, href }) => {
-        const isActive = post.slug === currentPostSlug;
+        const postKey = post.data.link ?? post.id;
+        const isActive = postKey === currentPostSlug;
 
         return (
           <a
-            key={post.slug ?? post.id}
+            key={postKey}
             href={href}
             className={cn(
               'group relative flex items-start gap-3 rounded-md px-1 py-2 transition-colors',

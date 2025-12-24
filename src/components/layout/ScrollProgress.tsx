@@ -12,13 +12,12 @@ export function ScrollProgress({ className }: ScrollProgressProps) {
 
   // 使用 spring 动画使滚动更平滑，提升性能
   // 如果用户偏好减少动画，则直接使用滚动进度值，不使用 spring
-  const scaleX = shouldReduceMotion
-    ? scrollYProgress
-    : useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001,
-      });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  const scaleX = shouldReduceMotion ? scrollYProgress : smoothProgress;
 
   return (
     <div className={className}>

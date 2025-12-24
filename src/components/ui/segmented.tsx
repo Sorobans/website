@@ -1,6 +1,6 @@
 import { cn } from '@lib/utils';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 export type OptionType<T extends string | number = string | number> = {
   label?: string;
@@ -29,21 +29,20 @@ export const Segmented = <T extends string | number = string | number>({
   itemClass,
   value,
 }: SegmentedProps<T>) => {
-  const [_value, setValue] = useState<T>(() => (value ?? defaultValue ?? options[0]?.value ?? '') as T);
+  const [uncontrolledValue, setUncontrolledValue] = useState<T>(() => (value ?? defaultValue ?? options[0]?.value ?? '') as T);
   const shouldReduceMotion = useReducedMotion();
 
   const select = useCallback(
-    (value: T) => {
-      setValue(value);
-      onChange?.(value);
+    (nextValue: T) => {
+      if (value === undefined) {
+        setUncontrolledValue(nextValue);
+      }
+      onChange?.(nextValue);
     },
-    [setValue, onChange],
+    [onChange, value],
   );
-  const isSelected = useCallback((selectedValue: T) => _value === selectedValue, [_value]);
-
-  useEffect(() => {
-    if (value) setValue(value);
-  }, [value]);
+  const currentValue = value ?? uncontrolledValue;
+  const isSelected = useCallback((selectedValue: T) => currentValue === selectedValue, [currentValue]);
 
   return (
     <div

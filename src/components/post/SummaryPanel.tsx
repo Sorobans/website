@@ -49,6 +49,7 @@ const SummaryPanelContent = memo(
     );
   },
 );
+SummaryPanelContent.displayName = 'SummaryPanelContent';
 
 export interface SummaryPanelProps {
   /** 摘要文本 */

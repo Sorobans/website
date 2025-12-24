@@ -2,7 +2,7 @@
  * Tag-related utility functions
  */
 
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 
 /**
  * Get all tags with their counts

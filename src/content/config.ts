@@ -18,6 +18,7 @@ const blog = defineCollection({
     categories: categoriesSchema,
     subtitle: z.string().optional(),
     catalog: z.boolean().optional(),
+    tocNumbering: z.boolean().optional(),
     sticky: z.boolean().optional(),
     draft: z.boolean().optional(),
   }),

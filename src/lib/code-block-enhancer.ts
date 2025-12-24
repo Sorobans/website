@@ -266,7 +266,7 @@ export function enhanceAllCodeBlocks(container: Element, options: EnhanceOptions
             <rect width="24" height="24" fill="currentColor" mask="url(#checkmark-anim-${Date.now()})"/>
           </svg>`;
 
-        copyBtn.addEventListener('click', async () => {
+        const handleCopy = async () => {
           const success = await copyToClipboard(info.code);
           if (success) {
             copyBtn.classList.add('copied');
@@ -277,6 +277,10 @@ export function enhanceAllCodeBlocks(container: Element, options: EnhanceOptions
               copyBtn.innerHTML = originalSvg;
             }, 2000);
           }
+        };
+
+        copyBtn.addEventListener('click', () => {
+          void handleCopy();
         });
       }
     }

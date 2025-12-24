@@ -9,7 +9,7 @@ import { FloatingFocusManager, FloatingPortal, useClick, useDismiss, useInteract
 import { useControlledState } from '@hooks/useControlledState';
 import { useFloatingUI } from '@hooks/useFloatingUI';
 import { AnimatePresence, motion } from 'motion/react';
-import React, { cloneElement } from 'react';
+import { useEffect, useRef, type ReactElement } from 'react';
 import { animation } from '@constants/design-tokens';
 import { HeadingList } from '../TableOfContents/HeadingList';
 import type { Heading } from '@hooks/useHeadingTree';
@@ -24,7 +24,7 @@ interface MobileTOCDropdownProps {
   /** Callback when a heading is clicked */
   onHeadingClick: (id: string) => void;
   /** Trigger element that opens the dropdown */
-  trigger: React.JSX.Element;
+  trigger: ReactElement;
   /** Controlled open state */
   open?: boolean;
   /** Callback when open state changes */
@@ -62,28 +62,51 @@ export function MobileTOCDropdown({
   const role = useRole(context);
 
   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
+  const referenceRef = useRef<HTMLElement | null>(null);
+  const floatingRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (referenceRef.current) {
+      refs.setReference(referenceRef.current);
+    }
+  }, [refs]);
+
+  useEffect(() => {
+    if (isOpen && floatingRef.current) {
+      refs.setFloating(floatingRef.current);
+    }
+  }, [isOpen, refs]);
 
   const handleHeadingClick = (id: string) => {
     onHeadingClick(id);
     setIsOpen(false);
   };
 
+  const { className: referenceClassName, ...referenceProps } = getReferenceProps();
+  const floatingProps = getFloatingProps();
+
   return (
     <>
-      {cloneElement(trigger, getReferenceProps({ ref: refs.setReference, ...trigger.props }))}
+      <span
+        ref={referenceRef}
+        className={referenceClassName ? `contents ${referenceClassName}` : 'contents'}
+        {...referenceProps}
+      >
+        {trigger}
+      </span>
       <AnimatePresence>
         {isOpen && (
           <FloatingPortal>
             <FloatingFocusManager context={context} modal={false}>
               <motion.div
-                ref={refs.setFloating}
+                ref={floatingRef}
                 style={floatingStyles}
                 className="bg-background/80 border-border z-50 max-h-[60vh] w-72 overflow-auto rounded-2xl border p-3 backdrop-blur-md"
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1, originY: 0 }}
                 exit={{ opacity: 0, scale: 0.85 }}
                 transition={animation.spring.popoverContent}
-                {...getFloatingProps()}
+                {...floatingProps}
               >
                 <nav className={enableNumbering ? '' : 'toc-no-numbering'} aria-label="文章目录">
                   <div className="space-y-1">

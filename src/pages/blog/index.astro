@@ -10,7 +10,7 @@ import Layout from '@layouts/Layout.astro';
 import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
 import { getSortedPosts } from '@lib/content';
 import type { Page } from 'astro';
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 
 const allPosts = await getSortedPosts();
 const posts = allPosts.slice(0, 10);

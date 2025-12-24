@@ -25,7 +25,8 @@ function NavItem({
 }: NavItemProps) {
   return (
     <div>
-      <div
+      <button
+        type="button"
         className={cn(
           'relative flex w-full cursor-pointer items-center justify-center text-base',
           {
@@ -53,7 +54,7 @@ function NavItem({
             animate={{ opacity: 1, y: 0 }}
           />
         )}
-      </div>
+      </button>
     </div>
   );
 }

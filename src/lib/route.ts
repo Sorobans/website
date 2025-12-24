@@ -1,5 +1,5 @@
 import { Routes } from '@constants/router';
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 
 export type RouteParams<T extends Routes> = T extends Routes.Post ? BlogPost | undefined : undefined;
 
@@ -9,7 +9,7 @@ export function routeBuilder<T extends Routes>(route: T, param: RouteParams<type
   switch (route) {
     case Routes.Post:
       {
-        const slug = param?.data?.link || param?.slug || param?.id;
+        const slug = param?.data?.link || param?.id;
         if (!slug) return href;
         href += `/${slug}`;
       }

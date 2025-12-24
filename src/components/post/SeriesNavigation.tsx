@@ -3,7 +3,7 @@
  */
 import { cn } from '@lib/utils';
 import { RiArrowDownSLine, RiArrowLeftSLine, RiArrowRightSLine, RiArrowUpSLine } from 'react-icons/ri';
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 
 interface SeriesNavigationProps {
   prevPost: { post: BlogPost; href: string } | null;

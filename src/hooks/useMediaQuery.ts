@@ -15,7 +15,7 @@
  * ```
  */
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 /**
  * Hook for media query matching
@@ -24,43 +24,35 @@ import { useEffect, useState } from 'react';
  * @returns Whether the media query matches
  */
 export function useMediaQuery(query: string): boolean {
-  // Always initialize with false to avoid hydration mismatch
-  // The actual value will be set in useEffect after mount
-  const [matches, setMatches] = useState(false);
-
-  useEffect(() => {
-    // Ensure we're in browser environment
+  const getSnapshot = () => {
     if (typeof window === 'undefined' || !window.matchMedia) {
-      return;
+      return false;
+    }
+    return window.matchMedia(query).matches;
+  };
+
+  const subscribe = (callback: () => void) => {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return () => {};
     }
 
     const mediaQuery = window.matchMedia(query);
+    const handleChange = () => callback();
 
-    // Update state with current match
-    setMatches(mediaQuery.matches);
-
-    // Define change handler
-    const handleChange = (event: MediaQueryListEvent) => {
-      setMatches(event.matches);
-    };
-
-    // Modern browsers use addEventListener
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleChange);
       return () => {
         mediaQuery.removeEventListener('change', handleChange);
       };
     }
-    // Legacy browsers use addListener (deprecated but still supported)
-    else if (mediaQuery.addListener) {
-      mediaQuery.addListener(handleChange);
-      return () => {
-        mediaQuery.removeListener(handleChange);
-      };
-    }
-  }, [query]);
 
-  return matches;
+    mediaQuery.addListener(handleChange);
+    return () => {
+      mediaQuery.removeListener(handleChange);
+    };
+  };
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }
 
 /**

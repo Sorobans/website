@@ -107,7 +107,7 @@ function enhanceMermaidDiagram(mermaidElement: HTMLElement): void {
   const copyBtn = wrapper.querySelector('.mermaid-copy');
   if (copyBtn) {
     const originalSvg = copyBtn.innerHTML;
-    copyBtn.addEventListener('click', async () => {
+    const handleCopy = async () => {
       const success = await copyToClipboard(source);
       if (success) {
         copyBtn.classList.add('copied');
@@ -117,6 +117,10 @@ function enhanceMermaidDiagram(mermaidElement: HTMLElement): void {
           copyBtn.innerHTML = originalSvg;
         }, 2000);
       }
+    };
+
+    copyBtn.addEventListener('click', () => {
+      void handleCopy();
     });
   }
 

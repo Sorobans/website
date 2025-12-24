@@ -1,6 +1,6 @@
 ---
 import { HomeSiderType } from '@constants/enum';
-import type { BlogPost } from 'types/blog';
+import type { BlogPost } from '@/types/blog';
 
 interface Props {
   title: string;
@@ -173,7 +173,8 @@ const isPostPage = Astro.url.pathname.startsWith(`${Routes.Post}/`);
        * 问题根源：astro-mermaid 的 astro:after-swap 监听器被注册在 import().then() 内部
        * 当首页没有 mermaid 图表时，监听器不会被注册，导致客户端导航时无法渲染
        */
-      const themeMap: Record<string, string> = { light: 'default', dark: 'dark' };
+      const themeMap = { light: 'default', dark: 'dark' } as const;
+      type MermaidTheme = (typeof themeMap)[keyof typeof themeMap];
       let mermaidModule: typeof import('mermaid').default | null = null;
       let themeObserverSetup = false;
 
@@ -181,9 +182,12 @@ const isPostPage = Astro.url.pathname.startsWith(`${Routes.Post}/`);
         return document.querySelectorAll('pre.mermaid:not([data-processed])').length > 0;
       }
 
-      function getCurrentTheme() {
+      function getCurrentTheme(): MermaidTheme {
         const dataTheme = document.documentElement.getAttribute('data-theme') || document.body?.getAttribute('data-theme');
-        return themeMap[dataTheme || ''] || 'default';
+        if (dataTheme === 'dark' || dataTheme === 'light') {
+          return themeMap[dataTheme];
+        }
+        return 'default';
       }
 
       async function initMermaidDiagrams() {
