@@ -50,7 +50,6 @@ import SearchWithDialog from './SearchWithDialog.astro';
 
   const handleScroll = () => {
     const siteHeader = document.getElementById('site-header');
-    const mobileMenuContainer = document.getElementById('mobile-menu-container');
     const currentScrollY = window.scrollY;
     const isBeyond = currentScrollY > triggerDistance;
 
@@ -67,18 +66,7 @@ import SearchWithDialog from './SearchWithDialog.astro';
       return;
     }
 
-    // 统一的隐藏/显示逻辑：所有情况下下滑都隐藏 header
-    if (currentScrollY > 0) {
-      if (currentScrollY > lastScrollY) {
-        // 向下滚动 - 隐藏 header
-        if (siteHeader) siteHeader.classList.add('-translate-y-full');
-        if (mobileMenuContainer) mobileMenuContainer.classList.add('-translate-y-full');
-      } else {
-        // 向上滚动 - 显示 header
-        if (siteHeader) siteHeader.classList.remove('-translate-y-full');
-        if (mobileMenuContainer) mobileMenuContainer.classList.remove('-translate-y-full');
-      }
-    }
+    // Header 保持固定在顶部，不随滚动隐藏
     lastScrollY = currentScrollY;
   };
 
