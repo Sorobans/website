@@ -1,4 +1,4 @@
-import { friendsIntro } from '@constants/friends-config';
+import { friendsIntro } from '@config/friends-config';
 import { useState, useCallback } from 'react';
 import { useClipboard } from 'foxact/use-clipboard';
 import SakuraSVG from '../svg/SakuraSvg';

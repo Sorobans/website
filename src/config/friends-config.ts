@@ -161,9 +161,9 @@ export const friendsIntro = {
   applyTitle: '欢迎加友链',
   applyDesc: '在本页留言,格式如下',
   exampleYaml: `- site: snowの博客 # 站点名称
-  url: https://ysx.cosine.ren/ # 站点网址
-  owner: cos # 昵称
-  desc: WA的一声就哭了 # 站点简介
-  image: https://ysx.cosine.ren/img/avatar.jpg
+  url: https://xhblog.top/ # 站点网址
+  owner: snow # 昵称
+  desc: 爬起仅仅是因为不想输 # 站点简介
+  image: https://xhblog.top/img/avatar.jpg
   color: "#ffc0cb" # 图标色`,
 };
