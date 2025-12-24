@@ -40,7 +40,7 @@ const { alternate, title, showLogo } = blogLayoutConfig;
       aria-label={alternate || title}
     >
       {showLogo ? (
-        <img src={logoSrc} alt={alternate || title} class="h-20" />
+        <img src={logoSrc} alt={alternate || title} class="h-16 mt-2 mb-2" />
       ) : (
         <p class="logo-text text-primary">{alternate || title}</p>
       )}
