@@ -9,6 +9,14 @@ export interface FriendLink {
 
 export const friendsData: FriendLink[] = [
   {
+    site: '李嘉图的博客',
+    url: 'https://gogec.cn/',
+    owner: '李嘉图',
+    desc: '努力想得到什么东西，其实只要沉着冷静坚持不懈，就可以轻易神不知鬼不觉的得到。',
+    image: 'https://gogec.cn/assets/ckg-Dsi84xWE.jpg',
+    color: '#393535'
+  },
+  {
     site: '余弦の博客',
     url: 'https://blog.cosine.ren/',
     owner: 'cosine',
