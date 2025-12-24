@@ -1,6 +1,5 @@
 ---
-import LogoSvg from '@assets/svg/logo.svg?react';
-import logoSrc from '@assets/svg/logo.svg?url';
+import logoSrc from 'src/assets/logo.webp?url';
 import { MobilePostHeader } from '@components/layout/MobilePostHeader';
 import { MenuIcon } from '@components/ui/MenuIcon';
 import { MAX_WIDTH } from '@constants/layout';
@@ -40,7 +39,11 @@ const { alternate, title, showLogo } = blogLayoutConfig;
       title={alternate || title}
       aria-label={alternate || title}
     >
-      {showLogo ? <LogoSvg className="h-20" /> : <p class="logo-text text-primary">{alternate || title}</p>}
+      {showLogo ? (
+        <img src={logoSrc} alt={alternate || title} class="h-20" />
+      ) : (
+        <p class="logo-text text-primary">{alternate || title}</p>
+      )}
     </a>
     <!-- Mobile: MobilePostHeader (shows heading on post pages, logo otherwise) -->
     <div class="tablet:flex tablet:grow hidden items-center justify-center">
