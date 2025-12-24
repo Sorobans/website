@@ -2,8 +2,6 @@
 declare global {
   interface Window {
     remark_config: {
-      host: string;
-      site_id: string;
       components: string[];
       max_shown_comments: number;
       theme: string;
@@ -14,8 +12,6 @@ declare global {
     REMARK42: {
       createInstance: (config: {
         node: HTMLElement;
-        host: string;
-        site_id: string;
         max_shown_comments: number;
         theme: string;
         locale: string;
@@ -52,8 +48,6 @@ export interface Props {
   let remark42Instance: Remark42Instance | null = null;
   // Configuration for Remark42
   window.remark_config = {
-    host: 'https://comment.cosine.ren',
-    site_id: 'cos-space',
     components: ['embed', 'counter'],
     max_shown_comments: 100,
     theme: localStorage.getItem('theme') || 'light',
@@ -75,8 +69,6 @@ export interface Props {
       if (node) {
         remark42Instance = window.REMARK42.createInstance({
           node,
-          host: window.remark_config.host,
-          site_id: window.remark_config.site_id,
           max_shown_comments: window.remark_config.max_shown_comments,
           theme: window.remark_config.theme,
           locale: window.remark_config.locale,
@@ -100,7 +92,7 @@ export interface Props {
         (script as HTMLScriptElement).defer = true;
       }
 
-      script.src = `${window.remark_config.host}/web/${components[i]}${extension}`;
+      script.src = `/web/${components[i]}${extension}`;
       (doc.head || doc.body).appendChild(script);
     }
   })(window.remark_config.components || ['embed'], document);

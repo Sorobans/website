@@ -7,7 +7,7 @@
  * 2. Reads all markdown files from src/content/blog/
  * 3. Extracts plain text from title + description + body using remark
  * 4. Generates normalized embeddings for each post (batched for performance)
- * 5. Computes cosine similarity between all posts
+ * 5. Computes similarity between all posts
  * 6. Stores top N similar posts per post in JSON
  */
 
@@ -96,7 +96,7 @@ async function loadSummaries(): Promise<SummariesMap> {
 
 /**
  * Normalizes a vector to unit length (L2 norm == 1)
- * This makes cosine similarity a simple dot product
+ * This makes similarity a simple dot product
  */
 function normalize(vec: Float32Array): Float32Array {
   const len = Math.hypot(...vec);
@@ -106,7 +106,7 @@ function normalize(vec: Float32Array): Float32Array {
 
 /**
  * Computes dot product of two same-length normalized vectors
- * For normalized vectors, this equals cosine similarity
+ * For normalized vectors, this equals similarity
  */
 function dotProduct(a: Float32Array, b: Float32Array): number {
   let sum = 0;

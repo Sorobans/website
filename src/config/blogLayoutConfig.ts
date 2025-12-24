@@ -54,21 +54,21 @@ export const blogLayoutConfig: BlogLayoutConfig = {
 
 export const blogSocialConfig: SocialConfig = {
   github: {
-    url: 'https://github.com/yusixian',
+    url: 'https://github.com/XueHua-s',
     label: 'GitHub',
     iconText: 'GH',
     iconClass: 'fa-brands fa-github',
     color: '#191717',
   },
   x: {
-    url: 'https://x.com/_cosine_x',
+    url: 'https://x.com/xiaoxueljx?s=21',
     label: 'X (推特)',
     iconText: 'X',
     iconClass: 'fa-brands fa-x-twitter',
     color: '#4b9ae4',
   },
   email: {
-    url: 'mailto:cosine_yu@qq.com',
+    url: 'mailto:xuehualjx@gmail.com',
     label: 'Email',
     iconText: '@',
     iconClass: 'fa-regular fa-envelope',
