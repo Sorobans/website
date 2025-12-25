@@ -114,18 +114,13 @@ async function main() {
       }
     }
 
-    ;
-
     const dir = path.dirname(OUTPUT_FILE);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(OUTPUT_FILE, JSON.stringify(lqips, null, 2) + '\n');
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    ;
-    if (skipped > 0) {
-      ;
-    }
-    ;
+    const skippedInfo = skipped > 0 ? `, skipped ${skipped}` : '';
+    console.log(chalk.green(`\nDone. Generated ${processed} LQIPs${skippedInfo} in ${elapsed}s.`));
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

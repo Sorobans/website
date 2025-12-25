@@ -20,7 +20,8 @@
  * ```
  */
 
-import { useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
+import type { MarkdownHeading } from '@/types/markdown';
 
 export interface Heading {
   id: string;
@@ -29,6 +30,14 @@ export interface Heading {
   children: Heading[];
   parent?: Heading;
 }
+
+type HeadingSource = {
+  id: string;
+  text: string;
+  level: number;
+};
+
+type HeadingInput = HeadingSource | MarkdownHeading;
 
 /**
  * Build hierarchical structure from flat heading list
@@ -64,12 +73,28 @@ function buildHeadingTree(flatHeadings: Array<{ id: string; text: string; level:
   return tree;
 }
 
+function normalizeHeadingInputs(headings?: HeadingInput[]): HeadingSource[] {
+  if (!headings) return [];
+
+  return headings.map((heading) => {
+    if ('depth' in heading) {
+      return {
+        id: heading.slug,
+        text: heading.text,
+        level: heading.depth,
+      };
+    }
+
+    return heading;
+  });
+}
+
 /**
  * Hook to build heading tree from article content
  *
  * @returns Hierarchical heading tree with numbering
  */
-function getHeadingSnapshot(): Heading[] {
+function getHeadingSnapshot(): HeadingSource[] {
   if (typeof document === 'undefined') {
     return [];
   }
@@ -93,7 +118,7 @@ function getHeadingSnapshot(): Heading[] {
     return [];
   }
 
-  const flatHeadings: Array<{ id: string; text: string; level: number }> = headingElements.map((heading, index) => {
+  const flatHeadings: HeadingSource[] = headingElements.map((heading, index) => {
     let id = heading.id;
     if (!id) {
       const text = heading.textContent || '';
@@ -113,7 +138,7 @@ function getHeadingSnapshot(): Heading[] {
     };
   });
 
-  return buildHeadingTree(flatHeadings);
+  return flatHeadings;
 }
 
 function subscribe(callback: () => void) {
@@ -181,16 +206,8 @@ function subscribe(callback: () => void) {
     });
   };
 
-  // Also listen for when custom-content is enhanced
-  const handleContentEnhanced = () => {
-    ;
-    requestAnimationFrame(() => {
-      callback();
-    });
-  };
-
-  document.addEventListener('astro:page-load', handlePageLoad);
-  document.addEventListener('astro:after-swap', handlePageLoad);
+    document.addEventListener('astro:page-load', handlePageLoad);
+    document.addEventListener('astro:after-swap', handlePageLoad);
 
   // Listen for a custom event that fires when content is ready
   // We'll add a timeout fallback to ensure callback is called
@@ -208,8 +225,17 @@ function subscribe(callback: () => void) {
   };
 }
 
-export function useHeadingTree(): Heading[] {
-  return useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
+export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
+  const normalizedSource = useMemo(() => normalizeHeadingInputs(sourceHeadings), [sourceHeadings]);
+  const shouldUseSource = normalizedSource.length > 0;
+
+  const flatHeadings = useSyncExternalStore(
+    shouldUseSource ? () => () => {} : subscribe,
+    shouldUseSource ? () => normalizedSource : getHeadingSnapshot,
+    () => [],
+  );
+
+  return useMemo(() => buildHeadingTree(flatHeadings), [flatHeadings]);
 }
 
 /**

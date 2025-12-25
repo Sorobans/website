@@ -14,6 +14,7 @@ import { ProgressCircle } from './ProgressCircle';
 import { MobileTOCDropdown } from './MobileTOCDropdown';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import { Routes } from '@/constants/router';
+import type { MarkdownHeading } from '@/types/markdown';
 
 interface MobilePostHeaderProps {
   /** Whether the current page is a post page */
@@ -26,6 +27,8 @@ interface MobilePostHeaderProps {
   logoSrc?: string;
   /** Whether to enable CSS counter numbering in TOC (default: true) */
   enableNumbering?: boolean;
+  /** Precomputed headings from content metadata (optional) */
+  sourceHeadings?: MarkdownHeading[];
 }
 
 // Scroll offset for detecting active heading
@@ -55,6 +58,7 @@ export function MobilePostHeader({
   logoText,
   logoSrc,
   enableNumbering = true,
+  sourceHeadings,
 }: MobilePostHeaderProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -65,7 +69,7 @@ export function MobilePostHeader({
   const currentHeading = useCurrentHeading({ offsetTop: SCROLL_OFFSET_TOP });
 
   // Get full heading tree for TOC dropdown
-  const headings = useHeadingTree();
+  const headings = useHeadingTree(sourceHeadings);
 
   // Get active heading ID for TOC highlighting
   const activeId = useActiveHeading({ offsetTop: SCROLL_OFFSET_TOP + 40 });

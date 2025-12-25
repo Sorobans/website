@@ -259,18 +259,14 @@ async function main() {
     // Find all markdown files
     const files = await glob(CONTENT_GLOB);
     if (!files.length) {
-      ;
       return;
     }
-    ;
 
     // Process all files
     const posts = await loadPosts(files);
     if (!posts.length) {
-      ;
       return;
     }
-    ;
 
     // Generate summaries incrementally
     const validCache = cache?.entries || {};
@@ -278,8 +274,6 @@ async function main() {
     let cached = 0;
     let generated = 0;
     let errors = 0;
-
-    ;
 
     for (let i = 0; i < posts.length; i++) {
       const post = posts[i];
@@ -304,7 +298,6 @@ async function main() {
           };
           generated++;
         } catch (error) {
-          ;
           console.error(chalk.red(`  Error generating summary for ${post.slug}:`), error);
           errors++;
           // Keep old cached entry if available
@@ -315,9 +308,6 @@ async function main() {
       }
     }
 
-    ;
-    ;
-
     // Save cache
     const newCache: SummariesCache = {
       version: CACHE_VERSION,
@@ -325,7 +315,6 @@ async function main() {
       entries: newEntries,
     };
     await saveCache(newCache);
-    ;
 
     // Generate output file for page display
     const output: Record<string, SummaryOutput> = {};
@@ -341,8 +330,11 @@ async function main() {
     await fs.writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2));
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    ;
-    ;
+    console.log(
+      chalk.green(
+        `\nDone. Generated ${generated} summaries, reused ${cached}, errors ${errors}. (${elapsed}s)`,
+      ),
+    );
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

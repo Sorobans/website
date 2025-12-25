@@ -1,6 +1,10 @@
-import type { CollectionEntry } from 'astro:content';
-
-export type BlogPost = CollectionEntry<'blog'>;
+export interface BlogPost {
+  id: string;
+  slug?: string;
+  body?: string;
+  collection?: 'blog';
+  data: BlogSchema;
+}
 
 export interface BlogSchema {
   title: string;
@@ -8,7 +12,7 @@ export interface BlogSchema {
   link?: string; // 文章短链接
   date: Date;
   cover?: string;
-  tags?: string[];
+  tags?: string | string[];
   /**
    * 老 hexo shoka 的分类有的是这样的, 为了兼容这么写了：
    * categories:
@@ -17,7 +21,7 @@ export interface BlogSchema {
    * categories:
    * - 笔记
    */
-  categories?: string[] | string[][];
+  categories?: string | string[] | string[][];
   subtitle?: string; // 文章副标题
   catalog?: boolean; // 是否分离
   tocNumbering?: boolean; // 目录是否编号

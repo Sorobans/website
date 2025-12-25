@@ -12,7 +12,7 @@ import { useControlledState } from '@hooks/useControlledState';
 import { useFloatingUI } from '@hooks/useFloatingUI';
 import { cn } from '@lib/utils';
 import { AnimatePresence, motion, type MotionProps } from 'motion/react';
-import React, { cloneElement } from 'react';
+import React, { cloneElement, useCallback } from 'react';
 import { animation } from '@constants/design-tokens';
 import { withFloatingErrorBoundary } from '@components/common/FloatingErrorBoundary';
 
@@ -68,9 +68,23 @@ function Popover({
 
   const referenceProps = getReferenceProps();
   const floatingProps = getFloatingProps();
+
+  const setReference = useCallback(
+    (node: HTMLElement | null) => {
+      refs.setReference(node);
+    },
+    [refs],
+  );
+
+  const setFloating = useCallback(
+    (node: HTMLDivElement | null) => {
+      refs.setFloating(node);
+    },
+    [refs],
+  );
   return (
     <>
-      {cloneElement(children, { ...referenceProps, ref: refs.setReference })}
+      {cloneElement(children, { ...referenceProps, ref: setReference })}
       <AnimatePresence>
         {isOpen && (
           <FloatingPortal>
@@ -83,7 +97,7 @@ function Popover({
                 transition={animation.spring.popoverContent}
                 style={{ ...floatingStyles }}
                 {...motionProps}
-                ref={refs.setFloating}
+                ref={setFloating}
                 {...floatingProps}
               >
                 {render({ close: () => setIsOpen(false) })}
