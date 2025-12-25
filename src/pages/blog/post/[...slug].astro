@@ -21,7 +21,6 @@ import {
   getSortedPosts,
 } from '@lib/content';
 import { parseDate } from '@lib/datetime';
-import { render } from 'astro:content';
 
 export async function getStaticPaths() {
   const postCollections = await getSortedPosts();
@@ -37,7 +36,7 @@ export async function getStaticPaths() {
   });
 }
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await post.render();
 const { title, categories = [], tags = [], date } = post?.data ?? {};
 const normalizedTags = Array.isArray(tags) ? tags : tags ? [tags] : [];
 
@@ -104,11 +103,12 @@ if (post.data.description) {
   description={finalDescription}
   siderType={HomeSiderType.POST}
   post={post}
+  tocHeadings={headings}
 >
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <TwoColumnLayout post={post}>
     <Cover slot="cover" data={post} />
-    <HomeSider slot="sider" type={HomeSiderType.POST} post={post} />
+    <HomeSider slot="sider" type={HomeSiderType.POST} post={post} tocHeadings={headings} />
     <div class={`shadow-box bg-gradient-start flex flex-col gap-2 ${CONTENT_PADDING.standard}`}>
       <!-- Breadcrumb Navigation -->
       <nav class="text-muted-foreground flex items-center gap-2 text-sm">
