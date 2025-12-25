@@ -25,7 +25,7 @@ export const friendsData: FriendLink[] = [
   },
   {
     site: '阿凯的博客',
-    url: 'https://blog.cosine.ren/',
+    url: 'https://salephine.asia/',
     owner: '阿凯',
     desc: '生如逆旅单行道，哪有岁月可回头。',
     image: 'https://avatars.githubusercontent.com/u/84063341?v=4',
