@@ -7,7 +7,7 @@
 
 import { useActiveHeading, useExpandedState, useHeadingTree, useHeadingClickHandler } from '@hooks/index';
 import { HeadingList } from './HeadingList';
-import type { MarkdownHeading } from '@astrojs/markdown-remark';
+import type { MarkdownHeading } from '@/types/markdown';
 
 // Constants
 const SCROLL_OFFSET_TOP = 120; // Offset for header height when detecting active heading

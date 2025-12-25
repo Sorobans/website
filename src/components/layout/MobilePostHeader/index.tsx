@@ -14,7 +14,7 @@ import { ProgressCircle } from './ProgressCircle';
 import { MobileTOCDropdown } from './MobileTOCDropdown';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import { Routes } from '@/constants/router';
-import type { MarkdownHeading } from '@astrojs/markdown-remark';
+import type { MarkdownHeading } from '@/types/markdown';
 
 interface MobilePostHeaderProps {
   /** Whether the current page is a post page */

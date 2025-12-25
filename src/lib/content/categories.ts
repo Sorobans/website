@@ -5,6 +5,7 @@
 import { categoryMap } from '@constants/category';
 import { withBlogBase } from '@constants/router';
 import { getCollection } from 'astro:content';
+import type { BlogPost, BlogSchema } from '@/types/blog';
 
 import type { Category, CategoryListResult } from './types';
 
@@ -36,10 +37,11 @@ export function getCategorySlug(name: string): string {
  * Get hierarchical category list with counts (excluding drafts in production)
  */
 export async function getCategoryList(): Promise<CategoryListResult> {
-  const allBlogPosts = await getCollection('blog', ({ data }) => {
+  const allBlogPosts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
     // 在生产环境中，过滤掉草稿
-    return import.meta.env.PROD ? data.draft !== true : true;
-  });
+    const { draft } = data;
+    return import.meta.env.PROD ? draft !== true : true;
+  })) as BlogPost[];
   const countMap: { [key: string]: number } = {}; // TODO: 需要优化，应该以分类路径为键名而不是 name 如数据结构既是根分类也是笔记-后端-数据结构。
   const resCategories: Category[] = [];
 

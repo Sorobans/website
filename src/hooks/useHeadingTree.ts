@@ -21,7 +21,7 @@
  */
 
 import { useMemo, useSyncExternalStore } from 'react';
-import type { MarkdownHeading } from '@astrojs/markdown-remark';
+import type { MarkdownHeading } from '@/types/markdown';
 
 export interface Heading {
   id: string;
@@ -206,16 +206,8 @@ function subscribe(callback: () => void) {
     });
   };
 
-  // Also listen for when custom-content is enhanced
-  const handleContentEnhanced = () => {
-    ;
-    requestAnimationFrame(() => {
-      callback();
-    });
-  };
-
-  document.addEventListener('astro:page-load', handlePageLoad);
-  document.addEventListener('astro:after-swap', handlePageLoad);
+    document.addEventListener('astro:page-load', handlePageLoad);
+    document.addEventListener('astro:after-swap', handlePageLoad);
 
   // Listen for a custom event that fires when content is ready
   // We'll add a timeout fallback to ensure callback is called

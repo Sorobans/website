@@ -3,16 +3,18 @@
  */
 
 import { getCollection } from 'astro:content';
+import type { BlogPost, BlogSchema } from '@/types/blog';
 import readingTime from 'reading-time';
 
 /**
  * Calculate total word count and reading time for all posts (excluding drafts in production)
  */
 export async function getSiteStats() {
-  const posts = await getCollection('blog', ({ data }) => {
+  const posts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
     // 在生产环境中，过滤掉草稿
-    return import.meta.env.PROD ? data.draft !== true : true;
-  });
+    const { draft } = data;
+    return import.meta.env.PROD ? draft !== true : true;
+  })) as BlogPost[];
 
   let totalWords = 0;
   let totalMinutes = 0;
