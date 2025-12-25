@@ -44,7 +44,7 @@ const HeadingTreeItemComponent = ({
   return (
     <div key={heading.id} className="heading-tree-item relative">
       <a
-        href={`#${encodeURIComponent(heading.id)}`}
+        href={`#${heading.id}`}
         onClick={(e) => {
           e.preventDefault();
           onHeadingClick(heading.id);
