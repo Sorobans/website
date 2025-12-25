@@ -88,8 +88,8 @@ async function loadSummaries(): Promise<SummariesMap> {
     const data = await fs.readFile(SUMMARIES_FILE, 'utf-8');
     return JSON.parse(data) as SummariesMap;
   } catch {
-    console.log(chalk.yellow(`Warning: Could not load summaries from ${SUMMARIES_FILE}`));
-    console.log(chalk.gray('Run `pnpm generate:summaries` first to generate AI summaries\n'));
+    ;
+    ;
     return {};
   }
 }
@@ -168,7 +168,7 @@ async function processFile(filePath: string, summaries: SummariesMap): Promise<P
 
     // Skip files without title
     if (!frontmatter.title) {
-      console.log(chalk.yellow(`  Skipping ${filePath}: no title`));
+      ;
       return null;
     }
 
@@ -208,14 +208,14 @@ async function processFile(filePath: string, summaries: SummariesMap): Promise<P
  * Load and process all markdown files
  */
 async function loadPosts(files: string[], summaries: SummariesMap): Promise<PostData[]> {
-  console.log(chalk.blue('Processing markdown files...'));
+  ;
   const posts: PostData[] = [];
   for (let i = 0; i < files.length; i++) {
     process.stdout.write(`\r  Processing ${i + 1}/${files.length}...`);
     const post = await processFile(files[i], summaries);
     if (post) posts.push(post);
   }
-  console.log('');
+  ;
   return posts;
 }
 
@@ -226,7 +226,7 @@ async function loadPosts(files: string[], summaries: SummariesMap): Promise<Post
 async function generateEmbeddings(posts: PostData[], extractor: FeatureExtractionPipeline): Promise<Float32Array[]> {
   const embeddings: Float32Array[] = [];
 
-  console.log(chalk.blue(`Generating embeddings for ${posts.length} posts...`));
+  ;
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
@@ -240,7 +240,7 @@ async function generateEmbeddings(posts: PostData[], extractor: FeatureExtractio
     embeddings.push(normalize(output.data));
   }
 
-  console.log('\n' + chalk.green('Embeddings generated successfully!'));
+  ;
   return embeddings;
 }
 
@@ -250,7 +250,7 @@ async function generateEmbeddings(posts: PostData[], extractor: FeatureExtractio
 function computeSimilarities(posts: PostData[], embeddings: Float32Array[], topN: number): SimilarityMap {
   const result: SimilarityMap = {};
 
-  console.log(chalk.blue('Computing similarities...'));
+  ;
 
   for (let i = 0; i < posts.length; i++) {
     const similarities: SimilarPost[] = [];
@@ -288,41 +288,41 @@ async function main() {
   const startTime = Date.now();
 
   try {
-    console.log(chalk.cyan('=== Semantic Similarity Generator ===\n'));
-    console.log(chalk.gray(`Mode: ${INCLUDE_BODY ? 'title + description + body' : 'title + description only'}`));
-    console.log(chalk.gray(`AI Summary: ${USE_AI_SUMMARY ? 'enabled' : 'disabled'}\n`));
+    ;
+    ;
+    ;
 
     // 1. Load AI summaries if enabled
     const summaries = await loadSummaries();
     if (USE_AI_SUMMARY && Object.keys(summaries).length > 0) {
-      console.log(chalk.green(`Loaded ${Object.keys(summaries).length} AI summaries\n`));
+      ;
     }
 
     // 2. Load the embedding model
-    console.log(chalk.blue(`Loading model: ${MODEL_NAME}...`));
+    ;
     const extractor = await pipeline('feature-extraction', MODEL_NAME);
-    console.log(chalk.green('Model loaded!\n'));
+    ;
 
     // 3. Find all markdown files
     const files = await glob(CONTENT_GLOB);
     if (!files.length) {
-      console.log(chalk.yellow('No content files found.'));
+      ;
       return;
     }
-    console.log(chalk.blue(`Found ${files.length} markdown files\n`));
+    ;
 
     // 4. Parse and process all files
     const posts = await loadPosts(files, summaries);
     if (!posts.length) {
-      console.log(chalk.red('No valid posts found.'));
+      ;
       return;
     }
-    console.log(chalk.green(`Loaded ${posts.length} posts\n`));
+    ;
 
     // 5. Generate embeddings (batch mode for performance)
     const embeddings = await generateEmbeddings(posts, extractor);
     if (!embeddings.length) {
-      console.log(chalk.red('No embeddings generated.'));
+      ;
       return;
     }
 
@@ -333,8 +333,8 @@ async function main() {
     await saveResults(similarities, OUTPUT_FILE);
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    console.log(chalk.green(`\nDone! Generated similarities for ${posts.length} posts in ${elapsed}s`));
-    console.log(chalk.cyan(`Output saved to: ${OUTPUT_FILE}`));
+    ;
+    ;
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

@@ -63,7 +63,7 @@ const nextPostItem = nextPost ? { post: nextPost, href: getPostHref(nextPost, po
       <HomeInfo className={type === HomeSiderType.HOME ? 'pt-18 md:pt-0' : ''} />
     </div>
     <div slot="directory" class="sider-slot" data-slot-type="directory">
-      {type === HomeSiderType.POST && <TableOfContents client:load enableNumbering={post?.data.tocNumbering ?? true} />}
+      {type === HomeSiderType.POST && <TableOfContents client:idle enableNumbering={post?.data.tocNumbering ?? true} />}
     </div>
     <div slot="series" class="sider-slot" data-slot-type="series">
       {type === HomeSiderType.POST && (
@@ -76,13 +76,17 @@ const nextPostItem = nextPost ? { post: nextPost, href: getPostHref(nextPost, po
   <script is:inline data-astro-rerun>
     (function () {
       const container = document.querySelector('sider-content');
+      ;
       if (!container) return;
 
       const defaultType = container.getAttribute('data-default-type') || 'info';
+      ;
       const slots = container.querySelectorAll('.sider-slot');
+      ;
 
       slots.forEach((slot) => {
         const slotType = slot.getAttribute('data-slot-type');
+        ;
         if (slotType !== defaultType) {
           slot.classList.add('hidden');
         }
@@ -138,23 +142,30 @@ const nextPostItem = nextPost ? { post: nextPost, href: getPostHref(nextPost, po
     }
 
     initContent() {
+      ;
+      ;
+
       // 首页直接显示HomeInfo（无动画）
       if (this.pageType === HomeSiderType.HOME) {
         this.showContent(HomeSiderSegmentType.INFO, true);
       } else {
         // 设置初始值（无动画）
         const initialType = (this.defaultType as HomeSiderSegmentType) || HomeSiderSegmentType.INFO;
+        ;
         homeSiderSegmentType.set(initialType);
         this.showContent(initialType, true);
 
         // 监听状态变化（有动画）
         homeSiderSegmentType.listen((value) => {
+          ;
           this.showContent(value, false);
         });
       }
     }
 
     showContent(type: HomeSiderSegmentType, skipAnimation = false) {
+      ;
+
       // 确定目标内容
       let targetContent: HTMLElement | null = null;
       if (type === HomeSiderSegmentType.DIRECTORY) {
@@ -165,6 +176,8 @@ const nextPostItem = nextPost ? { post: nextPost, href: getPostHref(nextPost, po
         targetContent = this.infoContent;
       }
 
+      ;
+
       // 如果是初始化或者跳过动画，直接切换
       if (skipAnimation) {
         // 先隐藏所有
@@ -173,6 +186,7 @@ const nextPostItem = nextPost ? { post: nextPost, href: getPostHref(nextPost, po
         });
         // 再显示目标
         targetContent?.classList.remove('hidden');
+        ;
         return;
       }
 

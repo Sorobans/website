@@ -181,7 +181,7 @@ async function processFile(filePath: string): Promise<PostData | null> {
     if (frontmatter.draft) return null;
 
     if (!frontmatter.title) {
-      console.log(chalk.yellow(`  Skipping ${filePath}: no title`));
+      ;
       return null;
     }
 
@@ -207,14 +207,14 @@ async function processFile(filePath: string): Promise<PostData | null> {
 }
 
 async function loadPosts(files: string[]): Promise<PostData[]> {
-  console.log(chalk.blue('Processing markdown files...'));
+  ;
   const posts: PostData[] = [];
   for (let i = 0; i < files.length; i++) {
     process.stdout.write(`\r  Processing ${i + 1}/${files.length}...`);
     const post = await processFile(files[i]);
     if (post) posts.push(post);
   }
-  console.log('');
+  ;
   return posts;
 }
 
@@ -225,52 +225,52 @@ async function main() {
   const { model, force } = parseArgs();
 
   try {
-    console.log(chalk.cyan('=== AI Summary Generator ===\n'));
-    console.log(chalk.gray(`Model: ${model}`));
+    ;
+    ;
     if (force) {
-      console.log(chalk.yellow('Force regenerate: ignoring cache'));
+      ;
     }
-    console.log('');
+    ;
 
     // Check LLM API is running
-    console.log(chalk.blue(`Checking API connection (${API_BASE_URL})...`));
+    ;
     const apiRunning = await checkApiRunning();
     if (!apiRunning) {
-      console.log(chalk.red('Error: LLM API is not running.'));
-      console.log(chalk.gray('Please start your LLM server (LM Studio, Ollama, etc.)'));
+      ;
+      ;
       process.exitCode = 1;
       return;
     }
-    console.log(chalk.green('API connected!\n'));
+    ;
 
     // Load cache
     let cache = force ? null : await loadCache();
     if (cache) {
       if (isCacheValid(cache, model)) {
-        console.log(chalk.gray(`Loaded cache with ${Object.keys(cache.entries).length} entries\n`));
+        ;
       } else {
-        console.log(chalk.yellow('Cache invalidated (model changed), will regenerate all\n'));
+        ;
         cache = null;
       }
     } else if (!force) {
-      console.log(chalk.gray('No cache found, will generate all summaries\n'));
+      ;
     }
 
     // Find all markdown files
     const files = await glob(CONTENT_GLOB);
     if (!files.length) {
-      console.log(chalk.yellow('No content files found.'));
+      ;
       return;
     }
-    console.log(chalk.blue(`Found ${files.length} markdown files\n`));
+    ;
 
     // Process all files
     const posts = await loadPosts(files);
     if (!posts.length) {
-      console.log(chalk.red('No valid posts found.'));
+      ;
       return;
     }
-    console.log(chalk.green(`Loaded ${posts.length} posts\n`));
+    ;
 
     // Generate summaries incrementally
     const validCache = cache?.entries || {};
@@ -279,7 +279,7 @@ async function main() {
     let generated = 0;
     let errors = 0;
 
-    console.log(chalk.blue('Generating summaries...'));
+    ;
 
     for (let i = 0; i < posts.length; i++) {
       const post = posts[i];
@@ -304,7 +304,7 @@ async function main() {
           };
           generated++;
         } catch (error) {
-          console.log('');
+          ;
           console.error(chalk.red(`  Error generating summary for ${post.slug}:`), error);
           errors++;
           // Keep old cached entry if available
@@ -315,8 +315,8 @@ async function main() {
       }
     }
 
-    console.log('');
-    console.log(chalk.green(`  Cached: ${cached}, Generated: ${generated}, Errors: ${errors}`));
+    ;
+    ;
 
     // Save cache
     const newCache: SummariesCache = {
@@ -325,7 +325,7 @@ async function main() {
       entries: newEntries,
     };
     await saveCache(newCache);
-    console.log(chalk.gray(`\nCache saved to: ${CACHE_FILE}`));
+    ;
 
     // Generate output file for page display
     const output: Record<string, SummaryOutput> = {};
@@ -341,8 +341,8 @@ async function main() {
     await fs.writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2));
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    console.log(chalk.green(`\nDone! Generated summaries for ${Object.keys(newEntries).length} posts in ${elapsed}s`));
-    console.log(chalk.cyan(`Output saved to: ${OUTPUT_FILE}`));
+    ;
+    ;
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

@@ -230,7 +230,7 @@ function generateLinkPreviewHTML(ogData: OGData): string {
   const safeDomain = sanitizeText(domain);
   const safeLogo = logo ? sanitizeUrl(logo) : '';
   const safeImage = image ? sanitizeUrl(image) : '';
-  // console.log('ogData:%o', ogData);
+  // ;
   return `<div class="link-preview-block not-prose" data-state="success">
   <a href="${safeUrl}" target="_blank" class="group block overflow-hidden rounded-lg border border-border transition-all hover:border-primary/50 hover:shadow-md" aria-label="${safeTitle} - ${safeDomain}">
     <div class="bg-card flex md:flex-col flex-row">
@@ -317,14 +317,14 @@ export function remarkLinkEmbed(options: RemarkLinkEmbedOptions = {}) {
           value: `<div data-tweet-embed data-tweet-id="${tweetId}"></div>`,
         };
       } else if (type === 'codepen' && enableCodePenEmbed && codepen) {
-        console.log(`[Link Embed] Embedding CodePen: ${codepen.user}/${codepen.penId}`);
+        ;
         const html = generateCodePenEmbedHTML(codepen.user, codepen.penId, url);
         return {
           type: 'html' as const,
           value: html,
         };
       } else if (type === 'general' && enableOGPreview) {
-        console.log(`[Link Embed] Fetching OG data for: ${url}`);
+        ;
         const ogData = await fetchOGData(url);
         const html = generateLinkPreviewHTML(ogData);
         return {

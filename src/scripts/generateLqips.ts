@@ -88,14 +88,14 @@ async function main() {
   const startTime = Date.now();
 
   try {
-    console.log(chalk.cyan('=== LQIP Generator ===\n'));
+    ;
 
     const files = await glob(IMAGE_GLOB);
     if (!files.length) {
-      console.log(chalk.yellow('No image files found.'));
+      ;
       return;
     }
-    console.log(chalk.blue(`Found ${files.length} images\n`));
+    ;
 
     const lqips: LqipMap = {};
     let processed = 0;
@@ -114,18 +114,18 @@ async function main() {
       }
     }
 
-    console.log('');
+    ;
 
     const dir = path.dirname(OUTPUT_FILE);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(OUTPUT_FILE, JSON.stringify(lqips, null, 2) + '\n');
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    console.log(chalk.green(`\nDone! Generated LQIP for ${processed} images in ${elapsed}s`));
+    ;
     if (skipped > 0) {
-      console.log(chalk.yellow(`  Skipped: ${skipped} images`));
+      ;
     }
-    console.log(chalk.cyan(`Output saved to: ${OUTPUT_FILE}`));
+    ;
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

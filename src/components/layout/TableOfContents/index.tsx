@@ -34,16 +34,18 @@ export function TableOfContents({ defaultExpanded = false, enableNumbering = tru
     defaultExpanded,
   });
 
+  ;
+  ;
+
   // Handle heading click - scroll to heading and update expand state with accordion behavior
   const handleHeadingClick = useHeadingClickHandler({ headings, setExpandedIds });
 
-  // Empty state
+  // Empty state - only show if we've checked and found nothing
+  // Don't show immediately on first render to avoid flash
   if (headings.length === 0) {
-    return (
-      <div className="text-muted-foreground py-6 text-center">
-        <div className="text-sm">暂无目录</div>
-      </div>
-    );
+    ;
+    // Return null instead of empty message to avoid showing "暂无目录" during loading
+    return null;
   }
 
   return (

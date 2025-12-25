@@ -12,7 +12,7 @@
  * // Controlled mode with onChange callback
  * const { isOpen, toggle } = useToggle({
  *   defaultOpen: false,
- *   onChange: (open) => console.log('Open state:', open)
+ *   onChange: (open) => 
  * });
  *
  * // Fully controlled mode

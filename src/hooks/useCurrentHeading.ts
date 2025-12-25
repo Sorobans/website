@@ -162,9 +162,12 @@ function createHeadingStore(offsetTop: number) {
     subscribe: (listener: () => void) => {
       // First listener - set up observer
       if (listeners.size === 0) {
-        if (document.readyState !== 'loading') {
-          setupObserver();
-        }
+        // Delay setup to ensure DOM is ready
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setupObserver();
+          });
+        });
         document.addEventListener('astro:page-load', handlePageLoad);
       }
 

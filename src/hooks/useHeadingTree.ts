@@ -75,7 +75,10 @@ function getHeadingSnapshot(): Heading[] {
   }
 
   const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
+  ;
+
   if (!articleContent) {
+    ;
     return [];
   }
 
@@ -83,7 +86,10 @@ function getHeadingSnapshot(): Heading[] {
     (heading) => !heading.closest('.link-preview-block'),
   );
 
+  ;
+
   if (headingElements.length === 0) {
+    ;
     return [];
   }
 
@@ -115,25 +121,90 @@ function subscribe(callback: () => void) {
     return () => {};
   }
 
-  const observerTarget = document.querySelector('.custom-content') ?? document.querySelector('article') ?? document.body;
-  const observer = observerTarget
-    ? new MutationObserver(() => {
-        callback();
-      })
-    : null;
+  let observer: MutationObserver | null = null;
+  let rafId: number | null = null;
 
-  if (observerTarget && observer) {
-    observer.observe(observerTarget, { childList: true, subtree: true });
+  const setupObserver = () => {
+    // Disconnect existing observer if any
+    if (observer) {
+      observer.disconnect();
+    }
+
+    // Find the target element
+    const observerTarget = document.querySelector('.custom-content') ?? document.querySelector('article');
+    ;
+
+    if (observerTarget) {
+      observer = new MutationObserver(() => {
+        ;
+        callback();
+      });
+      observer.observe(observerTarget, { childList: true, subtree: true });
+      ;
+      callback(); // Trigger initial snapshot
+    } else {
+      // If not found yet, retry after a short delay
+      ;
+      rafId = requestAnimationFrame(() => {
+        setupObserver();
+      });
+    }
+  };
+
+  // Try immediately first
+  const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
+  const hasHeadings = articleContent ? articleContent.querySelector('h1, h2, h3, h4, h5, h6') : null;
+  ;
+
+  if (articleContent && hasHeadings) {
+    // Content is ready, setup immediately
+    ;
+    setupObserver();
+  } else {
+    // Content not ready, use delayed setup
+    ;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setupObserver();
+      });
+    });
   }
 
-  document.addEventListener('astro:page-load', callback);
-  document.addEventListener('astro:after-swap', callback);
-  requestAnimationFrame(callback);
+  // Re-setup on page transitions
+  const handlePageLoad = () => {
+    ;
+    if (rafId) cancelAnimationFrame(rafId);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setupObserver();
+      });
+    });
+  };
+
+  // Also listen for when custom-content is enhanced
+  const handleContentEnhanced = () => {
+    ;
+    requestAnimationFrame(() => {
+      callback();
+    });
+  };
+
+  document.addEventListener('astro:page-load', handlePageLoad);
+  document.addEventListener('astro:after-swap', handlePageLoad);
+
+  // Listen for a custom event that fires when content is ready
+  // We'll add a timeout fallback to ensure callback is called
+  const timeoutId = setTimeout(() => {
+    ;
+    callback();
+  }, 100);
 
   return () => {
+    if (rafId) cancelAnimationFrame(rafId);
+    clearTimeout(timeoutId);
     observer?.disconnect();
-    document.removeEventListener('astro:page-load', callback);
-    document.removeEventListener('astro:after-swap', callback);
+    document.removeEventListener('astro:page-load', handlePageLoad);
+    document.removeEventListener('astro:after-swap', handlePageLoad);
   };
 }
 
