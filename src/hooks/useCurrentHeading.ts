@@ -88,7 +88,7 @@ function createHeadingStore(offsetTop: number) {
     visibleHeadings.clear();
     currentHeading = null;
 
-    const article = document.querySelector('article');
+    const article = document.querySelector('.custom-content') ?? document.querySelector('article');
     if (!article) return;
 
     // Root margin: negative top margin to account for header offset
@@ -119,7 +119,9 @@ function createHeadingStore(offsetTop: number) {
     );
 
     // Observe H2/H3 headings in article (excluding link preview blocks)
-    const headings = article.querySelectorAll<HTMLElement>('h2:not(.link-preview-block h2), h3:not(.link-preview-block h3)');
+    const headings = Array.from(article.querySelectorAll<HTMLElement>('h2, h3')).filter(
+      (heading) => !heading.closest('.link-preview-block'),
+    );
 
     headings.forEach((heading) => {
       if (heading.id) {
@@ -130,9 +132,8 @@ function createHeadingStore(offsetTop: number) {
     // Initial check for headings already above viewport
     if (headings.length > 0 && visibleHeadings.size === 0) {
       requestAnimationFrame(() => {
-        const headingArray = Array.from(headings);
-        for (let i = headingArray.length - 1; i >= 0; i--) {
-          const heading = headingArray[i];
+        for (let i = headings.length - 1; i >= 0; i--) {
+          const heading = headings[i];
           const rect = heading.getBoundingClientRect();
           if (rect.top < offsetTop && heading.id) {
             const level = parseInt(heading.tagName.substring(1), 10) as 2 | 3;

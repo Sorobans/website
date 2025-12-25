@@ -1,37 +1,53 @@
-<!-- inspired by https://codepen.io/aaroniker/pen/raaMMGx -->
 <div
-  class="theme-toggle scale-80 cursor-pointer transition duration-300 hover:scale-90"
+  class="theme-toggle text-2xl cursor-pointer transition-transform duration-300 hover:scale-110"
   id="theme-toggle-btn"
   role="button"
   tabindex="0"
   aria-label="toggle theme"
 >
-  <label class="toggle" aria-label="toggle theme">
-    <input type="checkbox" id="theme-checkbox" />
-    <div></div>
-  </label>
+  <i class="fa-solid fa-sun text-2xl light-icon transition-all duration-300"></i>
+  <i class="fa-solid fa-moon text-2xl dark-icon transition-all duration-300"></i>
 </div>
 
 <script>
+  import '@fortawesome/fontawesome-free/css/all.min.css';
+
   function setupThemeToggle() {
     const toggleBtn = document.getElementById('theme-toggle-btn');
-    const checkbox = document.getElementById('theme-checkbox') as HTMLInputElement | null;
-    if (!toggleBtn || !checkbox) return;
+    if (!toggleBtn) return;
 
     // 检查按钮是否已经绑定过事件，防止重复绑定
     if (toggleBtn.dataset.listenerAttached === 'true') return;
 
     const rootElement = document.documentElement;
+    const lightIcon = toggleBtn.querySelector('.light-icon') as HTMLElement;
+    const darkIcon = toggleBtn.querySelector('.dark-icon') as HTMLElement;
 
-    // 初始化checkbox状态 - 深色模式下checkbox应为选中状态
-    const isDarkMode = rootElement.classList.contains('dark');
-    checkbox.checked = isDarkMode;
+    if (!lightIcon || !darkIcon) return;
+
+    // 根据当前主题更新图标显示
+    function updateIcons() {
+      const isDarkMode = rootElement.classList.contains('dark');
+
+      if (isDarkMode) {
+        lightIcon.style.opacity = '0';
+        lightIcon.style.transform = 'rotate(180deg) scale(0)';
+        darkIcon.style.opacity = '1';
+        darkIcon.style.transform = 'rotate(0deg) scale(1)';
+      } else {
+        lightIcon.style.opacity = '1';
+        lightIcon.style.transform = 'rotate(0deg) scale(1)';
+        darkIcon.style.opacity = '0';
+        darkIcon.style.transform = 'rotate(-180deg) scale(0)';
+      }
+    }
+
+    // 初始化图标状态
+    updateIcons();
 
     // 切换主题的函数
     function toggleTheme() {
-      if (!checkbox) return;
-
-      const isDark = checkbox.checked;
+      const isDark = !rootElement.classList.contains('dark');
 
       // 获取切换按钮的位置作为动画起点
       const toggleElement = document.querySelector('.theme-toggle');
@@ -51,6 +67,7 @@
       if (!document.startViewTransition) {
         // 浏览器不支持 View Transitions API 时降级处理
         applyTheme(isDark);
+        updateIcons();
         // 移除主题过渡类
         setTimeout(() => {
           rootElement.classList.remove('theme-transition');
@@ -60,6 +77,7 @@
 
       const transition = document.startViewTransition(() => {
         applyTheme(isDark);
+        updateIcons();
       });
 
       transition.ready
@@ -96,8 +114,15 @@
       }
     }
 
-    // 监听输入变化事件
-    checkbox.addEventListener('change', toggleTheme);
+    // 监听点击事件
+    toggleBtn.addEventListener('click', toggleTheme);
+    toggleBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleTheme();
+      }
+    });
+
     // 标记按钮已绑定事件
     toggleBtn.dataset.listenerAttached = 'true';
   }
@@ -112,85 +137,19 @@
 </script>
 
 <style>
-  :root {
-    --theme-toggle-color: currentColor;
-  }
   .theme-toggle {
+    position: relative;
     z-index: 10;
-  }
-
-  .toggle {
-    cursor: pointer;
-    display: block;
-  }
-
-  .toggle input {
-    display: none;
-  }
-
-  /* 默认状态（浅色模式）：太阳 */
-  .toggle input + div {
-    border-radius: 50%;
     width: 36px;
     height: 36px;
-    position: relative;
-    box-shadow: inset 16px -16px 0 0 var(--theme-toggle-color, #ffbb52);
-    transform: scale(1) rotate(-2deg);
-    transition:
-      box-shadow 0.5s ease 0s,
-      transform 0.4s ease 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .toggle input + div:before {
-    content: '';
-    width: inherit;
-    height: inherit;
-    border-radius: inherit;
+  .theme-toggle i {
     position: absolute;
-    left: 0;
-    top: 0;
-    background: transparent;
-    transition: background 0.3s ease;
-  }
-
-  .toggle input + div:after {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin: -4px 0 0 -4px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    box-shadow:
-      0 -23px 0 var(--theme-toggle-color, #ffbb52),
-      0 23px 0 var(--theme-toggle-color, #ffbb52),
-      23px 0 0 var(--theme-toggle-color, #ffbb52),
-      -23px 0 0 var(--theme-toggle-color, #ffbb52),
-      15px 15px 0 var(--theme-toggle-color, #ffbb52),
-      -15px 15px 0 var(--theme-toggle-color, #ffbb52),
-      15px -15px 0 var(--theme-toggle-color, #ffbb52),
-      -15px -15px 0 var(--theme-toggle-color, #ffbb52);
-    transform: scale(0);
-    transition: all 0.3s ease;
-  }
-
-  /* 选中状态（深色模式）：月亮 */
-  .toggle input:checked + div {
-    box-shadow: inset 32px -32px 0 0 var(--theme-background-color, #17181c);
-    transform: scale(0.5) rotate(0deg);
-    transition:
-      transform 0.3s ease 0.1s,
-      box-shadow 0.2s ease 0s;
-  }
-
-  .toggle input:checked + div:before {
-    background: var(--theme-toggle-color, #ffbb52);
-    transition: background 0.3s ease 0.1s;
-  }
-
-  .toggle input:checked + div:after {
-    transform: scale(1.5);
-    transition: transform 0.5s ease 0.15s;
+    text-shadow: none;
+    filter: none;
   }
 </style>

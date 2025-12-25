@@ -32,8 +32,12 @@
   }
 }
 @layer base {
+  html,
   body {
     overscroll-behavior-y: none;
+  }
+  body {
+    min-height: 100dvh;
     background: linear-gradient(to top, var(--gradient-bg-end) 0, var(--gradient-bg-start) 30%) no-repeat bottom;
     scroll-behavior: smooth;
     letter-spacing: 0.02em;

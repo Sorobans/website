@@ -74,45 +74,38 @@ function getHeadingSnapshot(): Heading[] {
     return [];
   }
 
-  const articleContent = document.querySelector('article');
+  const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
   if (!articleContent) {
     return [];
   }
 
-  const headingElements = articleContent.querySelectorAll(
-    'h1:not(.link-preview-block h1), ' +
-      'h2:not(.link-preview-block h2), ' +
-      'h3:not(.link-preview-block h3), ' +
-      'h4:not(.link-preview-block h4), ' +
-      'h5:not(.link-preview-block h5), ' +
-      'h6:not(.link-preview-block h6)',
+  const headingElements = Array.from(articleContent.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5, h6')).filter(
+    (heading) => !heading.closest('.link-preview-block'),
   );
 
   if (headingElements.length === 0) {
     return [];
   }
 
-  const flatHeadings: Array<{ id: string; text: string; level: number }> = Array.from(headingElements).map(
-    (heading, index) => {
-      let id = heading.id;
-      if (!id) {
-        const text = heading.textContent || '';
-        id =
-          text
-            .toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .trim() || `heading-${index}`;
-        heading.id = id;
-      }
+  const flatHeadings: Array<{ id: string; text: string; level: number }> = headingElements.map((heading, index) => {
+    let id = heading.id;
+    if (!id) {
+      const text = heading.textContent || '';
+      id =
+        text
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .trim() || `heading-${index}`;
+      heading.id = id;
+    }
 
-      return {
-        id,
-        text: heading.textContent || '',
-        level: parseInt(heading.tagName.substring(1)),
-      };
-    },
-  );
+    return {
+      id,
+      text: heading.textContent || '',
+      level: parseInt(heading.tagName.substring(1)),
+    };
+  });
 
   return buildHeadingTree(flatHeadings);
 }
@@ -122,8 +115,26 @@ function subscribe(callback: () => void) {
     return () => {};
   }
 
+  const observerTarget = document.querySelector('.custom-content') ?? document.querySelector('article') ?? document.body;
+  const observer = observerTarget
+    ? new MutationObserver(() => {
+        callback();
+      })
+    : null;
+
+  if (observerTarget && observer) {
+    observer.observe(observerTarget, { childList: true, subtree: true });
+  }
+
   document.addEventListener('astro:page-load', callback);
-  return () => document.removeEventListener('astro:page-load', callback);
+  document.addEventListener('astro:after-swap', callback);
+  requestAnimationFrame(callback);
+
+  return () => {
+    observer?.disconnect();
+    document.removeEventListener('astro:page-load', callback);
+    document.removeEventListener('astro:after-swap', callback);
+  };
 }
 
 export function useHeadingTree(): Heading[] {

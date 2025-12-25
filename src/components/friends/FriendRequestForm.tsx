@@ -55,7 +55,7 @@ color: "${formData.color || '#ffc0cb'}"`;
 
         <div className="grid grid-cols-2 gap-12 md:grid-cols-1 md:gap-8">
           {/* Left Side: Form */}
-          <div className="relative z-10">
+          <div className="relative">
             <div className="mb-6">
               <h2 className="mb-2 flex items-center gap-2 text-2xl font-black text-gray-800 dark:text-white">
                 <SakuraSVG className="size-6 animate-spin text-[#FFC0CB] duration-10000" />
@@ -137,7 +137,7 @@ color: "${formData.color || '#ffc0cb'}"`;
                     name="image"
                     value={formData.image}
                     onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
+                    className="w-full relative rounded-xl border-2 border-gray-100 z-10 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
                     placeholder="https://..."
                   />
                 </div>
