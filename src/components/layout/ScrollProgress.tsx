@@ -1,27 +1,46 @@
-import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 interface ScrollProgressProps {
   className?: string;
 }
 
 export function ScrollProgress({ className }: ScrollProgressProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const barRef = useRef<HTMLDivElement | null>(null);
 
-  // 监听页面滚动进度
-  const { scrollYProgress } = useScroll();
+  useEffect(() => {
+    let frameId: number | null = null;
 
-  // 使用 spring 动画使滚动更平滑，提升性能
-  // 如果用户偏好减少动画，则直接使用滚动进度值，不使用 spring
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-  const scaleX = shouldReduceMotion ? scrollYProgress : smoothProgress;
+    const updateProgress = () => {
+      const bar = barRef.current;
+      if (!bar) return;
+
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+      bar.style.transform = `scaleX(${progress})`;
+      frameId = null;
+    };
+
+    const onScroll = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateProgress);
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
 
   return (
     <div className={className}>
-      <motion.div className="bg-primary h-1 origin-left rounded-full" style={{ scaleX }} />
+      <div ref={barRef} className="bg-primary h-1 origin-left rounded-full scale-x-0" />
     </div>
   );
 }
