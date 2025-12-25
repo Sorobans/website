@@ -43,6 +43,10 @@ export function useHeadingClickHandler({ headings, setExpandedIds }: UseHeadingC
       if (!element) return;
 
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const encodedId = encodeURIComponent(id);
+      if (window.location.hash !== `#${encodedId}`) {
+        history.pushState(null, '', `#${encodedId}`);
+      }
 
       // 获取点击的标题节点
       const clickedHeading = findHeadingById(headings, id);

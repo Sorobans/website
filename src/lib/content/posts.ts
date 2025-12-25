@@ -2,10 +2,10 @@
  * Post-related utility functions
  */
 
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 import summaries from '@assets/summaries.json';
-import type { BlogPost } from '@/types/blog';
+import type { BlogPost, BlogSchema } from '@/types/blog';
 import { Routes } from '@constants/router';
 import { buildCategoryPath, DEFAULT_CATEGORY_NAME, getCategoryArr } from './categories';
 import { extractTextFromMarkdown } from '../sanitize';
@@ -94,11 +94,12 @@ export function getPostDescriptionWithSummary(post: BlogPost, maxLength: number 
  * Get all posts sorted by date (newest first)
  * In production, draft posts are filtered out
  */
-export async function getSortedPosts(): Promise<CollectionEntry<'blog'>[]> {
-  const posts = await getCollection('blog', ({ data }) => {
+export async function getSortedPosts(): Promise<BlogPost[]> {
+  const posts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
     // 在生产环境中，过滤掉草稿
-    return import.meta.env.PROD ? data.draft !== true : true;
-  });
+    const { draft } = data;
+    return import.meta.env.PROD ? draft !== true : true;
+  })) as BlogPost[];
 
   // 按日期排序
   const sortedPosts = posts.sort((a: BlogPost, b: BlogPost) => {
@@ -113,13 +114,13 @@ export async function getSortedPosts(): Promise<CollectionEntry<'blog'>[]> {
  * @returns Object containing sticky and non-sticky posts, both sorted by date (newest first)
  */
 export async function getPostsBySticky(): Promise<{
-  stickyPosts: CollectionEntry<'blog'>[];
-  nonStickyPosts: CollectionEntry<'blog'>[];
+  stickyPosts: BlogPost[];
+  nonStickyPosts: BlogPost[];
 }> {
   const posts = await getSortedPosts();
 
-  const stickyPosts: CollectionEntry<'blog'>[] = [];
-  const nonStickyPosts: CollectionEntry<'blog'>[] = [];
+  const stickyPosts: BlogPost[] = [];
+  const nonStickyPosts: BlogPost[] = [];
 
   for (const post of posts) {
     if (post.data?.sticky) {
@@ -136,10 +137,11 @@ export async function getPostsBySticky(): Promise<{
  * Get post count (excluding drafts in production)
  */
 export async function getPostCount() {
-  const posts = await getCollection('blog', ({ data }) => {
+  const posts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
     // 在生产环境中，过滤掉草稿
-    return import.meta.env.PROD ? data.draft !== true : true;
-  });
+    const { draft } = data;
+    return import.meta.env.PROD ? draft !== true : true;
+  })) as BlogPost[];
   return posts?.length ?? 0;
 }
 

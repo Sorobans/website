@@ -13,6 +13,7 @@ import { useEffect, useRef, type ReactElement } from 'react';
 import { animation } from '@constants/design-tokens';
 import { HeadingList } from '../TableOfContents/HeadingList';
 import type { Heading } from '@hooks/useHeadingTree';
+import { cn } from '@/lib/utils';
 
 interface MobileTOCDropdownProps {
   /** Hierarchical heading tree */
@@ -89,7 +90,7 @@ export function MobileTOCDropdown({
     <>
       <span
         ref={referenceRef}
-        className={referenceClassName ? `contents ${referenceClassName}` : 'contents'}
+        className={cn('contents', typeof referenceClassName === 'string' ? referenceClassName : undefined)}
         {...referenceProps}
       >
         {trigger}

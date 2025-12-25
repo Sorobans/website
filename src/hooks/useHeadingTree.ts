@@ -20,7 +20,8 @@
  * ```
  */
 
-import { useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
+import type { MarkdownHeading } from '@/types/markdown';
 
 export interface Heading {
   id: string;
@@ -29,6 +30,14 @@ export interface Heading {
   children: Heading[];
   parent?: Heading;
 }
+
+type HeadingSource = {
+  id: string;
+  text: string;
+  level: number;
+};
+
+type HeadingInput = HeadingSource | MarkdownHeading;
 
 /**
  * Build hierarchical structure from flat heading list
@@ -62,6 +71,22 @@ function buildHeadingTree(flatHeadings: Array<{ id: string; text: string; level:
   });
 
   return tree;
+}
+
+function normalizeHeadingInputs(headings?: HeadingInput[]): HeadingSource[] {
+  if (!headings) return [];
+
+  return headings.map((heading) => {
+    if ('depth' in heading) {
+      return {
+        id: heading.slug,
+        text: heading.text,
+        level: heading.depth,
+      };
+    }
+
+    return heading;
+  });
 }
 
 /**
@@ -181,16 +206,8 @@ function subscribe(callback: () => void) {
     });
   };
 
-  // Also listen for when custom-content is enhanced
-  const handleContentEnhanced = () => {
-    ;
-    requestAnimationFrame(() => {
-      callback();
-    });
-  };
-
-  document.addEventListener('astro:page-load', handlePageLoad);
-  document.addEventListener('astro:after-swap', handlePageLoad);
+    document.addEventListener('astro:page-load', handlePageLoad);
+    document.addEventListener('astro:after-swap', handlePageLoad);
 
   // Listen for a custom event that fires when content is ready
   // We'll add a timeout fallback to ensure callback is called
@@ -208,8 +225,15 @@ function subscribe(callback: () => void) {
   };
 }
 
-export function useHeadingTree(): Heading[] {
-  return useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
+export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
+  const domHeadings = useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
+
+  return useMemo(() => {
+    if (sourceHeadings && sourceHeadings.length > 0) {
+      return buildHeadingTree(normalizeHeadingInputs(sourceHeadings));
+    }
+    return domHeadings;
+  }, [domHeadings, sourceHeadings]);
 }
 
 /**

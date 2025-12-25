@@ -299,30 +299,23 @@ async function main() {
     }
 
     // 2. Load the embedding model
-    ;
     const extractor = await pipeline('feature-extraction', MODEL_NAME);
-    ;
 
     // 3. Find all markdown files
     const files = await glob(CONTENT_GLOB);
     if (!files.length) {
-      ;
       return;
     }
-    ;
 
     // 4. Parse and process all files
     const posts = await loadPosts(files, summaries);
     if (!posts.length) {
-      ;
       return;
     }
-    ;
 
     // 5. Generate embeddings (batch mode for performance)
     const embeddings = await generateEmbeddings(posts, extractor);
     if (!embeddings.length) {
-      ;
       return;
     }
 
@@ -333,8 +326,8 @@ async function main() {
     await saveResults(similarities, OUTPUT_FILE);
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    ;
-    ;
+    const entryCount = Object.keys(similarities).length;
+    console.log(chalk.green(`\nDone. Saved ${entryCount} similarities in ${elapsed}s.`));
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

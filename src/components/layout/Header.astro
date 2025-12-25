@@ -6,13 +6,15 @@ import { MAX_WIDTH } from '@constants/layout';
 import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Navigator from './Navigator.astro';
+import type { MarkdownHeading } from '@/types/markdown';
 
 interface Props {
   isPostPage?: boolean;
   tocNumbering?: boolean;
+  tocHeadings?: MarkdownHeading[];
 }
 
-const { isPostPage = false, tocNumbering = true } = Astro.props;
+const { isPostPage = false, tocNumbering = true, tocHeadings } = Astro.props;
 const { alternate, title, showLogo } = blogLayoutConfig;
 ---
 
@@ -51,6 +53,7 @@ const { alternate, title, showLogo } = blogLayoutConfig;
             client:load
             isPostPage={isPostPage}
             enableNumbering={tocNumbering}
+            sourceHeadings={tocHeadings}
             logoElement={showLogo ? 'svg' : 'text'}
             logoText={alternate || title}
             logoSrc={logoSrc}
