@@ -7,6 +7,7 @@
 
 import { useActiveHeading, useExpandedState, useHeadingTree, useHeadingClickHandler } from '@hooks/index';
 import { HeadingList } from './HeadingList';
+import type { MarkdownHeading } from '@astrojs/markdown-remark';
 
 // Constants
 const SCROLL_OFFSET_TOP = 120; // Offset for header height when detecting active heading
@@ -16,6 +17,8 @@ interface TableOfContentsProps {
   defaultExpanded?: boolean;
   /** Whether to enable CSS counter numbering (default: true) */
   enableNumbering?: boolean;
+  /** Precomputed headings from content metadata (optional) */
+  sourceHeadings?: MarkdownHeading[];
 }
 
 /**
@@ -24,9 +27,13 @@ interface TableOfContentsProps {
  * Main container for the table of contents. Manages heading state and
  * delegates rendering to HeadingList sub-component.
  */
-export function TableOfContents({ defaultExpanded = false, enableNumbering = true }: TableOfContentsProps = {}) {
+export function TableOfContents({
+  defaultExpanded = false,
+  enableNumbering = true,
+  sourceHeadings,
+}: TableOfContentsProps = {}) {
   // Use custom hooks for heading tree, active heading, and expand/collapse state
-  const headings = useHeadingTree();
+  const headings = useHeadingTree(sourceHeadings);
   const activeId = useActiveHeading({ offsetTop: SCROLL_OFFSET_TOP });
   const { expandedIds, setExpandedIds } = useExpandedState({
     headings,

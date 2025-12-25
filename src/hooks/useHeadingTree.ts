@@ -20,7 +20,8 @@
  * ```
  */
 
-import { useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
+import type { MarkdownHeading } from '@astrojs/markdown-remark';
 
 export interface Heading {
   id: string;
@@ -29,6 +30,14 @@ export interface Heading {
   children: Heading[];
   parent?: Heading;
 }
+
+type HeadingSource = {
+  id: string;
+  text: string;
+  level: number;
+};
+
+type HeadingInput = HeadingSource | MarkdownHeading;
 
 /**
  * Build hierarchical structure from flat heading list
@@ -62,6 +71,22 @@ function buildHeadingTree(flatHeadings: Array<{ id: string; text: string; level:
   });
 
   return tree;
+}
+
+function normalizeHeadingInputs(headings?: HeadingInput[]): HeadingSource[] {
+  if (!headings) return [];
+
+  return headings.map((heading) => {
+    if ('depth' in heading) {
+      return {
+        id: heading.slug,
+        text: heading.text,
+        level: heading.depth,
+      };
+    }
+
+    return heading;
+  });
 }
 
 /**
@@ -208,8 +233,15 @@ function subscribe(callback: () => void) {
   };
 }
 
-export function useHeadingTree(): Heading[] {
-  return useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
+export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
+  const domHeadings = useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
+
+  return useMemo(() => {
+    if (sourceHeadings && sourceHeadings.length > 0) {
+      return buildHeadingTree(normalizeHeadingInputs(sourceHeadings));
+    }
+    return domHeadings;
+  }, [domHeadings, sourceHeadings]);
 }
 
 /**
