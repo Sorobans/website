@@ -8,10 +8,9 @@ import type { BlogPost } from '@/types/blog';
 interface Props {
   className?: string;
   post?: BlogPost;
-  siderFixed?: boolean;
 }
 
-const { className, post, siderFixed = false } = Astro.props;
+const { className, post } = Astro.props;
 ---
 
 <div class="flex flex-col">
@@ -23,19 +22,11 @@ const { className, post, siderFixed = false } = Astro.props;
       className
     )}
   >
-    {
-      siderFixed ? (
-        <div class="mx-6 lg:mx-8 tablet:hidden w-64">
-          <div class="fixed top-20 w-64 left-[max(1.5rem,calc((100%-80rem)/2+1.5rem))] lg:left-[max(2rem,calc((100%-80rem)/2+2rem))]">
-            <slot name="sider" />
-          </div>
-        </div>
-      ) : (
-        <div class="mx-6 lg:mx-8 tablet:hidden">
-          <slot name="sider" />
-        </div>
-      )
-    }
+    <div class="mx-6 lg:mx-8 tablet:hidden w-64" data-sider-wrap>
+      <div class="sider-inner w-64">
+        <slot name="sider" />
+      </div>
+    </div>
     <div class="flex min-w-0 grow flex-col gap-8 md:w-full">
       <slot />
       <PostFooter post={post} />
@@ -43,3 +34,42 @@ const { className, post, siderFixed = false } = Astro.props;
     </div>
   </div>
 </div>
+
+<script is:inline>
+  const siderWrap = document.querySelector('[data-sider-wrap]');
+  const waveTarget = document.querySelector('.wave-wrap');
+
+  if (siderWrap && waveTarget) {
+    const updateFixedState = (entries) => {
+      entries.forEach((entry) => {
+        siderWrap.classList.toggle('is-fixed', entry.intersectionRatio < 1);
+      });
+    };
+
+    const observer = new IntersectionObserver(updateFixedState, {
+      threshold: [1],
+    });
+
+    observer.observe(waveTarget);
+  }
+</script>
+
+<style>
+  .sider-inner {
+    transition: transform 200ms ease, box-shadow 200ms ease;
+    will-change: transform;
+  }
+
+  .is-fixed .sider-inner {
+    position: fixed;
+    top: 5rem;
+    left: max(1.5rem, calc((100% - 80rem) / 2 + 1.5rem));
+    box-shadow: 0 12px 30px -24px rgba(15, 23, 42, 0.4);
+  }
+
+  @media (min-width: 1024px) {
+    .is-fixed .sider-inner {
+      left: max(2rem, calc((100% - 80rem) / 2 + 2rem));
+    }
+  }
+</style>
