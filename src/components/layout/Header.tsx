@@ -5,9 +5,9 @@ import { MAX_WIDTH } from '@constants/layout';
 import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Navigator from './Navigator';
-import HeaderScroll from './HeaderScroll';
 import type { MarkdownHeading } from '@/types/markdown';
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
+import { useHeaderScroll } from '@hooks/useHeaderScroll.ts';
 
 interface Props {
   isPostPage?: boolean;
@@ -26,6 +26,7 @@ export default function Header({ isPostPage = false, tocNumbering = true, tocHea
     }
     return <span className="logo-text text-primary">{alternate || title}</span>;
   }, [alternate, showLogo, title]);
+  useHeaderScroll();
 
   return (
     <>
@@ -34,8 +35,10 @@ export default function Header({ isPostPage = false, tocNumbering = true, tocHea
         className="shadow-text fixed inset-x-0 top-0 z-10 gap-4 py-2.5 text-white select-none tablet:backdrop-blur tablet:py-2 tablet:pl-3 tablet:pr-3"
         style={{ viewTransitionName: 'site-header' }}
       >
-        <HeaderScroll />
-        <div className={`mx-auto flex items-center justify-between px-6 tablet:w-full tablet:px-0 ${MAX_WIDTH.content}`}>
+        <div className="site-header-bg pointer-events-none absolute inset-0"></div>
+        <div
+          className={`relative z-10 mx-auto flex items-center justify-between px-6 tablet:w-full tablet:px-0 ${MAX_WIDTH.content}`}
+        >
           <a
             className="tablet:hidden -my-4 mr-4 flex cursor-pointer items-center justify-center gap-1 whitespace-nowrap"
             href={Routes.Home}

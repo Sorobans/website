@@ -1,4 +1,3 @@
-import type { KeyboardEvent } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -23,7 +22,7 @@ const DARK_STYLE_SHOWN = {
 };
 
 export default function ThemeToggle() {
-  const buttonRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof document === 'undefined') return false;
     return document.documentElement.classList.contains('dark');
@@ -72,10 +71,19 @@ export default function ThemeToggle() {
       return;
     }
 
-    const transition = startViewTransition(() => {
+    let transition: { ready: Promise<void>; finished: Promise<void> } | undefined;
+    try {
+      transition = startViewTransition(() => {
+        applyTheme(willBeDark);
+        setIsDarkMode(willBeDark);
+      });
+    } catch (error) {
+      console.error('Theme transition error:', error);
       applyTheme(willBeDark);
       setIsDarkMode(willBeDark);
-    });
+      rootElement.classList.remove('theme-transition');
+      return;
+    }
 
     transition.ready
       .then(() => {
@@ -95,34 +103,23 @@ export default function ThemeToggle() {
       });
   }, [applyTheme]);
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        toggleTheme();
-      }
-    },
-    [toggleTheme],
-  );
-
   const lightIconStyle = useMemo(() => (isDarkMode ? LIGHT_STYLE_HIDDEN : LIGHT_STYLE), [isDarkMode]);
   const darkIconStyle = useMemo(() => (isDarkMode ? DARK_STYLE_SHOWN : DARK_STYLE), [isDarkMode]);
 
   return (
     <>
-      <div
-        className="theme-toggle text-2xl cursor-pointer transition-transform duration-300 hover:scale-110"
+      <button
+        className="theme-toggle text-2xl cursor-pointer bg-transparent border-0 p-0 transition-transform duration-300 hover:scale-110"
         id="theme-toggle-btn"
-        role="button"
-        tabIndex={0}
+        type="button"
         aria-label="toggle theme"
+        aria-pressed={isDarkMode}
         onClick={toggleTheme}
-        onKeyDown={handleKeyDown}
         ref={buttonRef}
       >
         <i className="fa-solid fa-sun text-2xl light-icon transition-all duration-300" style={lightIconStyle}></i>
         <i className="fa-solid fa-moon text-2xl dark-icon transition-all duration-300" style={darkIconStyle}></i>
-      </div>
+      </button>
       <style>{`
         .theme-toggle {
           position: relative;

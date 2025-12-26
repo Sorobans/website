@@ -41,9 +41,16 @@
 }
 
 @layer components {
+  #site-header .site-header-bg {
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    @apply bg-gradient-header;
+  }
+  #site-header.with-background .site-header-bg {
+    opacity: 1;
+  }
   #site-header.with-background {
-    color: currentColor;
-    @apply border-border bg-gradient-header text-foreground border-b;
+    @apply border-border text-foreground border-b;
   }
   #site-header.with-background button,
   #site-header.with-background a {
@@ -58,7 +65,6 @@
   @supports (padding: max(0px)) {
     #site-header {
       transition:
-        background-color 0.6s ease-in-out,
         border-color 0.6s ease-in-out,
         color 0.6s ease-in-out;
       padding-top: calc(env(safe-area-inset-top) + 0.5rem);

@@ -15,7 +15,11 @@ const useHeaderScroll = () => {
   const firstScrollRef = useRef(true);
   const lastScrollYRef = useRef(0);
   const isHeaderPinnedRef = useRef(false);
-  const distancesRef = useRef<ScrollDistances>({ hide: 0, show: 0, background: 0 });
+  const distancesRef = useRef<ScrollDistances>({
+    hide: 0,
+    show: 0,
+    background: 0,
+  });
   const isActiveRef = useRef(false);
 
   const updateDistances = useCallback(() => {
@@ -33,10 +37,15 @@ const useHeaderScroll = () => {
     return isMobile && isPostPage;
   }, []);
 
-  const setHeaderVisible = useCallback((siteHeader: HTMLElement | null, visible: boolean) => {
-    if (!siteHeader) return;
-    siteHeader.style.transform = visible ? 'translateY(0)' : 'translateY(-100%)';
-  }, []);
+  const setHeaderVisible = useCallback(
+    (siteHeader: HTMLElement | null, visible: boolean) => {
+      if (!siteHeader) return;
+      siteHeader.style.transform = visible
+        ? 'translateY(0)'
+        : 'translateY(-100%)';
+    },
+    [],
+  );
 
   const [, startScrollEndTimer, stopScrollEndTimer] = useTimeoutFn(
     () => {
@@ -49,7 +58,9 @@ const useHeaderScroll = () => {
   const handleScroll = useCallback(() => {
     if (!isActiveRef.current) return;
     const siteHeader = document.getElementById('site-header');
-    const mobileMenuContainer = document.getElementById('mobile-menu-container');
+    const mobileMenuContainer = document.getElementById(
+      'mobile-menu-container',
+    );
     const currentScrollY = window.scrollY;
     const isDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
     const { hide, show, background } = distancesRef.current;
@@ -107,9 +118,17 @@ const useHeaderScroll = () => {
       }
     }
     lastScrollYRef.current = currentScrollY;
-  }, [isPostPageMobile, setHeaderVisible, startScrollEndTimer, stopScrollEndTimer]);
+  }, [
+    isPostPageMobile,
+    setHeaderVisible,
+    startScrollEndTimer,
+    stopScrollEndTimer,
+  ]);
 
-  const { run: onScroll, cancel: cancelScroll } = useThrottleFn(handleScroll, 80) as {
+  const { run: onScroll, cancel: cancelScroll } = useThrottleFn(
+    handleScroll,
+    80,
+  ) as {
     run: () => void;
     cancel: () => void;
   };
@@ -139,7 +158,10 @@ const useHeaderScroll = () => {
     stopScrollEndTimer();
   }, [cancelScroll, stopScrollEndTimer]);
 
-  const scrollTarget = useCallback(() => (typeof window === 'undefined' ? null : window), []);
+  const scrollTarget = useCallback(
+    () => (typeof window === 'undefined' ? null : window),
+    [],
+  );
 
   useEventListener('scroll', onScroll, scrollTarget, { passive: true });
   useEventListener('astro:page-load', initNavigator, documentTarget);
@@ -155,11 +177,4 @@ const useHeaderScroll = () => {
     };
   }, [cleanupNavigator, initNavigator]);
 };
-
-const HeaderScroll = () => {
-  useHeaderScroll();
-
-  return null;
-};
-
-export default HeaderScroll;
+export { useHeaderScroll };
