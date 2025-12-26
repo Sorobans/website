@@ -12,7 +12,6 @@
     "pagefind": "pagefind --source ./dist",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "astro check",
     "format": "prettier --write ."
   },
   "dependencies": {
