@@ -1,173 +1,163 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useEventListener, useThrottleFn, useTimeoutFn } from '@reactuses/core';
 import { Routes } from '@constants/router';
 
 const DESKTOP_BREAKPOINT = 992;
 const SCROLL_END_DELAY = 800;
 
-const HeaderScroll = () => {
+type ScrollDistances = {
+  hide: number;
+  show: number;
+  background: number;
+};
+
+const useHeaderScroll = () => {
+  const firstScrollRef = useRef(true);
+  const lastScrollYRef = useRef(0);
+  const isHeaderPinnedRef = useRef(false);
+  const distancesRef = useRef<ScrollDistances>({ hide: 0, show: 0, background: 0 });
+  const isActiveRef = useRef(false);
+
+  const updateDistances = useCallback(() => {
+    const height = window.innerHeight;
+    distancesRef.current = {
+      hide: height * 0.4,
+      show: height * 0.5,
+      background: height * 0.45,
+    };
+  }, []);
+
+  const isPostPageMobile = useCallback(() => {
+    const isMobile = window.innerWidth <= DESKTOP_BREAKPOINT;
+    const isPostPage = window.location.pathname.startsWith(`${Routes.Post}/`);
+    return isMobile && isPostPage;
+  }, []);
+
+  const setHeaderVisible = useCallback((siteHeader: HTMLElement | null, visible: boolean) => {
+    if (!siteHeader) return;
+    siteHeader.style.transform = visible ? 'translateY(0)' : 'translateY(-100%)';
+  }, []);
+
+  const [, startScrollEndTimer, stopScrollEndTimer] = useTimeoutFn(
+    () => {
+      // Intentionally empty to keep behavior aligned with previous scroll-end timer.
+    },
+    SCROLL_END_DELAY,
+    { immediate: false },
+  );
+
+  const handleScroll = useCallback(() => {
+    if (!isActiveRef.current) return;
+    const siteHeader = document.getElementById('site-header');
+    const mobileMenuContainer = document.getElementById('mobile-menu-container');
+    const currentScrollY = window.scrollY;
+    const isDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
+    const { hide, show, background } = distancesRef.current;
+
+    if (siteHeader && !isDesktop) {
+      if (currentScrollY > background) {
+        siteHeader.classList.add('with-background');
+      } else {
+        siteHeader.classList.remove('with-background');
+      }
+    }
+
+    if (!isDesktop && firstScrollRef.current) {
+      firstScrollRef.current = false;
+      lastScrollYRef.current = currentScrollY;
+      return;
+    }
+
+    if (isPostPageMobile()) {
+      stopScrollEndTimer();
+      setHeaderVisible(siteHeader, true);
+      mobileMenuContainer?.classList.remove('-translate-y-full');
+      startScrollEndTimer();
+      lastScrollYRef.current = currentScrollY;
+      return;
+    }
+
+    if (currentScrollY > 0) {
+      if (isDesktop) {
+        const isScrollingUp = currentScrollY < lastScrollYRef.current;
+        if (currentScrollY <= hide) {
+          setHeaderVisible(siteHeader, true);
+          siteHeader?.classList.remove('with-background');
+          isHeaderPinnedRef.current = false;
+        } else if (isHeaderPinnedRef.current && isScrollingUp) {
+          setHeaderVisible(siteHeader, true);
+          siteHeader?.classList.add('with-background');
+        } else if (currentScrollY > show && isScrollingUp) {
+          setHeaderVisible(siteHeader, true);
+          siteHeader?.classList.add('with-background');
+          isHeaderPinnedRef.current = true;
+        } else {
+          setHeaderVisible(siteHeader, false);
+          siteHeader?.classList.remove('with-background');
+          isHeaderPinnedRef.current = false;
+        }
+      } else {
+        if (currentScrollY > lastScrollYRef.current) {
+          setHeaderVisible(siteHeader, false);
+          mobileMenuContainer?.classList.add('-translate-y-full');
+        } else {
+          setHeaderVisible(siteHeader, true);
+          mobileMenuContainer?.classList.remove('-translate-y-full');
+        }
+      }
+    }
+    lastScrollYRef.current = currentScrollY;
+  }, [isPostPageMobile, setHeaderVisible, startScrollEndTimer, stopScrollEndTimer]);
+
+  const { run: onScroll, cancel: cancelScroll } = useThrottleFn(handleScroll, 80) as {
+    run: () => void;
+    cancel: () => void;
+  };
+  const documentTarget = useCallback(() => document, []);
+
+  const initNavigator = useCallback(() => {
+    cancelScroll();
+    stopScrollEndTimer();
+    firstScrollRef.current = true;
+    isHeaderPinnedRef.current = false;
+    updateDistances();
+    lastScrollYRef.current = window.scrollY;
+
+    const siteHeader = document.getElementById('site-header');
+    if (siteHeader) {
+      siteHeader.style.transition = 'transform 0.3s ease';
+      siteHeader.style.willChange = 'transform';
+    }
+
+    isActiveRef.current = true;
+    onScroll();
+  }, [cancelScroll, onScroll, stopScrollEndTimer, updateDistances]);
+
+  const cleanupNavigator = useCallback(() => {
+    isActiveRef.current = false;
+    cancelScroll();
+    stopScrollEndTimer();
+  }, [cancelScroll, stopScrollEndTimer]);
+
+  const scrollTarget = useCallback(() => (typeof window === 'undefined' ? null : window), []);
+
+  useEventListener('scroll', onScroll, scrollTarget, { passive: true });
+  useEventListener('astro:page-load', initNavigator, documentTarget);
+  useEventListener('astro:before-swap', cleanupNavigator, documentTarget);
+
   useEffect(() => {
-    let firstScroll = true;
-    let hideDistance = window.innerHeight * 0.4;
-    let showDistance = window.innerHeight * 0.5;
-    let backgroundDistance = window.innerHeight * 0.45;
-    let lastScrollY = 0;
-    let isHeaderPinned = false;
-    let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
-    let scrollHandler: ((event?: Event) => void) | null = null;
-    const postBase = Routes.Post;
-
-    const isPostPageMobile = () => {
-      const isMobile = window.innerWidth <= DESKTOP_BREAKPOINT;
-      const isPostPage = window.location.pathname.startsWith(`${postBase}/`);
-      return isMobile && isPostPage;
-    };
-
-    const handleScroll = () => {
-      const siteHeader = document.getElementById('site-header');
-      const mobileMenuContainer = document.getElementById('mobile-menu-container');
-      const currentScrollY = window.scrollY;
-      const isDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
-
-      const setHeaderVisible = (visible: boolean) => {
-        if (!siteHeader) return;
-        siteHeader.style.transform = visible ? 'translateY(0)' : 'translateY(-100%)';
-      };
-
-      if (siteHeader && !isDesktop) {
-        if (currentScrollY > backgroundDistance) {
-          siteHeader.classList.add('with-background');
-        } else {
-          siteHeader.classList.remove('with-background');
-        }
-      }
-
-      if (!isDesktop && firstScroll) {
-        firstScroll = false;
-        lastScrollY = currentScrollY;
-        return;
-      }
-
-      if (isPostPageMobile()) {
-        if (scrollEndTimer) {
-          clearTimeout(scrollEndTimer);
-        }
-
-        setHeaderVisible(true);
-        if (mobileMenuContainer) mobileMenuContainer.classList.remove('-translate-y-full');
-
-        scrollEndTimer = setTimeout(() => {
-          // no-op; keep timer for alignment with previous behavior
-        }, SCROLL_END_DELAY);
-
-        lastScrollY = currentScrollY;
-        return;
-      }
-
-      if (currentScrollY > 0) {
-        if (isDesktop) {
-          const isScrollingUp = currentScrollY < lastScrollY;
-          if (currentScrollY <= hideDistance) {
-            setHeaderVisible(true);
-            if (siteHeader) siteHeader.classList.remove('with-background');
-            isHeaderPinned = false;
-          } else if (isHeaderPinned && isScrollingUp) {
-            setHeaderVisible(true);
-            if (siteHeader) siteHeader.classList.add('with-background');
-          } else if (currentScrollY > showDistance && isScrollingUp) {
-            setHeaderVisible(true);
-            if (siteHeader) siteHeader.classList.add('with-background');
-            isHeaderPinned = true;
-          } else {
-            setHeaderVisible(false);
-            if (siteHeader) siteHeader.classList.remove('with-background');
-            isHeaderPinned = false;
-          }
-        } else {
-          if (currentScrollY > lastScrollY) {
-            setHeaderVisible(false);
-            if (mobileMenuContainer) mobileMenuContainer.classList.add('-translate-y-full');
-          } else {
-            setHeaderVisible(true);
-            if (mobileMenuContainer) mobileMenuContainer.classList.remove('-translate-y-full');
-          }
-        }
-      }
-      lastScrollY = currentScrollY;
-    };
-
-    const throttle = (func: () => void, limit: number) => {
-      let lastFunc: ReturnType<typeof setTimeout>;
-      let lastRan: number | null = null;
-      return () => {
-        if (lastRan === null) {
-          func();
-          lastRan = Date.now();
-        } else {
-          clearTimeout(lastFunc);
-          lastFunc = setTimeout(() => {
-            if (Date.now() - (lastRan ?? 0) >= limit) {
-              func();
-              lastRan = Date.now();
-            }
-          }, limit - (Date.now() - (lastRan ?? 0)));
-        }
-      };
-    };
-
-    const initNavigator = () => {
-      if (scrollHandler) {
-        window.removeEventListener('scroll', scrollHandler);
-      }
-      if (scrollEndTimer) {
-        clearTimeout(scrollEndTimer);
-        scrollEndTimer = null;
-      }
-
-      firstScroll = true;
-      hideDistance = window.innerHeight * 0.4;
-      showDistance = window.innerHeight * 0.5;
-      backgroundDistance = window.innerHeight * 0.45;
-      lastScrollY = window.scrollY;
-
-      const siteHeader = document.getElementById('site-header');
-      if (siteHeader) {
-        siteHeader.style.transition = 'transform 0.3s ease';
-        siteHeader.style.willChange = 'transform';
-      }
-
-      scrollHandler = throttle(handleScroll, 80);
-      window.addEventListener('scroll', scrollHandler, { passive: true });
-      handleScroll();
-    };
-
-    const handlePageLoad = () => {
-      initNavigator();
-    };
-
-    const handleBeforeSwap = () => {
-      if (scrollHandler) {
-        window.removeEventListener('scroll', scrollHandler);
-        scrollHandler = null;
-      }
-      if (scrollEndTimer) {
-        clearTimeout(scrollEndTimer);
-        scrollEndTimer = null;
-      }
-    };
-
     if (document.readyState !== 'loading') {
       initNavigator();
     }
 
-    document.addEventListener('astro:page-load', handlePageLoad);
-    document.addEventListener('astro:before-swap', handleBeforeSwap);
-
     return () => {
-      document.removeEventListener('astro:page-load', handlePageLoad);
-      document.removeEventListener('astro:before-swap', handleBeforeSwap);
-      handleBeforeSwap();
+      cleanupNavigator();
     };
-  }, []);
+  }, [cleanupNavigator, initNavigator]);
+};
+
+const HeaderScroll = () => {
+  useHeaderScroll();
 
   return null;
 };

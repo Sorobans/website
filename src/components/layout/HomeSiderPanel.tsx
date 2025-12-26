@@ -86,7 +86,7 @@ export function HomeSiderPanel({
       )}
 
       <div
-        className="vertical-scrollbar scroll-gutter-stable relative block w-full flex-1 min-h-0 overflow-x-hidden overflow-y-auto md:pt-4 md:pl-3"
+        className="vertical-scrollbar pt-10 scroll-gutter-stable relative block w-full flex-1 min-h-0 overflow-x-hidden overflow-y-auto md:pt-4 md:pl-3"
         data-type={type}
         data-default-type={defaultSegmentValue}
       >

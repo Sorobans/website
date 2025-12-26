@@ -71,6 +71,7 @@ export default function Footer({ className, stats }: Props) {
           <a
             href="https://github.com/cosZone/astro-koharu"
             target="_blank"
+            rel="noreferrer"
             className="footer-link font-medium transition-all duration-300"
           >
             astro-koharu
@@ -80,6 +81,7 @@ export default function Footer({ className, stats }: Props) {
           <a
             href="https://github.com/amehime/hexo-theme-shoka"
             target="_blank"
+            rel="noreferrer"
             className="footer-link font-medium transition-all duration-300"
           >
             Shoka

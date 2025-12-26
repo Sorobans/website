@@ -14,6 +14,8 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
   const { isOpen, setIsOpen } = useToggle({ defaultOpen: false });
   const { name, icon, children } = item;
 
+  const currentPath = typeof window === 'undefined' ? '' : window.location.pathname;
+
   const renderDropdownContent = useCallback(
     () => (
       <div className="nav-dropdown flex flex-col items-center">
@@ -27,7 +29,7 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
                   {
                     'rounded-ss-2xl': index === 0,
                     'rounded-ee-2xl': index === children.length - 1,
-                    'bg-gradient-shoka-button text-muted': window.location.pathname === child.path,
+                    'bg-gradient-shoka-button text-muted': currentPath === child.path,
                   },
                 )}
               >
@@ -40,7 +42,7 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
           : null}
       </div>
     ),
-    [children],
+    [children, currentPath],
   );
 
   return (

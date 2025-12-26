@@ -20,6 +20,7 @@ export function Social() {
               data-tooltip-interactive="false"
               data-tooltip-placement="top"
               aria-label={label}
+              suppressHydrationWarning
             >
               {iconClass && <i className={`${iconClass} social-icon`} aria-hidden="true"></i>}
               <span className="absolute inset-0 -z-10 -translate-x-full translate-y-full rounded-xl transition-transform duration-300 group-hover:translate-x-0 group-hover:translate-y-0" />
