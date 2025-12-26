@@ -43,11 +43,16 @@
 @layer components {
   #site-header .site-header-bg {
     opacity: 0;
-    transition: opacity 0.6s ease-in-out;
+    filter: blur(6px);
+    transition:
+      opacity 0.8s ease,
+      filter 0.8s ease;
+    will-change: opacity, filter;
     @apply bg-gradient-header;
   }
   #site-header.with-background .site-header-bg {
     opacity: 1;
+    filter: blur(0);
   }
   #site-header.with-background {
     @apply border-border text-foreground border-b;
