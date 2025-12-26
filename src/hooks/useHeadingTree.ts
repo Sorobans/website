@@ -100,10 +100,8 @@ function getHeadingSnapshot(): Heading[] {
   }
 
   const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
-  ;
 
   if (!articleContent) {
-    ;
     return [];
   }
 
@@ -111,10 +109,7 @@ function getHeadingSnapshot(): Heading[] {
     (heading) => !heading.closest('.link-preview-block'),
   );
 
-  ;
-
   if (headingElements.length === 0) {
-    ;
     return [];
   }
 
@@ -157,19 +152,15 @@ function subscribe(callback: () => void) {
 
     // Find the target element
     const observerTarget = document.querySelector('.custom-content') ?? document.querySelector('article');
-    ;
 
     if (observerTarget) {
       observer = new MutationObserver(() => {
-        ;
         callback();
       });
       observer.observe(observerTarget, { childList: true, subtree: true });
-      ;
       callback(); // Trigger initial snapshot
     } else {
       // If not found yet, retry after a short delay
-      ;
       rafId = requestAnimationFrame(() => {
         setupObserver();
       });
@@ -179,15 +170,12 @@ function subscribe(callback: () => void) {
   // Try immediately first
   const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
   const hasHeadings = articleContent ? articleContent.querySelector('h1, h2, h3, h4, h5, h6') : null;
-  ;
 
   if (articleContent && hasHeadings) {
     // Content is ready, setup immediately
-    ;
     setupObserver();
   } else {
     // Content not ready, use delayed setup
-    ;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setupObserver();
@@ -197,7 +185,6 @@ function subscribe(callback: () => void) {
 
   // Re-setup on page transitions
   const handlePageLoad = () => {
-    ;
     if (rafId) cancelAnimationFrame(rafId);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -206,13 +193,12 @@ function subscribe(callback: () => void) {
     });
   };
 
-    document.addEventListener('astro:page-load', handlePageLoad);
-    document.addEventListener('astro:after-swap', handlePageLoad);
+  document.addEventListener('astro:page-load', handlePageLoad);
+  document.addEventListener('astro:after-swap', handlePageLoad);
 
   // Listen for a custom event that fires when content is ready
   // We'll add a timeout fallback to ensure callback is called
   const timeoutId = setTimeout(() => {
-    ;
     callback();
   }, 100);
 
@@ -229,6 +215,9 @@ export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
   const domHeadings = useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
 
   return useMemo(() => {
+    if (domHeadings.length > 0) {
+      return domHeadings;
+    }
     if (sourceHeadings && sourceHeadings.length > 0) {
       return buildHeadingTree(normalizeHeadingInputs(sourceHeadings));
     }
