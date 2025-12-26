@@ -160,3 +160,27 @@
     animation: none;
   }
 }
+
+.footer-link {
+  opacity: 0.75;
+  position: relative;
+}
+
+.footer-link:hover {
+  opacity: 1;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}

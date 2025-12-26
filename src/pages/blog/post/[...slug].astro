@@ -3,6 +3,8 @@ import { extractTextFromMarkdown } from '@/lib/sanitize';
 import CustomContent from '@components/common/CustomContent.astro';
 import GiscusComments from '@components/common/GiscusComments';
 import HomeSider from '@components/layout/HomeSider.astro';
+import TwoColumnLayout from '@components/layout/TwoColumnLayout.astro';
+import LayoutFooter from '@components/layout/LayoutFooter';
 import { SummaryPanel, type SummarySource } from '@components/post/SummaryPanel';
 import Cover from '@components/ui/cover/Cover.astro';
 import { HomeSiderType } from '@constants/enum';
@@ -10,7 +12,6 @@ import { CONTENT_PADDING } from '@constants/layout';
 import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Layout from '@layouts/Layout.astro';
-import TwoColumnLayout from '@layouts/TwoColumnLayout.astro';
 import {
   buildCategoryPath,
   getCategoryArr,
@@ -20,6 +21,7 @@ import {
   getPostSummary,
   getSortedPosts,
 } from '@lib/content';
+import { getLayoutFooterData } from '@lib/layout/footer-data';
 import { parseDate } from '@lib/datetime';
 import { render } from 'astro:content';
 
@@ -97,6 +99,8 @@ if (post.data.description) {
     summarySource = 'auto';
   }
 }
+
+const layoutFooterData = await getLayoutFooterData(post);
 ---
 
 <Layout
@@ -107,9 +111,10 @@ if (post.data.description) {
   tocHeadings={headings}
 >
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-  <TwoColumnLayout post={post}>
+  <TwoColumnLayout>
     <Cover slot="cover" data={post} />
     <HomeSider slot="sider" type={HomeSiderType.POST} post={post} tocHeadings={headings} />
+    <LayoutFooter slot="footer" {...layoutFooterData} />
     <div class={`shadow-box bg-gradient-start flex flex-col gap-2 ${CONTENT_PADDING.standard}`}>
       <!-- Breadcrumb Navigation -->
       <nav class="text-muted-foreground flex items-center gap-2 text-sm">

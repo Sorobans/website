@@ -39,42 +39,28 @@ const { alternate, title, showLogo } = blogLayoutConfig;
         <p class="logo-text text-primary">{alternate || title}</p>
       )}
     </a>
-
-    <!-- Mobile: Menu button + Logo/Header -->
-    <div class="hidden tablet:flex items-center grow">
-      <!-- 移动端菜单按钮 -->
-      <div id="mobile-menu-container" class="shrink-0">
-        <MenuIcon client:load />
-      </div>
-      <!-- 移动端logo（非文章页）或 MobilePostHeader（文章页显示标题）- 居中显示 -->
-      <div class="flex-1 flex items-center justify-center">
-        {isPostPage ? (
-          <MobilePostHeader
-            client:load
-            isPostPage={isPostPage}
-            enableNumbering={tocNumbering}
-            sourceHeadings={tocHeadings}
-            logoElement={showLogo ? 'svg' : 'text'}
-            logoText={alternate || title}
-            logoSrc={logoSrc}
-          />
-        ) : (
-          <a
-            href={Routes.Home}
-            class="flex items-center gap-1"
-            title={alternate || title}
-            aria-label={alternate || title}
-          >
-            {showLogo ? (
-              <img src={logoSrc} alt={alternate || title} class="h-8" />
-            ) : (
-              <span class="logo-text text-primary">{alternate || title}</span>
-            )}
-          </a>
-        )}
-      </div>
+    <!-- Mobile: MobilePostHeader (shows heading on post pages, logo otherwise) -->
+    <div class="tablet:flex tablet:grow hidden items-center justify-center">
+      <MobilePostHeader
+        client:load
+        isPostPage={isPostPage}
+        enableNumbering={tocNumbering}
+        sourceHeadings={tocHeadings}
+        logoElement={showLogo ? 'svg' : 'text'}
+        logoText={alternate || title}
+        logoSrc={logoSrc}
+      />
     </div>
 
     <Navigator transition:name="page-header" />
   </div>
 </div>
+
+<!-- Mobile menu button -->
+<MenuIcon
+  client:load
+  className="tablet:flex fixed top-0 left-3 z-52 hidden h-14 transition-transform"
+  id="mobile-menu-container"
+/>
+
+

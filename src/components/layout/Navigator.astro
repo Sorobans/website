@@ -46,10 +46,21 @@ import SearchWithDialog from './SearchWithDialog.astro';
   let firstScroll = true;
   let triggerDistance = window.innerHeight * 0.45;
   let lastScrollY = 0;
+  let scrollEndTimer = null;
+  let isScrolling = false;
   let scrollHandler = null;
+  const SCROLL_END_DELAY = 800; // Delay before resuming auto-hide after scroll stops
+  const POST_BASE = ${JSON.stringify(Routes.Post)};
+
+  const isPostPageMobile = () => {
+    const isMobile = window.innerWidth <= 992;
+    const isPostPage = window.location.pathname.startsWith(`${POST_BASE}/`);
+    return isMobile && isPostPage;
+  };
 
   const handleScroll = () => {
     const siteHeader = document.getElementById('site-header');
+    const mobileMenuContainer = document.getElementById('mobile-menu-container');
     const currentScrollY = window.scrollY;
     const isBeyond = currentScrollY > triggerDistance;
 
@@ -66,11 +77,36 @@ import SearchWithDialog from './SearchWithDialog.astro';
       return;
     }
 
-    // Header 保持固定在顶部，不随滚动隐藏
+    if (isPostPageMobile()) {
+      if (scrollEndTimer) {
+        clearTimeout(scrollEndTimer);
+      }
+      isScrolling = true;
+
+      if (siteHeader) siteHeader.classList.remove('-translate-y-full');
+      if (mobileMenuContainer) mobileMenuContainer.classList.remove('-translate-y-full');
+
+      scrollEndTimer = setTimeout(() => {
+        isScrolling = false;
+      }, SCROLL_END_DELAY);
+
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    if (currentScrollY > 0) {
+      if (currentScrollY > lastScrollY) {
+        if (siteHeader) siteHeader.classList.add('-translate-y-full');
+        if (mobileMenuContainer) mobileMenuContainer.classList.add('-translate-y-full');
+      } else {
+        if (siteHeader) siteHeader.classList.remove('-translate-y-full');
+        if (mobileMenuContainer) mobileMenuContainer.classList.remove('-translate-y-full');
+      }
+    }
     lastScrollY = currentScrollY;
   };
 
-  // 节流函数
+  // Throttle helper
   function throttle(func, limit) {
     let lastFunc;
     let lastRan;
@@ -96,34 +132,43 @@ import SearchWithDialog from './SearchWithDialog.astro';
   }
 
   function initNavigator() {
-    // 清理旧的监听器
+    // Clear previous listeners
     if (scrollHandler) {
       window.removeEventListener('scroll', scrollHandler);
     }
+    if (scrollEndTimer) {
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = null;
+    }
 
-    // 重置状态
+    // Reset state
     firstScroll = true;
     triggerDistance = window.innerHeight * 0.45;
     lastScrollY = 0;
+    isScrolling = false;
 
-    // 添加新监听器
+    // Add new listener
     scrollHandler = throttle(handleScroll, 80);
     window.addEventListener('scroll', scrollHandler, { passive: true });
   }
 
-  // 首次加载时立即初始化
+  // Init on first load
   if (document.readyState !== 'loading') {
     initNavigator();
   }
 
-  // 监听后续页面导航
+  // Re-init on page navigation
   document.addEventListener('astro:page-load', initNavigator);
 
-  // 页面切换前清理
+  // Cleanup before swap
   document.addEventListener('astro:before-swap', () => {
     if (scrollHandler) {
       window.removeEventListener('scroll', scrollHandler);
       scrollHandler = null;
+    }
+    if (scrollEndTimer) {
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = null;
     }
   });
 </script>
