@@ -44,7 +44,7 @@ const MenuIcon = ({ className, id }: MenuIconProps) => {
   };
 
   return (
-    <div className={cn('flex-center', className)} id={id} style={{ viewTransitionName: 'home-menu-icon' }}>
+    <div className={cn(className)} id={id} style={{ viewTransitionName: 'home-menu-icon' }}>
       <button
         className="flex-center text-shoka size-10 cursor-pointer rounded-full bg-white/20 select-none"
         onClick={handleToggle}

@@ -7,6 +7,7 @@ import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Navigator from './Navigator.astro';
 import type { MarkdownHeading } from '@/types/markdown';
+import HeaderScroll from './HeaderScroll';
 
 interface Props {
   isPostPage?: boolean;
@@ -23,6 +24,7 @@ const { alternate, title, showLogo } = blogLayoutConfig;
   class={`shadow-text fixed tablet:backdrop-blur inset-x-0 top-0 z-10 gap-4 py-2.5 text-white select-none tablet:py-2 tablet:pl-3 tablet:pr-3`}
   transition:name="site-header"
 >
+  <HeaderScroll client:load />
   <div class={`mx-auto flex items-center justify-between tablet:w-full px-6 tablet:px-0 ${MAX_WIDTH.content}`}>
     <!-- Desktop: Always show logo -->
     <a
@@ -59,7 +61,7 @@ const { alternate, title, showLogo } = blogLayoutConfig;
 <!-- Mobile menu button -->
 <MenuIcon
   client:load
-  className="tablet:flex fixed top-0 left-3 z-52 hidden h-14 transition-transform"
+  className="tablet:flex tablet:items-center tablet:justify-center fixed top-0 left-3 z-[70] hidden h-14 transition-transform"
   id="mobile-menu-container"
 />
 
