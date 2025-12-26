@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useStore } from '@nanostores/react';
 import { HomeSiderSegmentType, HomeSiderType } from '@constants/enum';
 import { homeSiderSegmentType } from '@store/app';
@@ -41,8 +41,6 @@ interface HomeSiderPanelProps {
   nextPostItem?: SeriesPostItem | null;
 }
 
-const ANIMATION_DURATION_MS = 200;
-
 export function HomeSiderPanel({
   type,
   defaultSegmentType,
@@ -57,10 +55,6 @@ export function HomeSiderPanel({
   const isPostPage = type === HomeSiderType.POST;
   const storeSegment = useStore(homeSiderSegmentType);
   const effectiveSegment = isPostPage ? storeSegment : HomeSiderSegmentType.INFO;
-  const [activeSegment, setActiveSegment] = useState<HomeSiderSegmentType>(effectiveSegment);
-  const [enteringSegment, setEnteringSegment] = useState<HomeSiderSegmentType | null>(null);
-  const [exitingSegment, setExitingSegment] = useState<HomeSiderSegmentType | null>(null);
-  const isFirstRender = useRef(true);
 
   useEffect(() => {
     if (!isPostPage) {
@@ -70,34 +64,9 @@ export function HomeSiderPanel({
     }
   }, [defaultSegmentType, isPostPage]);
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      setActiveSegment(effectiveSegment);
-      isFirstRender.current = false;
-      return;
-    }
-
-    if (effectiveSegment === activeSegment) return;
-
-    setExitingSegment(activeSegment);
-    setActiveSegment(effectiveSegment);
-    setEnteringSegment(effectiveSegment);
-
-    const timeoutId = window.setTimeout(() => {
-      setExitingSegment(null);
-      setEnteringSegment(null);
-    }, ANIMATION_DURATION_MS);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [activeSegment, effectiveSegment]);
-
   const slotClassName = (slotType: HomeSiderSegmentType) =>
     cn('sider-slot', {
-      hidden: slotType !== activeSegment && slotType !== exitingSegment,
-      entering: slotType === enteringSegment,
-      exiting: slotType === exitingSegment,
+      hidden: slotType !== effectiveSegment,
     });
 
   const defaultSegmentValue = useMemo(

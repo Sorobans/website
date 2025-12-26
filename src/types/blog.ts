@@ -2,7 +2,7 @@ export interface BlogPost {
   id: string;
   slug?: string;
   body?: string;
-  collection?: 'blog';
+  collection: 'blog';
   data: BlogSchema;
 }
 

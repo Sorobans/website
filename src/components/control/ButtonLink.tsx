@@ -30,23 +30,49 @@ const buttonVariants = cva(
   },
 );
 
-type ButtonLinkProps = {
-  url?: string;
+type ButtonLinkBaseProps = {
   label?: string;
   className?: string;
   children: ReactNode;
-} & VariantProps<typeof buttonVariants> &
-  AnchorHTMLAttributes<HTMLAnchorElement> &
-  ButtonHTMLAttributes<HTMLButtonElement>;
+} & VariantProps<typeof buttonVariants>;
+
+type ButtonLinkAnchorProps = ButtonLinkBaseProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
+    url: string;
+  };
+
+type ButtonLinkButtonProps = ButtonLinkBaseProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    url?: undefined;
+  };
+
+type ButtonLinkProps = ButtonLinkAnchorProps | ButtonLinkButtonProps;
 
 export function ButtonLink({ url, label, variant, size, className, children, ...rest }: ButtonLinkProps) {
-  const Element = url ? 'a' : 'button';
-  const attrs = url ? { href: url, 'aria-label': label } : { type: 'button' };
+  const isLink = typeof url === 'string' && url.length > 0;
+
+  if (isLink) {
+    const anchorProps = rest as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>;
+    return (
+      <a
+        href={url}
+        aria-label={label}
+        className={cn(buttonVariants({ variant, size }), className)}
+        {...anchorProps}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
-    <Element {...attrs} className={cn(buttonVariants({ variant, size }), className)} {...rest}>
+    <button
+      type="button"
+      className={cn(buttonVariants({ variant, size }), className)}
+      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
       {children}
-    </Element>
+    </button>
   );
 }
 

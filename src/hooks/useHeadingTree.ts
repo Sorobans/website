@@ -31,6 +31,26 @@ export interface Heading {
   parent?: Heading;
 }
 
+const EMPTY_HEADINGS: Heading[] = [];
+let cachedHeadings: Heading[] = EMPTY_HEADINGS;
+let cachedKey = '';
+
+const buildHeadingKey = (headings: Heading[]): string =>
+  headings
+    .map((heading) => `${heading.id}:${heading.level}:${heading.text}:${buildHeadingKey(heading.children)}`)
+    .join('|');
+
+const refreshHeadingSnapshot = (): boolean => {
+  const nextHeadings = getHeadingSnapshot();
+  const nextKey = buildHeadingKey(nextHeadings);
+  if (nextKey === cachedKey) {
+    return false;
+  }
+  cachedKey = nextKey;
+  cachedHeadings = nextHeadings;
+  return true;
+};
+
 type HeadingSource = {
   id: string;
   text: string;
@@ -143,6 +163,17 @@ function subscribe(callback: () => void) {
 
   let observer: MutationObserver | null = null;
   let rafId: number | null = null;
+  let updateRafId: number | null = null;
+
+  const scheduleUpdate = () => {
+    if (updateRafId !== null) return;
+    updateRafId = requestAnimationFrame(() => {
+      updateRafId = null;
+      if (refreshHeadingSnapshot()) {
+        callback();
+      }
+    });
+  };
 
   const setupObserver = () => {
     // Disconnect existing observer if any
@@ -155,10 +186,11 @@ function subscribe(callback: () => void) {
 
     if (observerTarget) {
       observer = new MutationObserver(() => {
-        callback();
+        scheduleUpdate();
       });
       observer.observe(observerTarget, { childList: true, subtree: true });
-      callback(); // Trigger initial snapshot
+      refreshHeadingSnapshot();
+      scheduleUpdate(); // Trigger initial snapshot
     } else {
       // If not found yet, retry after a short delay
       rafId = requestAnimationFrame(() => {
@@ -199,11 +231,12 @@ function subscribe(callback: () => void) {
   // Listen for a custom event that fires when content is ready
   // We'll add a timeout fallback to ensure callback is called
   const timeoutId = setTimeout(() => {
-    callback();
+    scheduleUpdate();
   }, 100);
 
   return () => {
     if (rafId) cancelAnimationFrame(rafId);
+    if (updateRafId) cancelAnimationFrame(updateRafId);
     clearTimeout(timeoutId);
     observer?.disconnect();
     document.removeEventListener('astro:page-load', handlePageLoad);
@@ -212,7 +245,7 @@ function subscribe(callback: () => void) {
 }
 
 export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
-  const domHeadings = useSyncExternalStore(subscribe, getHeadingSnapshot, () => []);
+  const domHeadings = useSyncExternalStore(subscribe, () => cachedHeadings, () => EMPTY_HEADINGS);
 
   return useMemo(() => {
     if (domHeadings.length > 0) {
