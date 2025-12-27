@@ -9,6 +9,22 @@ export interface FriendLink {
 
 export const friendsData: FriendLink[] = [
   {
+    site: "hsn的博客",
+    url: 'https://blog.huangsn.dev/',
+    owner: 'hsn',
+    desc: '是想长头发但是还在敲代码的hsn!',
+    image: 'https://avatars.githubusercontent.com/u/51445446?v=4',
+    color: '#a172ff',
+  },
+  {
+    site: "凌菀喵",
+    url: 'https://nyac.at/',
+    owner: 'clansty',
+    desc: '你好，这里是凌菀',
+    image: 'https://avatars.githubusercontent.com/u/18461360?v=4',
+    color: '#93b7f6',
+  },
+  {
     site: "HSn's Blog",
     url: 'https://blog.huangsn.dev',
     owner: 'HSn',
