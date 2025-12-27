@@ -68,7 +68,7 @@ export function MobileDrawerPanel({ children }: MobileDrawerPanelProps) {
         aria-modal="true"
       >
         <div className="flex h-full w-full flex-col overflow-auto">
-          <div className="flex justify-end pb-2">
+          <div className="flex justify-end pb-2 pr-4">
             <CloseMenuButton className="flex" id="close-drawer" buttonRef={closeButtonRef} />
           </div>
           {children}
