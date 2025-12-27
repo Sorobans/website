@@ -36,7 +36,7 @@ interface MenuIconProps {
   id?: string;
 }
 
-const MenuIcon = ({ className, id }: MenuIconProps) => {
+const MenuButton = ({ className, id }: MenuIconProps) => {
   const isOpen = useStore(drawerOpen);
 
   const handleToggle = () => {
@@ -67,4 +67,4 @@ const MenuIcon = ({ className, id }: MenuIconProps) => {
   );
 };
 
-export { MenuIcon };
+export { MenuButton };

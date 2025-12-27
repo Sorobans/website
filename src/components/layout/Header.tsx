@@ -1,6 +1,5 @@
 import logoSrc from 'src/assets/logo.webp?url';
 import { MobilePostHeader } from '@components/layout/MobilePostHeader';
-import { MenuIcon } from '@components/ui/MenuIcon';
 import { MAX_WIDTH } from '@constants/layout';
 import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
@@ -54,7 +53,7 @@ export default function Header({ isPostPage = false, tocNumbering = true, tocHea
               <p className="logo-text text-primary">{alternate || title}</p>
             )}
           </a>
-          <div className="tablet:flex tablet:grow hidden items-center justify-center">
+          <div className="tablet:flex w-full h-full tablet:grow hidden items-center justify-center">
             {isClient ? (
               <MobilePostHeader
                 isPostPage={isPostPage}
@@ -73,11 +72,6 @@ export default function Header({ isPostPage = false, tocNumbering = true, tocHea
           <Navigator />
         </div>
       </div>
-
-      <MenuIcon
-        className="tablet:flex tablet:items-center tablet:justify-center fixed top-0 left-3 z-[70] hidden h-14 transition-transform"
-        id="mobile-menu-container"
-      />
     </>
   );
 }

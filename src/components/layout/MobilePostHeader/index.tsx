@@ -7,7 +7,13 @@
 
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { animation } from '@constants/design-tokens';
-import { useMediaQuery, useHeadingTree, useActiveHeading, useExpandedState, useHeadingClickHandler } from '@hooks/index';
+import {
+  useMediaQuery,
+  useHeadingTree,
+  useActiveHeading,
+  useExpandedState,
+  useHeadingClickHandler,
+} from '@hooks/index';
 import { useCurrentHeading } from '@hooks/useCurrentHeading';
 import { HeadingTitle } from './HeadingTitle';
 import { ProgressCircle } from './ProgressCircle';
@@ -15,6 +21,8 @@ import { MobileTOCDropdown } from './MobileTOCDropdown';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import { Routes } from '@/constants/router';
 import type { MarkdownHeading } from '@/types/markdown';
+import { MenuButton } from '@components/ui/MenuIcon.tsx';
+import { cn } from '@lib/utils.ts';
 
 interface MobilePostHeaderProps {
   /** Whether the current page is a post page */
@@ -38,15 +46,21 @@ interface LogoProps {
   logoElement: 'svg' | 'text';
   logoText?: string;
   logoSrc?: string;
+  className?: string;
 }
 
-function Logo({ logoElement, logoText, logoSrc }: LogoProps) {
+function Logo({ logoElement, logoText, logoSrc, className }: LogoProps) {
   return (
     <a href={Routes.Home} className="flex items-center gap-1">
       {logoElement === 'svg' && logoSrc ? (
-        <img src={logoSrc} alt={blogLayoutConfig?.alternate ?? blogLayoutConfig?.name} className="h-8" height={32} />
+        <img
+          src={logoSrc}
+          alt={blogLayoutConfig?.alternate ?? blogLayoutConfig?.name}
+          className={cn("h-8", className)}
+          height={32}
+        />
       ) : (
-        <span className="logo-text text-primary">{logoText}</span>
+        <span className={cn("logo-text text-primary", className)}>{logoText}</span>
       )}
     </a>
   );
@@ -82,28 +96,42 @@ export function MobilePostHeader({
   });
 
   // Determine if we should show heading mode
-  const showHeadingMode = isPostPage && isMobile && headings.length > 0 && currentHeading !== null;
+  const showHeadingMode =
+    isPostPage && isMobile && headings.length > 0 && currentHeading !== null;
 
   // Handle heading click in TOC dropdown
-  const handleHeadingClick = useHeadingClickHandler({ headings, setExpandedIds });
+  const handleHeadingClick = useHeadingClickHandler({
+    headings,
+    setExpandedIds,
+  });
 
   // If not mobile or not a post page, always show logo
   if (!isMobile) {
-    return <Logo logoElement={logoElement} logoText={logoText} logoSrc={logoSrc} />;
+    return (
+      <Logo logoElement={logoElement} logoText={logoText} logoSrc={logoSrc} />
+    );
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex w-full h-full items-center gap-2">
+      {/*Mobile Menu controller*/}
+      <MenuButton
+        className="tablet:flex tablet:items-center tablet:justify-center top-0 left-3 z-[70] hidden h-14 transition-transform"
+        id="mobile-menu-container"
+      />
       <AnimatePresence mode="wait">
+        {/*directoryOfArticleTitles / logo*/}
         {showHeadingMode ? (
+          // H-Title anchorList
           <motion.div
             key="heading-mode"
-            className="flex items-center"
+            className="flex-1 relative flex items-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={shouldReduceMotion ? { duration: 0 } : animation.spring.gentle}
-          >
+            transition={
+              shouldReduceMotion ? { duration: 0 } : animation.spring.gentle
+            }>
             <MobileTOCDropdown
               headings={headings}
               activeId={activeId}
@@ -112,9 +140,8 @@ export function MobilePostHeader({
               enableNumbering={enableNumbering}
               trigger={
                 <button
-                  className="bg-foreground/10 ml-5 hover:bg-foreground/20 flex w-[calc(100vw-10.5rem)] items-center gap-2.5 rounded-full py-1 pr-3 pl-1.5 backdrop-blur-sm transition-colors"
-                  aria-label="展开目录"
-                >
+                  className="bg-foreground/10 absolute left-0 top-[50%] translate-y-[-50%] w-[calc(100%-16px)] hover:bg-foreground/20 flex items-center gap-2.5 rounded-full py-1 pr-3 pl-1.5 backdrop-blur-sm transition-colors"
+                  aria-label="展开目录">
                   {/* Progress circle - fixed size container */}
                   <div className="relative shrink-0">
                     <ProgressCircle size={32} strokeWidth={2.5} />
@@ -129,12 +156,20 @@ export function MobilePostHeader({
         ) : (
           <motion.div
             key="logo-mode"
+            className={'absolute w-fit translate-x-[-50%] translate-y-[-50%] left-[50%] top-[50%] z-70'}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={shouldReduceMotion ? { duration: 0 } : animation.spring.gentle}
-          >
-            <Logo logoElement={logoElement} logoText={logoText} logoSrc={logoSrc} />
+            transition={
+              shouldReduceMotion ? { duration: 0 } : animation.spring.gentle
+            }>
+            <div>
+              <Logo
+                logoElement={logoElement}
+                logoText={logoText}
+                logoSrc={logoSrc}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
