@@ -8,7 +8,7 @@
  *
  * @example
  * ```tsx
- * // In MenuIcon.tsx
+ * // In menuButtons.tsx
  * import { drawerOpen } from '@store/ui';
  *
  * function MenuIcon() {

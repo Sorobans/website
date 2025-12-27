@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useStore } from '@nanostores/react';
 import { closeDrawer, drawerOpen } from '@store/ui';
 import { cn } from '@lib/utils';
+import { CloseMenuButton } from '@components/ui/menuButtons.tsx';
 
 interface MobileDrawerPanelProps {
   children: ReactNode;
@@ -67,16 +68,9 @@ export function MobileDrawerPanel({ children }: MobileDrawerPanelProps) {
         aria-modal="true"
       >
         <div className="flex h-full w-full flex-col overflow-auto">
-          <button
-            id="close-drawer"
-            aria-label="关闭菜单"
-            className="invisible"
-            onClick={closeDrawer}
-            type="button"
-            ref={closeButtonRef}
-          >
-            <i className="fa-solid fa-xmark text-xl" aria-hidden="true"></i>
-          </button>
+          <div className="flex justify-end pb-2">
+            <CloseMenuButton className="flex" id="close-drawer" buttonRef={closeButtonRef} />
+          </div>
           {children}
         </div>
       </div>

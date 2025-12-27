@@ -21,7 +21,7 @@ import { MobileTOCDropdown } from './MobileTOCDropdown';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import { Routes } from '@/constants/router';
 import type { MarkdownHeading } from '@/types/markdown';
-import { MenuButton } from '@components/ui/MenuIcon.tsx';
+import { OpenMenuButton } from '@components/ui/menuButtons.tsx';
 import { cn } from '@lib/utils.ts';
 
 interface MobilePostHeaderProps {
@@ -115,8 +115,8 @@ export function MobilePostHeader({
   return (
     <div className="flex w-full h-full items-center gap-2">
       {/*Mobile Menu controller*/}
-      <MenuButton
-        className="tablet:flex tablet:items-center tablet:justify-center top-0 left-3 z-[70] hidden h-14 transition-transform"
+      <OpenMenuButton
+        className="tablet:flex tablet:items-center tablet:justify-center z-[70] hidden h-14 transition-transform"
         id="mobile-menu-container"
       />
       <AnimatePresence mode="wait">
