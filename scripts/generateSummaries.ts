@@ -105,6 +105,15 @@ async function loadCache(): Promise<SummariesCache | null> {
   }
 }
 
+async function loadOutputSummaries(): Promise<Record<string, SummaryOutput> | null> {
+  try {
+    const data = await fs.readFile(OUTPUT_FILE, 'utf-8');
+    return JSON.parse(data) as Record<string, SummaryOutput>;
+  } catch {
+    return null;
+  }
+}
+
 async function saveCache(cache: SummariesCache): Promise<void> {
   const dir = path.dirname(CACHE_FILE);
   await fs.mkdir(dir, { recursive: true });
@@ -254,7 +263,27 @@ async function main() {
       return;
     }
 
-    const validCache = cache?.entries || {};
+    let validCache = cache?.entries || {};
+    if (!cache && !force) {
+      const outputSummaries = await loadOutputSummaries();
+      if (outputSummaries) {
+        const seededCache: Record<string, CacheEntry> = {};
+        for (const post of posts) {
+          const outputEntry = outputSummaries[post.slug];
+          if (!outputEntry?.summary) continue;
+          seededCache[post.slug] = {
+            hash: post.hash,
+            title: outputEntry.title || post.title,
+            summary: outputEntry.summary,
+            generatedAt: new Date().toISOString(),
+          };
+        }
+        if (Object.keys(seededCache).length > 0) {
+          validCache = seededCache;
+        }
+      }
+    }
+
     const needsGeneration = posts.some((post) => {
       const hasDescription = Boolean(post.description);
       const cachedEntry = validCache[post.slug];
@@ -262,17 +291,16 @@ async function main() {
       return !hasDescription && !(hasCache && !force);
     });
 
+    let skipGeneration = false;
     if (needsGeneration) {
       // Check LLM API is running only when needed
       const apiRunning = await checkApiRunning();
       if (!apiRunning) {
-        console.error(chalk.red('\nError: Cannot connect to LLM API.'));
-        console.error(chalk.yellow('Please check:'));
+        skipGeneration = true;
+        console.error(chalk.yellow('\nWarning: Cannot connect to LLM API.'));
         console.error(chalk.yellow('  - GEMINI_API_KEY is set correctly'));
         console.error(chalk.yellow('  - GEMINI_API_BASE_URL is accessible'));
-        console.error(chalk.yellow('\nOr add descriptions to your posts to skip LLM generation.'));
-        process.exitCode = 1;
-        return;
+        console.error(chalk.yellow('Skipping AI generation; will output manual/cached summaries only.'));
       }
     }
 
@@ -281,6 +309,7 @@ async function main() {
     let cached = 0;
     let generated = 0;
     let manual = 0;
+    let skipped = 0;
     let errors = 0;
 
     for (let i = 0; i < posts.length; i++) {
@@ -302,6 +331,15 @@ async function main() {
         newEntries[post.slug] = cachedEntry;
         cached++;
         process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.gray('cached')}: ${post.slug.slice(0, 40)}...`);
+      } else if (skipGeneration) {
+        // Keep cached summary if available, otherwise skip
+        if (cachedEntry) {
+          newEntries[post.slug] = cachedEntry;
+          cached++;
+        } else {
+          skipped++;
+        }
+        process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.yellow('skipped')}: ${post.slug.slice(0, 40)}...`);
       } else {
         // Generate new summary
         process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.yellow('generating')}: ${post.slug.slice(0, 40)}...`);
@@ -350,7 +388,7 @@ async function main() {
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log(
       chalk.green(
-        `\nDone. Generated ${generated}, manual ${manual}, reused ${cached}, errors ${errors}. (${elapsed}s)`,
+        `\nDone. Generated ${generated}, manual ${manual}, reused ${cached}, skipped ${skipped}, errors ${errors}. (${elapsed}s)`,
       ),
     );
   } catch (error) {
