@@ -105,8 +105,14 @@ function clampTranslation(img: HTMLImageElement): void {
   const scaledHeight = rect.height;
 
   // Allow panning up to half the image size beyond viewport
-  const maxX = Math.max(0, (scaledWidth - containerWidth) / 2 + containerWidth * 0.3);
-  const maxY = Math.max(0, (scaledHeight - containerHeight) / 2 + containerHeight * 0.3);
+  const maxX = Math.max(
+    0,
+    (scaledWidth - containerWidth) / 2 + containerWidth * 0.3,
+  );
+  const maxY = Math.max(
+    0,
+    (scaledHeight - containerHeight) / 2 + containerHeight * 0.3,
+  );
 
   zoomState.translateX = Math.max(-maxX, Math.min(maxX, zoomState.translateX));
   zoomState.translateY = Math.max(-maxY, Math.min(maxY, zoomState.translateY));
@@ -119,7 +125,8 @@ function applyZoomTransform(img: HTMLImageElement): void {
   clampTranslation(img);
   const { scale, translateX, translateY } = zoomState;
   img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-  img.style.cursor = scale > 1 ? (zoomState.isMouseDragging ? 'grabbing' : 'grab') : 'zoom-in';
+  img.style.cursor =
+    scale > 1 ? (zoomState.isMouseDragging ? 'grabbing' : 'grab') : 'zoom-in';
 }
 
 /**
@@ -175,15 +182,25 @@ function handleTouchMove(e: TouchEvent): void {
 
       // Adjust translation to zoom towards pinch point
       const scaleRatio = newScale / zoomState.scale;
-      zoomState.translateX = center.x - (center.x - imgCenterX - zoomState.translateX) * scaleRatio - imgCenterX;
-      zoomState.translateY = center.y - (center.y - imgCenterY - zoomState.translateY) * scaleRatio - imgCenterY;
+      zoomState.translateX =
+        center.x -
+        (center.x - imgCenterX - zoomState.translateX) * scaleRatio -
+        imgCenterX;
+      zoomState.translateY =
+        center.y -
+        (center.y - imgCenterY - zoomState.translateY) * scaleRatio -
+        imgCenterY;
 
       zoomState.scale = newScale;
       applyZoomTransform(lightboxImg);
     }
 
     zoomState.lastPinchDistance = currentDistance;
-  } else if (e.touches.length === 1 && zoomState.isPanning && zoomState.scale > 1) {
+  } else if (
+    e.touches.length === 1 &&
+    zoomState.isPanning &&
+    zoomState.scale > 1
+  ) {
     e.preventDefault();
     const deltaX = e.touches[0].clientX - zoomState.lastPanPoint.x;
     const deltaY = e.touches[0].clientY - zoomState.lastPanPoint.y;
@@ -241,8 +258,14 @@ function handleWheel(e: WheelEvent): void {
 
     // Zoom towards cursor position
     const scaleRatio = newScale / zoomState.scale;
-    zoomState.translateX = e.clientX - (e.clientX - imgCenterX - zoomState.translateX) * scaleRatio - imgCenterX;
-    zoomState.translateY = e.clientY - (e.clientY - imgCenterY - zoomState.translateY) * scaleRatio - imgCenterY;
+    zoomState.translateX =
+      e.clientX -
+      (e.clientX - imgCenterX - zoomState.translateX) * scaleRatio -
+      imgCenterX;
+    zoomState.translateY =
+      e.clientY -
+      (e.clientY - imgCenterY - zoomState.translateY) * scaleRatio -
+      imgCenterY;
 
     zoomState.scale = newScale;
     applyZoomTransform(lightboxImg);
@@ -276,8 +299,10 @@ function handleDoubleClick(e: MouseEvent): void {
 
     const newScale = 2;
     const scaleRatio = newScale / zoomState.scale;
-    zoomState.translateX = e.clientX - (e.clientX - imgCenterX) * scaleRatio - imgCenterX;
-    zoomState.translateY = e.clientY - (e.clientY - imgCenterY) * scaleRatio - imgCenterY;
+    zoomState.translateX =
+      e.clientX - (e.clientX - imgCenterX) * scaleRatio - imgCenterX;
+    zoomState.translateY =
+      e.clientY - (e.clientY - imgCenterY) * scaleRatio - imgCenterY;
     zoomState.scale = newScale;
 
     applyZoomTransform(lightboxImg);
@@ -288,7 +313,8 @@ function handleDoubleClick(e: MouseEvent): void {
  * Handle mouse move for panning when zoomed
  */
 function handleMouseMove(e: MouseEvent): void {
-  if (!zoomState.isMouseDragging || zoomState.scale <= 1 || !lightboxImg) return;
+  if (!zoomState.isMouseDragging || zoomState.scale <= 1 || !lightboxImg)
+    return;
 
   const deltaX = e.clientX - zoomState.lastPanPoint.x;
   const deltaY = e.clientY - zoomState.lastPanPoint.y;
@@ -355,8 +381,12 @@ function createLightbox(): HTMLElement {
   closeBtn.addEventListener('click', closeLightbox);
 
   // Touch events for pinch zoom
-  imgContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
-  imgContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+  imgContainer.addEventListener('touchstart', handleTouchStart, {
+    passive: false,
+  });
+  imgContainer.addEventListener('touchmove', handleTouchMove, {
+    passive: false,
+  });
   imgContainer.addEventListener('touchend', handleTouchEnd);
   imgContainer.addEventListener('touchcancel', handleTouchEnd);
 
@@ -445,7 +475,10 @@ function createErrorPlaceholder(img: HTMLImageElement): HTMLElement {
   const placeholder = document.createElement('div');
   placeholder.className = 'markdown-image-error';
   placeholder.setAttribute('role', 'img');
-  placeholder.setAttribute('aria-label', img.alt ? `图片加载失败: ${img.alt}` : '图片加载失败');
+  placeholder.setAttribute(
+    'aria-label',
+    img.alt ? `图片加载失败: ${img.alt}` : '图片加载失败',
+  );
 
   // Icon
   const icon = document.createElement('span');
@@ -484,7 +517,8 @@ function handleImageClick(e: Event): void {
 }
 
 export function enhanceImages(container: Element): void {
-  const images = container.querySelectorAll<HTMLImageElement>('.markdown-image');
+  const images =
+    container.querySelectorAll<HTMLImageElement>('.markdown-image');
   let loadedCount = 0;
   const totalImages = images.length;
 
@@ -583,7 +617,9 @@ function handleImageError(img: HTMLImageElement): void {
  * Group consecutive portrait images side by side
  */
 function groupPortraitImages(container: Element): void {
-  const allWrappers = Array.from(container.querySelectorAll('.markdown-image-wrapper'));
+  const allWrappers = Array.from(
+    container.querySelectorAll('.markdown-image-wrapper'),
+  );
 
   let currentGroup: Element[] = [];
 

@@ -7,9 +7,9 @@ tags: 技术分享
 ## 循环依赖示例
 
 ```javascript
-let a = {}
-let b = { a }
-a.b = b
+let a = {};
+let b = { a };
+a.b = b;
 ```
 
 ## 经验分享
@@ -26,30 +26,30 @@ a.b = b
  * @returns { object }
  */
 const deepCopy = (obj, stack = []) => {
-  let target = null
+  let target = null;
   if (typeof obj === 'object') {
-    if(stack.includes(obj)) {
-      return obj
+    if (stack.includes(obj)) {
+      return obj;
     } else {
-      stack.push(obj)
+      stack.push(obj);
     }
     if (Array.isArray(obj)) {
-      target = []
-      obj.forEach(item => {
-        target.push(deepCopy(item, stack))
-      })
+      target = [];
+      obj.forEach((item) => {
+        target.push(deepCopy(item, stack));
+      });
     } else if (obj) {
-      target = {}
+      target = {};
       for (const [key, value] of Object.entries(obj)) {
-        target[key] = deepCopy(obj[key], stack)
+        target[key] = deepCopy(obj[key], stack);
       }
     } else {
-      target = obj
+      target = obj;
     }
   } else {
-    target = obj
+    target = obj;
   }
-  return target
-}
-export default deepCopy
+  return target;
+};
+export default deepCopy;
 ```

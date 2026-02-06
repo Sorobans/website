@@ -3,7 +3,11 @@ import { HomeSiderSegmentType as SegmentTypeEnum } from '@constants/enum';
 import { homeSiderSegmentType } from '@store/app';
 import { Segmented, type OptionType } from '@components/ui/segmented';
 import React from 'react';
-import { RiDashboard3Line, RiListOrdered2, RiArticleLine } from 'react-icons/ri';
+import {
+  RiDashboard3Line,
+  RiListOrdered2,
+  RiArticleLine,
+} from 'react-icons/ri';
 import { cn } from '@/lib/utils';
 
 type HomeSiderSegmentedProps = {
@@ -15,7 +19,10 @@ type HomeSiderSegmentedProps = {
   value?: HomeSiderSegmentType; // 受控
 };
 
-export const HomeSiderSegmented = ({ className, ...props }: HomeSiderSegmentedProps) => {
+export const HomeSiderSegmented = ({
+  className,
+  ...props
+}: HomeSiderSegmentedProps) => {
   const options: OptionType<HomeSiderSegmentType>[] = [
     {
       label: '站点概览',

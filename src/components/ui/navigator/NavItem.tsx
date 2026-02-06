@@ -36,8 +36,7 @@ function NavItem({
           },
           className,
         )}
-        onClick={onClick}
-      >
+        onClick={onClick}>
         {icon}
         {name}
         {selected && (
@@ -45,7 +44,8 @@ function NavItem({
             className={cn(
               'border-primary absolute inset-x-0 -bottom-1.5 border-t-2',
               {
-                'bg-gradient-pink inset-0 -z-10 rounded-lg border-none': type === 'sider',
+                'bg-gradient-pink inset-0 -z-10 rounded-lg border-none':
+                  type === 'sider',
               },
               indicatorClass,
             )}

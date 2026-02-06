@@ -5,7 +5,14 @@
  * Uses Floating UI for positioning and Motion for animations.
  */
 
-import { FloatingFocusManager, FloatingPortal, useClick, useDismiss, useInteractions, useRole } from '@floating-ui/react';
+import {
+  FloatingFocusManager,
+  FloatingPortal,
+  useClick,
+  useDismiss,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react';
 import { useControlledState } from '@hooks/useControlledState';
 import { useFloatingUI } from '@hooks/useFloatingUI';
 import { AnimatePresence, motion } from 'motion/react';
@@ -62,7 +69,11 @@ export function MobileTOCDropdown({
   const dismiss = useDismiss(context, { ancestorScroll: true });
   const role = useRole(context);
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    click,
+    dismiss,
+    role,
+  ]);
   const referenceRef = useRef<HTMLElement | null>(null);
   const floatingRef = useRef<HTMLDivElement | null>(null);
 
@@ -83,16 +94,21 @@ export function MobileTOCDropdown({
     setIsOpen(false);
   };
 
-  const { className: referenceClassName, ...referenceProps } = getReferenceProps();
+  const { className: referenceClassName, ...referenceProps } =
+    getReferenceProps();
   const floatingProps = getFloatingProps();
 
   return (
     <>
       <span
         ref={referenceRef}
-        className={cn('inline-flex', typeof referenceClassName === 'string' ? referenceClassName : undefined)}
-        {...referenceProps}
-      >
+        className={cn(
+          'inline-flex',
+          typeof referenceClassName === 'string'
+            ? referenceClassName
+            : undefined,
+        )}
+        {...referenceProps}>
         {trigger}
       </span>
       <AnimatePresence>
@@ -107,9 +123,10 @@ export function MobileTOCDropdown({
                 animate={{ opacity: 1, scale: 1, originY: 0 }}
                 exit={{ opacity: 0, scale: 0.85 }}
                 transition={animation.spring.popoverContent}
-                {...floatingProps}
-              >
-                <nav className={enableNumbering ? '' : 'toc-no-numbering'} aria-label="文章目录">
+                {...floatingProps}>
+                <nav
+                  className={enableNumbering ? '' : 'toc-no-numbering'}
+                  aria-label="文章目录">
                   <div className="space-y-1">
                     <HeadingList
                       headings={headings}

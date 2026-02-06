@@ -1,7 +1,11 @@
 export default function WaveSvg() {
   return (
     <div className="wave-wrap">
-      <svg className="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
+      <svg
+        className="wave"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 24 150 28"
+        preserveAspectRatio="none">
         <defs>
           <path
             id="gentle-wave"
@@ -9,9 +13,24 @@ export default function WaveSvg() {
           />
         </defs>
         <g className="parallax">
-          <use xlinkHref="#gentle-wave" x="50" y="0" fill="rgba(255, 255, 255, 0.48)" />
-          <use xlinkHref="#gentle-wave" x="50" y="3" fill="rgba(255, 255, 255, 0.78)" />
-          <use xlinkHref="#gentle-wave" x="50" y="6" fill="rgba(255, 255, 255, 0.8)" />
+          <use
+            xlinkHref="#gentle-wave"
+            x="50"
+            y="0"
+            fill="rgba(255, 255, 255, 0.48)"
+          />
+          <use
+            xlinkHref="#gentle-wave"
+            x="50"
+            y="3"
+            fill="rgba(255, 255, 255, 0.78)"
+          />
+          <use
+            xlinkHref="#gentle-wave"
+            x="50"
+            y="6"
+            fill="rgba(255, 255, 255, 0.8)"
+          />
         </g>
       </svg>
     </div>

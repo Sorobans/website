@@ -18,11 +18,16 @@ export default function RandomPostList({ posts, postIndexMap }: Props) {
               <a
                 key={post.id}
                 href={getPostHref(post, postIndexMap)}
-                className="group hover:text-primary hover:bg-foreground/5 flex gap-3 rounded-md p-2 text-sm transition-colors duration-300"
-              >
-                <span className="text-foreground/30 shrink-0 font-mono">{index + 1}</span>
+                className="group hover:text-primary hover:bg-foreground/5 flex gap-3 rounded-md p-2 text-sm transition-colors duration-300">
+                <span className="text-foreground/30 shrink-0 font-mono">
+                  {index + 1}
+                </span>
                 <div className="flex min-w-0 flex-col gap-0.5">
-                  {category.name && <div className="text-foreground/50 truncate text-xs">{category.name}</div>}
+                  {category.name && (
+                    <div className="text-foreground/50 truncate text-xs">
+                      {category.name}
+                    </div>
+                  )}
                   <div className="text-foreground/80 group-hover:text-primary line-clamp-2 transition-colors">
                     {post.data.title}
                   </div>

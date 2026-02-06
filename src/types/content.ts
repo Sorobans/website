@@ -1,69 +1,71 @@
 /**
- * Content Types
+ * 内容相关类型
  *
- * This file contains types related to blog content, categories, tags, and content collections.
+ * 定义博客内容、分类、标签与分页的公共类型。
  */
 
-// Re-export blog types for convenience
+// 便捷导出博客类型
 export type { BlogPost, BlogSchema } from './blog';
 
 /**
- * Category structure (hierarchical)
+ * 分类结构（层级）
  */
 export interface Category {
-  /** Category name */
+  /** 分类名称 */
   name: string;
-  /** Child categories */
+  /** 从根到当前节点的分类路径 */
+  path: string[];
+  /** 子分类 */
   children?: Category[];
 }
 
 /**
- * Category with count information
+ * 带数量信息的分类
  */
 export interface CategoryWithCount extends Category {
-  /** Number of posts in this category */
+  /** 该分类下的文章数 */
   count: number;
 }
 
 /**
- * Category list result
+ * 分类列表结果
  */
 export interface CategoryListResult {
-  /** Hierarchical category tree */
+  /** 层级分类树 */
   categories: Category[];
-  /** Map of category name to post count */
+  /** 分类路径(JSON 字符串)到文章数的映射 */
   countMap: Record<string, number>;
 }
 
 /**
- * Tag with count information
+ * 带数量信息的标签
  */
 export interface TagWithCount {
-  /** Tag name */
+  /** 标签名 */
   name: string;
-  /** Number of posts with this tag */
+  /** 含此标签的文章数 */
   count: number;
 }
 
 /**
- * Post metadata for list views
+ * 列表页使用的文章元数据
  */
 export interface PostMetadata {
-  /** Post title */
+  /** 文章标题 */
   title: string;
-  /** Post description */
+  /** 文章描述 */
   description?: string;
-  /** Post URL */
+  /** 文章链接 */
   url: string;
-  /** Post date */
+  /** 文章日期 */
   date: Date;
-  /** Post cover image */
+  /** 封面图 */
   cover?: string;
-  /** Post tags */
+  /** 标签 */
   tags?: string[];
-  /** Post categories */
+  /** 分类 */
   categories?: string[] | string[][];
-  /** Reading time statistics */
+  /** 阅读时长统计 */
   readingTime?: {
     text: string;
     minutes: number;
@@ -72,19 +74,19 @@ export interface PostMetadata {
 }
 
 /**
- * Pagination result
+ * 分页结果
  */
 export interface PaginatedResult<T> {
-  /** Current page items */
+  /** 当前页数据 */
   data: T[];
-  /** Current page number (1-indexed) */
+  /** 当前页码（从 1 开始） */
   page: number;
-  /** Total number of pages */
+  /** 总页数 */
   totalPages: number;
-  /** Total number of items */
+  /** 总条目数 */
   totalItems: number;
-  /** Whether there's a next page */
+  /** 是否存在下一页 */
   hasNext: boolean;
-  /** Whether there's a previous page */
+  /** 是否存在上一页 */
   hasPrev: boolean;
 }

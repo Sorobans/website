@@ -32,7 +32,9 @@ const CACHE_VERSION = '1';
 
 // LLM API settings (OpenAI-compatible)
 // Uses Google Gemini OpenAI-compatible endpoint.
-const API_BASE_URL = process.env.GEMINI_API_BASE_URL ?? 'https://generativelanguage.googleapis.com/v1beta/openai/';
+const API_BASE_URL =
+  process.env.GEMINI_API_BASE_URL ??
+  'https://generativelanguage.googleapis.com/v1beta/openai/';
 const API_KEY = process.env.GEMINI_API_KEY ?? '';
 const DEFAULT_MODEL = process.env.GEMINI_MODEL ?? 'gemini-2.0-flash-exp';
 
@@ -105,7 +107,10 @@ async function loadCache(): Promise<SummariesCache | null> {
   }
 }
 
-async function loadOutputSummaries(): Promise<Record<string, SummaryOutput> | null> {
+async function loadOutputSummaries(): Promise<Record<
+  string,
+  SummaryOutput
+> | null> {
   try {
     const data = await fs.readFile(OUTPUT_FILE, 'utf-8');
     return JSON.parse(data) as Record<string, SummaryOutput>;
@@ -129,7 +134,10 @@ async function getPlainText(markdown: string): Promise<string> {
   return String(result)
     .replace(/^import\s+.*$/gm, '')
     .replace(/^export\s+.*$/gm, '')
-    .replace(/^\s*(TLDR|Introduction|Conclusion|Summary|References?|Footnotes?)\s*$/gim, '')
+    .replace(
+      /^\s*(TLDR|Introduction|Conclusion|Summary|References?|Footnotes?)\s*$/gim,
+      '',
+    )
     .replace(/^[A-Z\s]{4,}$/gm, '')
     .replace(/^\|.*\|$/gm, '')
     .replace(/^:::.*/gm, '')
@@ -140,7 +148,9 @@ async function getPlainText(markdown: string): Promise<string> {
 
 function extractSlug(filePath: string, link?: string): string {
   if (link) return link;
-  const relativePath = filePath.replace(/^source\/posts\//, '').replace(/\.md$/, '');
+  const relativePath = filePath
+    .replace(/^source\/posts\//, '')
+    .replace(/\.md$/, '');
   // Convert to lowercase to match Astro's auto-generated collection entry IDs
   return relativePath.toLowerCase();
 }
@@ -296,7 +306,11 @@ async function main() {
         console.error(chalk.yellow('\nWarning: Cannot connect to LLM API.'));
         console.error(chalk.yellow('  - GEMINI_API_KEY is set correctly'));
         console.error(chalk.yellow('  - GEMINI_API_BASE_URL is accessible'));
-        console.error(chalk.yellow('Skipping AI generation; will output manual/cached summaries only.'));
+        console.error(
+          chalk.yellow(
+            'Skipping AI generation; will output manual/cached summaries only.',
+          ),
+        );
       }
     }
 
@@ -321,12 +335,16 @@ async function main() {
           generatedAt: new Date().toISOString(),
         };
         manual++;
-        process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.blue('manual')}: ${post.slug.slice(0, 40)}...`);
+        process.stdout.write(
+          `\r  [${i + 1}/${posts.length}] ${chalk.blue('manual')}: ${post.slug.slice(0, 40)}...`,
+        );
       } else if (cachedEntry && cachedEntry.hash === post.hash && !force) {
         // Use cached summary
         newEntries[post.slug] = cachedEntry;
         cached++;
-        process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.gray('cached')}: ${post.slug.slice(0, 40)}...`);
+        process.stdout.write(
+          `\r  [${i + 1}/${posts.length}] ${chalk.gray('cached')}: ${post.slug.slice(0, 40)}...`,
+        );
       } else if (skipGeneration) {
         // Keep cached summary if available, otherwise skip
         if (cachedEntry) {
@@ -335,10 +353,14 @@ async function main() {
         } else {
           skipped++;
         }
-        process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.yellow('skipped')}: ${post.slug.slice(0, 40)}...`);
+        process.stdout.write(
+          `\r  [${i + 1}/${posts.length}] ${chalk.yellow('skipped')}: ${post.slug.slice(0, 40)}...`,
+        );
       } else {
         // Generate new summary
-        process.stdout.write(`\r  [${i + 1}/${posts.length}] ${chalk.yellow('generating')}: ${post.slug.slice(0, 40)}...`);
+        process.stdout.write(
+          `\r  [${i + 1}/${posts.length}] ${chalk.yellow('generating')}: ${post.slug.slice(0, 40)}...`,
+        );
 
         try {
           const summary = await generateSummary(post.text, model);
@@ -350,7 +372,10 @@ async function main() {
           };
           generated++;
         } catch (error) {
-          console.error(chalk.red(`  Error generating summary for ${post.slug}:`), error);
+          console.error(
+            chalk.red(`  Error generating summary for ${post.slug}:`),
+            error,
+          );
           errors++;
           // Keep old cached entry if available
           if (cachedEntry) {

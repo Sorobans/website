@@ -1,36 +1,46 @@
 /**
- * Content utilities - Index file
+ * 内容工具导出入口
  *
- * Re-exports all content-related utilities from modular files.
- * This maintains backward compatibility while organizing code better.
+ * 统一从模块化文件重新导出，保持兼容并降低调用方的导入复杂度。
  */
 
-// Export types
+// 导出类型
 export type { Category, CategoryListResult } from './content/types';
 
-// Export category utilities
+// 导出分类工具
 export {
   addCategoryRecursively,
   buildCategoryPath,
   getCategoryArr,
   getCategoryByLink,
+  getCategoryCount,
+  getCategoryCountKey,
   getCategoryLinks,
   getCategoryList,
+  getCategoryNodeCount,
   getCategoryNameByLink,
   getParentCategory,
 } from './content/categories';
 
-// Export post utilities
+// 导出文章工具
 export {
+  buildHomePageData,
+  getArchiveData,
   getAdjacentSeriesPosts,
+  getPostCategoryBreadcrumbs,
+  groupPostsByYear,
   getPostCount,
   getPostDescription,
   getPostDescriptionWithSummary,
   getPostHref,
   getPostIndex,
   getPostIndexMap,
+  getPostKeywords,
   getPostLastCategory,
+  getPostSummaryData,
+  getPostSeriesViewModel,
   getPostsByCategory,
+  getPostsByCategoryPath,
   getPostsBySticky,
   getPostSummary,
   getRandomPosts,
@@ -41,5 +51,17 @@ export {
   getNonWeeklyPostsBySticky,
 } from './content/posts';
 
-// Export tag utilities
-export { getAllTags } from './content/tags';
+export type {
+  PostLinkItem,
+  PostSummaryData,
+  PostSummarySource,
+} from './content/posts';
+
+// 导出标签工具
+export {
+  getAllTags,
+  getSortedTagsWithCount,
+  getTagPostMap,
+  normalizePostTags,
+  toTagParam,
+} from './content/tags';

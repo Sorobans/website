@@ -1,6 +1,10 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@lib/utils';
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ReactNode,
+} from 'react';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -8,9 +12,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        destructive:
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        outline:
+          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        secondary:
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         'gradient-shoka': 'bg-gradient-shoka-button text-primary-foreground',
@@ -48,18 +55,28 @@ type ButtonLinkButtonProps = ButtonLinkBaseProps &
 
 type ButtonLinkProps = ButtonLinkAnchorProps | ButtonLinkButtonProps;
 
-export function ButtonLink({ url, label, variant, size, className, children, ...rest }: ButtonLinkProps) {
+export function ButtonLink({
+  url,
+  label,
+  variant,
+  size,
+  className,
+  children,
+  ...rest
+}: ButtonLinkProps) {
   const isLink = typeof url === 'string' && url.length > 0;
 
   if (isLink) {
-    const anchorProps = rest as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>;
+    const anchorProps = rest as Omit<
+      AnchorHTMLAttributes<HTMLAnchorElement>,
+      'href'
+    >;
     return (
       <a
         href={url}
         aria-label={label}
         className={cn(buttonVariants({ variant, size }), className)}
-        {...anchorProps}
-      >
+        {...anchorProps}>
         {children}
       </a>
     );
@@ -69,8 +86,7 @@ export function ButtonLink({ url, label, variant, size, className, children, ...
     <button
       type="button"
       className={cn(buttonVariants({ variant, size }), className)}
-      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
-    >
+      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>
       {children}
     </button>
   );

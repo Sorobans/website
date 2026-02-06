@@ -6,30 +6,63 @@
  */
 
 // Toggle state hook
-export { useToggle, type UseToggleOptions, type UseToggleReturn } from './useToggle';
+export {
+  useToggle,
+  type UseToggleOptions,
+  type UseToggleReturn,
+} from './useToggle';
 
 // Controlled/uncontrolled state pattern
-export { useControlledState, type UseControlledStateOptions } from './useControlledState';
+export {
+  useControlledState,
+  type UseControlledStateOptions,
+} from './useControlledState';
 
 // Floating UI wrapper
 export { useFloatingUI, type UseFloatingUIOptions } from './useFloatingUI';
 
 // Media query hooks
-export { useMediaQuery, useIsMobile, useIsTablet, usePrefersColorSchemeDark, usePrefersReducedMotion } from './useMediaQuery';
+export {
+  useMediaQuery,
+  useIsMobile,
+  useIsTablet,
+  usePrefersColorSchemeDark,
+  usePrefersReducedMotion,
+} from './useMediaQuery';
 
 // Theme state hook (monitors actual page theme, not system preference)
 export { useIsDarkTheme } from './useIsDarkTheme';
 
 // TableOfContents-specific hooks
-export { useHeadingTree, findHeadingById, getParentIds, getSiblingIds, type Heading } from './useHeadingTree';
+export {
+  useHeadingTree,
+  findHeadingById,
+  getParentIds,
+  getSiblingIds,
+  type Heading,
+} from './useHeadingTree';
 
-export { useActiveHeading, type UseActiveHeadingOptions } from './useActiveHeading';
+export {
+  useActiveHeading,
+  type UseActiveHeadingOptions,
+} from './useActiveHeading';
 
-export { useExpandedState, type UseExpandedStateOptions, type UseExpandedStateReturn } from './useExpandedState';
+export {
+  useExpandedState,
+  type UseExpandedStateOptions,
+  type UseExpandedStateReturn,
+} from './useExpandedState';
 
-export { useHeadingClickHandler, type UseHeadingClickHandlerOptions } from './useHeadingClickHandler';
+export {
+  useHeadingClickHandler,
+  type UseHeadingClickHandlerOptions,
+} from './useHeadingClickHandler';
 
-export { useCurrentHeading, type CurrentHeading, type UseCurrentHeadingOptions } from './useCurrentHeading';
+export {
+  useCurrentHeading,
+  type CurrentHeading,
+  type UseCurrentHeadingOptions,
+} from './useCurrentHeading';
 
 // Utility hooks
 export { useIsMounted } from './useIsMounted';

@@ -17,8 +17,14 @@ export interface LayoutFooterData {
   postFooter: PostFooterData;
 }
 
-export async function getLayoutFooterData(post?: BlogPost): Promise<LayoutFooterData> {
-  const [stats, postIndexMap, randomPosts] = await Promise.all([getSiteStats(), getPostIndexMap(), getRandomPosts(10)]);
+export async function getLayoutFooterData(
+  post?: BlogPost,
+): Promise<LayoutFooterData> {
+  const [stats, postIndexMap, randomPosts] = await Promise.all([
+    getSiteStats(),
+    getPostIndexMap(),
+    getRandomPosts(10),
+  ]);
 
   const similarityAvailable = hasSimilarityData();
   let relatedPosts: BlogPost[] = [];

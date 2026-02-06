@@ -7,7 +7,7 @@ import { CONTENT_PADDING } from '@constants/layout';
 import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Layout from '@layouts/Layout.astro';
-import { getAllTags, getSortedPosts } from '@lib/content';
+import { getSortedPosts, getSortedTagsWithCount, toTagParam } from '@lib/content';
 import { getLayoutFooterData } from '@lib/layout/footer-data';
 
 const TAG_COLORS = [
@@ -17,13 +17,8 @@ const TAG_COLORS = [
   'from-sky-400/10 to-blue-300/10 hover:from-sky-400/80 hover:to-blue-300/80 text-sky-400/70 hover:text-sky-50',
 ];
 
-const posts = await getSortedPosts();
-const tags = getAllTags(posts);
-const sortedTags = Object.entries(tags)
-  .sort(([, a], [, b]) => b - a)
-  .map(([tag, count]) => ({ tag, count }));
-
-const layoutFooterData = await getLayoutFooterData();
+const [posts, layoutFooterData] = await Promise.all([getSortedPosts(), getLayoutFooterData()]);
+const sortedTags = getSortedTagsWithCount(posts);
 ---
 
 <Layout title={`标签 | ${blogLayoutConfig.title}`} description="所有文章标签">
@@ -41,16 +36,16 @@ const layoutFooterData = await getLayoutFooterData();
       </h2>
       <div class="flex flex-wrap gap-3 px-4 md:px-0">
         {
-          sortedTags.map(({ tag, count }, index) => (
+          sortedTags.map(({ name, count }, index) => (
             <div class="group relative">
               {/* 防止闪烁 */}
               <a
-                href={`${Routes.Tags}/${tag.replace(/\//g, '-')}`}
+                href={`${Routes.Tags}/${toTagParam(name)}`}
                 class={`group relative flex items-center rounded-lg bg-gradient-to-r px-3 py-1.5 text-sm transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-lg ${
                   TAG_COLORS[index % TAG_COLORS.length]
                 }`}
               >
-                <span class="font-medium">{tag}</span>
+                <span class="font-medium">{name}</span>
                 <span class="ml-1.5 truncate rounded-full bg-white/10 px-1.5 text-xs">{count}</span>
               </a>
             </div>

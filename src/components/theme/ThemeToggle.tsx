@@ -58,9 +58,14 @@ export default function ThemeToggle() {
 
     rootElement.classList.add('theme-transition');
 
-    const startViewTransition = (document as Document & {
-      startViewTransition?: (callback: () => void) => { ready: Promise<void>; finished: Promise<void> };
-    }).startViewTransition;
+    const startViewTransition = (
+      document as Document & {
+        startViewTransition?: (callback: () => void) => {
+          ready: Promise<void>;
+          finished: Promise<void>;
+        };
+      }
+    ).startViewTransition;
 
     if (!startViewTransition) {
       applyTheme(willBeDark);
@@ -71,7 +76,9 @@ export default function ThemeToggle() {
       return;
     }
 
-    let transition: { ready: Promise<void>; finished: Promise<void> } | undefined;
+    let transition:
+      | { ready: Promise<void>; finished: Promise<void> }
+      | undefined;
     try {
       transition = startViewTransition(() => {
         applyTheme(willBeDark);
@@ -103,8 +110,14 @@ export default function ThemeToggle() {
       });
   }, [applyTheme]);
 
-  const lightIconStyle = useMemo(() => (isDarkMode ? LIGHT_STYLE_HIDDEN : LIGHT_STYLE), [isDarkMode]);
-  const darkIconStyle = useMemo(() => (isDarkMode ? DARK_STYLE_SHOWN : DARK_STYLE), [isDarkMode]);
+  const lightIconStyle = useMemo(
+    () => (isDarkMode ? LIGHT_STYLE_HIDDEN : LIGHT_STYLE),
+    [isDarkMode],
+  );
+  const darkIconStyle = useMemo(
+    () => (isDarkMode ? DARK_STYLE_SHOWN : DARK_STYLE),
+    [isDarkMode],
+  );
 
   return (
     <>
@@ -115,10 +128,13 @@ export default function ThemeToggle() {
         aria-label="toggle theme"
         aria-pressed={isDarkMode}
         onClick={toggleTheme}
-        ref={buttonRef}
-      >
-        <i className="fa-solid fa-sun text-2xl light-icon transition-all duration-300" style={lightIconStyle}></i>
-        <i className="fa-solid fa-moon text-2xl dark-icon transition-all duration-300" style={darkIconStyle}></i>
+        ref={buttonRef}>
+        <i
+          className="fa-solid fa-sun text-2xl light-icon transition-all duration-300"
+          style={lightIconStyle}></i>
+        <i
+          className="fa-solid fa-moon text-2xl dark-icon transition-all duration-300"
+          style={darkIconStyle}></i>
       </button>
       <style>{`
         .theme-toggle {

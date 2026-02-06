@@ -14,8 +14,10 @@ export function ScrollProgress({ className }: ScrollProgressProps) {
       const bar = barRef.current;
       if (!bar) return;
 
-      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress =
+        scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
       bar.style.transform = `scaleX(${progress})`;
       frameId = null;
     };
@@ -40,7 +42,10 @@ export function ScrollProgress({ className }: ScrollProgressProps) {
 
   return (
     <div className={className}>
-      <div ref={barRef} className="bg-primary h-1 origin-left rounded-full scale-x-0" />
+      <div
+        ref={barRef}
+        className="bg-primary h-1 origin-left rounded-full scale-x-0"
+      />
     </div>
   );
 }

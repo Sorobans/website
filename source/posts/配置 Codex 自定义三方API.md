@@ -13,6 +13,7 @@ categories: 技术教程
 ## 配置路径
 
 配置文件位置:
+
 - **macOS/Linux**: `~/.codex/config.toml`
 - **Windows**: `C:\Users\你的用户名\.codex\config.toml`
 
@@ -54,6 +55,7 @@ env_key = "K_CODEX" #不要改成自己的密钥,在系统环境变量中设置
 ### 2. 设置环境变量
 
 **macOS/Linux** 在 `~/.zshrc` 或 `~/.bashrc` 加一行:
+
 ```bash
 export K_CODEX="your-api-key-here"
 ```
@@ -61,6 +63,7 @@ export K_CODEX="your-api-key-here"
 然后 `source ~/.zshrc` 生效。
 
 **Windows** PowerShell 执行:
+
 ```powershell
 [System.Environment]::SetEnvironmentVariable('K_CODEX', 'your-api-key-here', 'User')
 ```

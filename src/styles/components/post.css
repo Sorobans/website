@@ -71,7 +71,8 @@
 }
 
 .heading-link[data-level='4']::before {
-  content: counter(heading-h2) '.' counter(heading-h3) '.' counter(heading-h4) '. ';
+  content: counter(heading-h2) '.' counter(heading-h3) '.' counter(heading-h4)
+    '. ';
 }
 
 /* H5: "1.1.1.1. " */
@@ -81,7 +82,8 @@
 }
 
 .heading-link[data-level='5']::before {
-  content: counter(heading-h2) '.' counter(heading-h3) '.' counter(heading-h4) '.' counter(heading-h5) '. ';
+  content: counter(heading-h2) '.' counter(heading-h3) '.' counter(heading-h4)
+    '.' counter(heading-h5) '. ';
 }
 
 /* H6: "1.1.1.1.1. " */
@@ -90,8 +92,8 @@
 }
 
 .heading-link[data-level='6']::before {
-  content: counter(heading-h2) '.' counter(heading-h3) '.' counter(heading-h4) '.' counter(heading-h5) '.'
-    counter(heading-h6) '. ';
+  content: counter(heading-h2) '.' counter(heading-h3) '.' counter(heading-h4)
+    '.' counter(heading-h5) '.' counter(heading-h6) '. ';
 }
 
 /* 4. 编号样式:等宽数字,右侧间距,柔和颜色 */

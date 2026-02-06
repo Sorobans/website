@@ -47,7 +47,10 @@ function rgbToHex(rgb: RgbColor): string {
 async function processImage(imagePath: string): Promise<string | null> {
   try {
     // Resize to 2x2 to get 4 quadrant colors
-    const resized = await sharp(imagePath).resize(2, 2, { fit: 'fill' }).raw().toBuffer({ resolveWithObject: true });
+    const resized = await sharp(imagePath)
+      .resize(2, 2, { fit: 'fill' })
+      .raw()
+      .toBuffer({ resolveWithObject: true });
 
     const channels = resized.info.channels;
     const data = resized.data;
@@ -88,21 +91,18 @@ async function main() {
   const startTime = Date.now();
 
   try {
-    ;
-
     const files = await glob(IMAGE_GLOB);
     if (!files.length) {
-      ;
       return;
     }
-    ;
-
     const lqips: LqipMap = {};
     let processed = 0;
     let skipped = 0;
 
     for (const file of files) {
-      process.stdout.write(`\r  Processing ${processed + 1}/${files.length}: ${path.basename(file)}...`);
+      process.stdout.write(
+        `\r  Processing ${processed + 1}/${files.length}: ${path.basename(file)}...`,
+      );
 
       const compact = await processImage(file);
       if (compact !== null) {
@@ -120,7 +120,11 @@ async function main() {
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     const skippedInfo = skipped > 0 ? `, skipped ${skipped}` : '';
-    console.log(chalk.green(`\nDone. Generated ${processed} LQIPs${skippedInfo} in ${elapsed}s.`));
+    console.log(
+      chalk.green(
+        `\nDone. Generated ${processed} LQIPs${skippedInfo} in ${elapsed}s.`,
+      ),
+    );
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

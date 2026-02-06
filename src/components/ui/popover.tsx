@@ -64,7 +64,12 @@ function Popover({
     enabled: trigger === 'click',
   });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, useDismiss(context), useRole(context)]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    hover,
+    click,
+    useDismiss(context),
+    useRole(context),
+  ]);
 
   const referenceProps = getReferenceProps();
   const floatingProps = getFloatingProps();
@@ -90,7 +95,10 @@ function Popover({
           <FloatingPortal>
             <FloatingFocusManager context={context} modal={false}>
               <motion.div
-                className={cn('z-10 rounded-ss-2xl rounded-ee-2xl bg-black/30 backdrop-blur-sm', className)}
+                className={cn(
+                  'z-10 rounded-ss-2xl rounded-ee-2xl bg-black/30 backdrop-blur-sm',
+                  className,
+                )}
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1, originY: 0 }}
                 exit={{ opacity: 0, scale: 0.85 }}
@@ -98,8 +106,7 @@ function Popover({
                 style={{ ...floatingStyles }}
                 {...motionProps}
                 ref={setFloating}
-                {...floatingProps}
-              >
+                {...floatingProps}>
                 {render({ close: () => setIsOpen(false) })}
               </motion.div>
             </FloatingFocusManager>

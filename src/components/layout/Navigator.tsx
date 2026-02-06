@@ -7,7 +7,9 @@ import SearchWithDialog from './SearchWithDialog';
 
 export default function Navigator() {
   return (
-    <div className="tablet:grow-0 flex grow items-center" style={{ viewTransitionName: 'page-header' }}>
+    <div
+      className="tablet:grow-0 flex grow items-center"
+      style={{ viewTransitionName: 'page-header' }}>
       <div className="tablet:hidden flex grow items-center gap-4">
         {routers.map((item, index) => {
           const itemKey = item.path ?? item.name ?? `nav-item-${index}`;
@@ -25,9 +27,10 @@ export default function Navigator() {
                 {
                   'hover:after:w-9/12': true,
                 },
+              )}>
+              {item.icon && (
+                <i className={`mr-1.5 ${item.icon}`} aria-hidden="true" />
               )}
-            >
-              {item.icon && <i className={`mr-1.5 ${item.icon}`} aria-hidden="true" />}
               {item.name}
             </ButtonLink>
           );

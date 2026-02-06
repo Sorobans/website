@@ -1,251 +1,232 @@
 /**
- * Post-related utility functions
+ * 文章相关工具函数
  */
-
-import { getCollection } from 'astro:content';
 
 import summaries from '@/cache/summaries.json';
 import { weeklyConfig } from '@/config/weeklyConfig';
-import type { BlogPost, BlogSchema } from '@/types/blog';
+import type { BlogPost } from '@/types/blog';
 import { Routes } from '@constants/router';
-import { buildCategoryPath, DEFAULT_CATEGORY_NAME, getCategoryArr } from './categories';
+import type { Page } from 'astro';
+
 import { extractTextFromMarkdown } from '../sanitize';
+import {
+  buildCategoryPath,
+  DEFAULT_CATEGORY_NAME,
+  getCategoryArr,
+} from './categories';
+import {
+  getPostStableKey,
+  getVisibleBlogPosts,
+  getVisibleBlogPostsSortedAsc,
+  getVisibleBlogPostsSortedDesc,
+  splitPostsBySticky,
+} from './repository';
 
 /** AI 摘要数据类型 */
 type SummariesData = Record<string, { title: string; summary: string }>;
+let postIndexMapCache: Promise<Map<string, number>> | null = null;
 
 /**
  * 获取文章描述
- * 优先使用 frontmatter 中的 description，如果不存在则从 Markdown 内容中智能提取
- * @param post 文章对象
- * @param maxLength 最大长度，默认 150 字符
- * @returns 文章描述文本
+ * 优先使用 frontmatter description，否则从正文提取
  */
-export function getPostDescription(post: BlogPost, maxLength: number = 150): string {
-  return post.data.description || extractTextFromMarkdown(post.body ?? '', maxLength);
+export function getPostDescription(
+  post: BlogPost,
+  maxLength: number = 150,
+): string {
+  return (
+    post.data.description || extractTextFromMarkdown(post.body ?? '', maxLength)
+  );
 }
 
 /**
- * 获取文章的 AI 摘要
- * @param slug 文章 slug（通常是 post.data.link 或 post.id）
- * @returns AI 摘要文本，如果不存在则返回 null
+ * 获取文章 AI 摘要
  */
 export function getPostSummary(slug: string): string | null {
   const data = summaries as SummariesData;
   return data[slug]?.summary ?? null;
 }
 
-function getPostKey(post: BlogPost): string {
-  return post.data?.link ?? post.id ?? '';
+/**
+ * 获取文章描述，带 AI 摘要回退
+ * 优先级：description > AI 摘要 > 正文提取
+ */
+export function getPostDescriptionWithSummary(
+  post: BlogPost,
+  maxLength: number = 150,
+): string {
+  const key = getPostStableKey(post);
+  return (
+    post.data.description ||
+    getPostSummary(key) ||
+    extractTextFromMarkdown(post.body ?? '', maxLength)
+  );
 }
 
 /**
- * Build a map of post key -> index, sorted by date asc (earliest = 1).
+ * 构建文章序号索引（最早文章为 1）
  */
 export async function getPostIndexMap(): Promise<Map<string, number>> {
-  const posts = await getSortedPosts();
-  const sorted = [...posts].sort((a, b) => {
-    const dateDiff = new Date(a.data.date).getTime() - new Date(b.data.date).getTime();
-    if (dateDiff !== 0) return dateDiff;
-    const aKey = getPostKey(a);
-    const bKey = getPostKey(b);
-    return aKey.localeCompare(bKey);
-  });
+  const buildMap = async (): Promise<Map<string, number>> => {
+    const sorted = await getVisibleBlogPostsSortedAsc();
+    const map = new Map<string, number>();
 
-  const map = new Map<string, number>();
-  sorted.forEach((post, index) => {
-    const key = getPostKey(post);
-    if (key) {
-      map.set(key, index + 1);
-    }
-  });
+    sorted.forEach((post, index) => {
+      const key = getPostStableKey(post);
+      if (key) {
+        map.set(key, index + 1);
+      }
+    });
 
-  return map;
+    return map;
+  };
+
+  if (import.meta.env.DEV) {
+    return buildMap();
+  }
+
+  if (!postIndexMapCache) {
+    postIndexMapCache = buildMap();
+  }
+
+  return new Map(await postIndexMapCache);
 }
 
-export function getPostIndex(post: BlogPost, indexMap: Map<string, number>): number | null {
-  const key = getPostKey(post);
+export function getPostIndex(
+  post: BlogPost,
+  indexMap: Map<string, number>,
+): number | null {
+  const key = getPostStableKey(post);
   if (!key) return null;
   return indexMap.get(key) ?? null;
 }
 
-export function getPostHref(post: BlogPost, indexMap?: Map<string, number>): string {
+export function getPostHref(
+  post: BlogPost,
+  indexMap?: Map<string, number>,
+): string {
   if (indexMap) {
     const index = getPostIndex(post, indexMap);
     if (index) return `${Routes.Post}/${index}`;
   }
 
-  const key = getPostKey(post);
+  const key = getPostStableKey(post);
   return key ? `${Routes.Post}/${key}` : Routes.Post;
 }
 
 /**
- * 获取文章描述，带 AI 摘要 fallback
- * 优先级：frontmatter description > AI 摘要 > markdown 提取
- * @param post 文章对象
- * @param maxLength 最大长度，默认 150 字符
- * @returns 文章描述文本
- */
-export function getPostDescriptionWithSummary(post: BlogPost, maxLength: number = 150): string {
-  const slug = post.data?.link ?? post.id ?? '';
-  return post.data.description || getPostSummary(slug) || extractTextFromMarkdown(post.body ?? '', maxLength);
-}
-
-/**
- * Get all posts sorted by date (newest first)
- * In production, draft posts are filtered out
+ * 获取按日期降序排列的文章（最新在前）
  */
 export async function getSortedPosts(): Promise<BlogPost[]> {
-  const posts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
-    // 在生产环境中，过滤掉草稿
-    const { draft } = data;
-    return import.meta.env.PROD ? draft !== true : true;
-  })) as BlogPost[];
-
-  // 按日期排序
-  const sortedPosts = posts.sort((a: BlogPost, b: BlogPost) => {
-    return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
-  });
-
-  return sortedPosts;
+  return getVisibleBlogPostsSortedDesc();
 }
 
 /**
- * Get posts separated by sticky status
- * @returns Object containing sticky and non-sticky posts, both sorted by date (newest first)
+ * 按置顶状态拆分文章
  */
 export async function getPostsBySticky(): Promise<{
   stickyPosts: BlogPost[];
   nonStickyPosts: BlogPost[];
 }> {
-  const posts = await getSortedPosts();
-
-  const stickyPosts: BlogPost[] = [];
-  const nonStickyPosts: BlogPost[] = [];
-
-  for (const post of posts) {
-    if (post.data?.sticky) {
-      stickyPosts.push(post);
-    } else {
-      nonStickyPosts.push(post);
-    }
-  }
-
-  return { stickyPosts, nonStickyPosts };
+  return splitPostsBySticky(await getSortedPosts());
 }
 
 /**
- * Get post count (excluding drafts in production)
+ * 获取文章总数（生产环境排除草稿）
  */
-export async function getPostCount() {
-  const posts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
-    // 在生产环境中，过滤掉草稿
-    const { draft } = data;
-    return import.meta.env.PROD ? draft !== true : true;
-  })) as BlogPost[];
-  return posts?.length ?? 0;
+export async function getPostCount(): Promise<number> {
+  return (await getVisibleBlogPosts()).length;
 }
 
 /**
- * 获取分类下的所有文章
- * @param categoryName 分类名
- * @returns 文章列表
+ * 兼容旧接口：按分类名筛选文章。
+ * 新代码优先使用 getPostsByCategoryPath 以避免同名分类歧义。
  */
-export async function getPostsByCategory(categoryName: string): Promise<BlogPost[]> {
-  const targetCategory = categoryName || DEFAULT_CATEGORY_NAME;
+export async function getPostsByCategory(
+  categoryName: string,
+): Promise<BlogPost[]> {
+  return getPostsByCategoryPath(categoryName);
+}
+
+/**
+ * 获取指定分类路径下的文章（包含子路径）。
+ */
+export async function getPostsByCategoryPath(
+  categoryPath: string | string[],
+): Promise<BlogPost[]> {
+  const rawPath = Array.isArray(categoryPath) ? categoryPath : [categoryPath];
+  const normalizedPath = rawPath
+    .map((name) => name.trim())
+    .filter((name) => name.length > 0);
+  const targetPath =
+    normalizedPath.length > 0 ? normalizedPath : [DEFAULT_CATEGORY_NAME];
   const posts = await getSortedPosts();
+
   return posts.filter((post) => {
-    const { categories, catalog } = post.data;
-    if (catalog === false) return false;
-    const categoryArr = getCategoryArr(categories as string[] | string | undefined);
-    const firstCategory = categoryArr;
-    // 处理两种分类格式
-    if (Array.isArray(firstCategory)) {
-      // ['笔记', '算法']
-      return firstCategory.includes(targetCategory);
-    } else if (typeof firstCategory === 'string') {
-      // '工具'
-      return firstCategory === targetCategory;
-    }
-    return false;
+    if (post.data.catalog === false) return false;
+    const postPath = getCategoryArr(post.data.categories);
+    if (postPath.length < targetPath.length) return false;
+
+    return targetPath.every((name, index) => postPath[index] === name);
   });
 }
 
 function isPostInCategory(post: BlogPost, categoryName: string): boolean {
   if (!categoryName) return false;
-  const categoryArr = getCategoryArr(post.data.categories as string[] | string | undefined);
-  return categoryArr.includes(categoryName);
+  return getCategoryArr(post.data.categories).includes(categoryName);
 }
 
 /**
- * 获取周刊文章列表（按日期排序，最新在前）
+ * 获取周刊文章（按日期降序）
  */
 export async function getWeeklyPosts(): Promise<BlogPost[]> {
-  return await getPostsByCategory(weeklyConfig.categoryName);
+  return getPostsByCategory(weeklyConfig.categoryName);
 }
 
 /**
- * 获取非周刊文章列表（按日期排序，最新在前）
+ * 获取非周刊文章（按日期降序）
  */
 export async function getNonWeeklyPosts(): Promise<BlogPost[]> {
   const posts = await getSortedPosts();
-  return posts.filter((post) => !isPostInCategory(post, weeklyConfig.categoryName));
+  return posts.filter(
+    (post) => !isPostInCategory(post, weeklyConfig.categoryName),
+  );
 }
 
 /**
- * 获取非周刊文章列表，按置顶状态分组
+ * 获取非周刊文章并按置顶状态拆分
  */
 export async function getNonWeeklyPostsBySticky(): Promise<{
   stickyPosts: BlogPost[];
   nonStickyPosts: BlogPost[];
 }> {
-  const posts = await getNonWeeklyPosts();
-
-  const stickyPosts: BlogPost[] = [];
-  const nonStickyPosts: BlogPost[] = [];
-
-  for (const post of posts) {
-    if (post.data?.sticky) {
-      stickyPosts.push(post);
-    } else {
-      nonStickyPosts.push(post);
-    }
-  }
-
-  return { stickyPosts, nonStickyPosts };
+  return splitPostsBySticky(await getNonWeeklyPosts());
 }
 
 /**
- * Get the last (deepest) category of a post
+ * 获取文章最深层分类
  */
-export function getPostLastCategory(post: BlogPost): { link: string; name: string } {
-  const { categories } = post.data;
-  const categoryArr = getCategoryArr(categories as string[] | string | undefined);
-  const firstCategory = categoryArr;
-  if (Array.isArray(firstCategory)) {
-    if (!firstCategory.length) {
-      return {
-        link: buildCategoryPath(DEFAULT_CATEGORY_NAME),
-        name: DEFAULT_CATEGORY_NAME,
-      };
-    }
+export function getPostLastCategory(post: BlogPost): {
+  link: string;
+  name: string;
+} {
+  const categoryPath = getCategoryArr(post.data.categories);
+
+  if (categoryPath.length === 0) {
     return {
-      link: buildCategoryPath(firstCategory),
-      name: firstCategory[firstCategory.length - 1],
-    };
-  } else if (typeof firstCategory === 'string') {
-    return {
-      link: buildCategoryPath(firstCategory),
-      name: firstCategory,
+      link: buildCategoryPath(DEFAULT_CATEGORY_NAME),
+      name: DEFAULT_CATEGORY_NAME,
     };
   }
 
-  return { link: buildCategoryPath(DEFAULT_CATEGORY_NAME), name: DEFAULT_CATEGORY_NAME };
+  return {
+    link: buildCategoryPath(categoryPath),
+    name: categoryPath[categoryPath.length - 1],
+  };
 }
 
 /**
  * Fisher-Yates 洗牌算法
- * 相比 sort(() => Math.random() - 0.5)，能产生均匀分布的随机排列
  */
 function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];
@@ -258,8 +239,6 @@ function shuffleArray<T>(array: T[]): T[] {
 
 /**
  * 获取随机文章
- * @param count 文章数量
- * @returns 随机文章列表
  */
 export async function getRandomPosts(count: number = 10): Promise<BlogPost[]> {
   const posts = await getSortedPosts();
@@ -268,44 +247,219 @@ export async function getRandomPosts(count: number = 10): Promise<BlogPost[]> {
 }
 
 /**
- * 获取文章所属系列的所有文章（基于最深层分类）
- * @param post 当前文章
- * @returns 系列文章列表（按日期排序，最新的在前）
+ * 获取文章所属系列（按最深分类）
  */
 export async function getSeriesPosts(post: BlogPost): Promise<BlogPost[]> {
-  const lastCategory = getPostLastCategory(post);
-  if (!lastCategory.name) return [];
-
-  return await getPostsByCategory(lastCategory.name);
+  const categoryPath = getCategoryArr(post.data.categories);
+  if (categoryPath.length === 0) return [];
+  return getPostsByCategoryPath(categoryPath);
 }
 
 /**
- * 获取文章的上一篇和下一篇（在同一系列中）
- * @param currentPost 当前文章
- * @returns 上一篇和下一篇文章
+ * 获取系列中的上一篇和下一篇
  */
 export async function getAdjacentSeriesPosts(currentPost: BlogPost): Promise<{
   prevPost: BlogPost | null;
   nextPost: BlogPost | null;
 }> {
   const seriesPosts = await getSeriesPosts(currentPost);
-
   if (seriesPosts.length === 0) {
     return { prevPost: null, nextPost: null };
   }
 
-  const currentKey = getPostKey(currentPost);
-  const currentIndex = seriesPosts.findIndex((post) => getPostKey(post) === currentKey);
-
+  const currentKey = getPostStableKey(currentPost);
+  const currentIndex = seriesPosts.findIndex(
+    (post) => getPostStableKey(post) === currentKey,
+  );
   if (currentIndex === -1) {
     return { prevPost: null, nextPost: null };
   }
 
-  // 因为文章是按日期降序排列的（最新的在前）
-  // prevPost 是更新的文章（索引 - 1）
-  // nextPost 是更旧的文章（索引 + 1）
   const prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
-  const nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
+  const nextPost =
+    currentIndex < seriesPosts.length - 1
+      ? seriesPosts[currentIndex + 1]
+      : null;
 
   return { prevPost, nextPost };
+}
+
+/**
+ * 按年份分组文章（输入需为按日期降序的列表）。
+ */
+export function groupPostsByYear(
+  posts: BlogPost[],
+): Record<number, BlogPost[]> {
+  return posts.reduce(
+    (result, post) => {
+      const year = new Date(post.data.date).getFullYear();
+      if (!result[year]) {
+        result[year] = [];
+      }
+      result[year].push(post);
+      return result;
+    },
+    {} as Record<number, BlogPost[]>,
+  );
+}
+
+/**
+ * 归档页数据：文章列表、按年分组结果、年份列表。
+ */
+export async function getArchiveData(): Promise<{
+  posts: BlogPost[];
+  postsByYear: Record<number, BlogPost[]>;
+  years: number[];
+}> {
+  const posts = await getSortedPosts();
+  const postsByYear = groupPostsByYear(posts);
+  const years = Object.keys(postsByYear)
+    .map((year) => Number(year))
+    .sort((a, b) => b - a);
+
+  return { posts, postsByYear, years };
+}
+
+export type PostSummarySource = 'description' | 'ai' | 'auto';
+
+export interface PostSummaryData {
+  text: string;
+  source: PostSummarySource;
+}
+
+export interface PostLinkItem {
+  post: BlogPost;
+  href: string;
+}
+
+/**
+ * 获取文章摘要面板数据，统一摘要优先级规则。
+ */
+export function getPostSummaryData(
+  post: BlogPost,
+  autoLength: number = 200,
+): PostSummaryData {
+  if (post.data.description) {
+    return {
+      text: post.data.description,
+      source: 'description',
+    };
+  }
+
+  const key = getPostStableKey(post);
+  const aiSummary = getPostSummary(key);
+  if (aiSummary) {
+    return {
+      text: aiSummary,
+      source: 'ai',
+    };
+  }
+
+  return {
+    text: extractTextFromMarkdown(post.body ?? '', autoLength),
+    source: 'auto',
+  };
+}
+
+/**
+ * 构建文章分类面包屑数据。
+ */
+export function getPostCategoryBreadcrumbs(
+  post: BlogPost,
+): Array<{ name: string; link: string }> {
+  const categoryArr = getCategoryArr(post.data.categories);
+  if (categoryArr.length === 0) return [];
+
+  return categoryArr.map((name, index) => ({
+    name,
+    link: buildCategoryPath(categoryArr.slice(0, index + 1)),
+  }));
+}
+
+/**
+ * 获取文章关键词（标签 + 分类）用于 SEO。
+ */
+export function getPostKeywords(post: BlogPost): string[] {
+  const tags = Array.isArray(post.data.tags)
+    ? post.data.tags
+    : post.data.tags
+      ? [post.data.tags]
+      : [];
+  const categories = getCategoryArr(post.data.categories);
+  return categories.length > 0 ? tags.concat(categories) : tags;
+}
+
+/**
+ * 构建文章页侧栏的系列导航数据。
+ */
+export async function getPostSeriesViewModel(post: BlogPost): Promise<{
+  seriesPostItems: PostLinkItem[];
+  prevPostItem: PostLinkItem | null;
+  nextPostItem: PostLinkItem | null;
+  currentPostSlug: string;
+}> {
+  const [seriesPosts, postIndexMap, adjacentPosts] = await Promise.all([
+    getSeriesPosts(post),
+    getPostIndexMap(),
+    getAdjacentSeriesPosts(post),
+  ]);
+
+  const seriesPostItems = seriesPosts.map((seriesPost) => ({
+    post: seriesPost,
+    href: getPostHref(seriesPost, postIndexMap),
+  }));
+
+  const prevPostItem = adjacentPosts.prevPost
+    ? {
+        post: adjacentPosts.prevPost,
+        href: getPostHref(adjacentPosts.prevPost, postIndexMap),
+      }
+    : null;
+  const nextPostItem = adjacentPosts.nextPost
+    ? {
+        post: adjacentPosts.nextPost,
+        href: getPostHref(adjacentPosts.nextPost, postIndexMap),
+      }
+    : null;
+
+  return {
+    seriesPostItems,
+    prevPostItem,
+    nextPostItem,
+    currentPostSlug: getPostStableKey(post),
+  };
+}
+
+/**
+ * 构建首页第一页的分页数据。
+ */
+export function buildHomePageData(
+  allPosts: BlogPost[],
+  pageSize: number = 10,
+): {
+  posts: BlogPost[];
+  page: Page<BlogPost>;
+} {
+  const posts = allPosts.slice(0, pageSize);
+  const lastPage = Math.max(1, Math.ceil(allPosts.length / pageSize));
+
+  return {
+    posts,
+    page: {
+      data: posts,
+      start: 0,
+      end: Math.max(0, posts.length - 1),
+      size: pageSize,
+      total: allPosts.length,
+      currentPage: 1,
+      lastPage,
+      url: {
+        current: Routes.Home,
+        prev: undefined,
+        next: allPosts.length > pageSize ? `${Routes.Posts}/2` : undefined,
+        first: Routes.Home,
+        last: `${Routes.Posts}/${lastPage}`,
+      },
+    },
+  };
 }

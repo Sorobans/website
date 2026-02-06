@@ -26,7 +26,10 @@ export function EmbedHydrator() {
       // Create a root and render the TweetEmbed component with error boundary
       const root = createRoot(element);
       root.render(
-        <ErrorBoundary fallbackRender={(props) => <ErrorFallback {...props} title="TweetEmbed Error" />}>
+        <ErrorBoundary
+          fallbackRender={(props) => (
+            <ErrorFallback {...props} title="TweetEmbed Error" />
+          )}>
           <TweetEmbed tweetId={tweetId} />
         </ErrorBoundary>,
       );

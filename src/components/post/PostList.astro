@@ -19,9 +19,8 @@ interface Props {
 }
 
 const { posts, page, showPaginator = true, baseUrl, isHomePage = false, isSimple = false } = Astro.props;
-const backgroundImages = await getBackgroundImages();
+const [backgroundImages, postIndexMap] = await Promise.all([getBackgroundImages(), getPostIndexMap()]);
 const covers = shuffle(backgroundImages.length ? backgroundImages : defaultCoverList);
-const postIndexMap = await getPostIndexMap();
 ---
 
 {

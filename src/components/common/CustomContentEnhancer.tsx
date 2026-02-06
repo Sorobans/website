@@ -29,7 +29,9 @@ function enhanceContent(config: ContentConfig) {
   }
 
   if (config.smoothScroll) {
-    const anchorLinks = contentContainer.querySelectorAll('a.anchor-link[href^="#"]');
+    const anchorLinks = contentContainer.querySelectorAll(
+      'a.anchor-link[href^="#"]',
+    );
     anchorLinks.forEach((link: Element) => {
       const anchor = link as HTMLAnchorElement;
 
@@ -53,7 +55,9 @@ function enhanceContent(config: ContentConfig) {
   }
 
   if (config.addHeadingLevel) {
-    const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const headings = contentContainer.querySelectorAll(
+      'h1, h2, h3, h4, h5, h6',
+    );
     headings.forEach((heading: Element) => {
       const level = heading.tagName[1];
       heading.setAttribute('data-level', `H${level}`);

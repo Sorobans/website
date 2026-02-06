@@ -4,7 +4,10 @@ export const getSanitizeHtml = (html: string) => {
   return sanitizeHtml(html, {
     // https://stackoverflow.com/questions/12229572/php-generated-xml-shows-invalid-char-value-27-message
     textFilter: (text) =>
-      text.replace(/[^\t\n\r\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm, ''),
+      text.replace(
+        /[^\t\n\r\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm,
+        '',
+      ),
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
   });
 };
@@ -15,14 +18,21 @@ export const getSanitizeHtml = (html: string) => {
  * @param maxLength 最大长度，默认150字符
  * @returns 提取的纯文本
  */
-export const extractTextFromMarkdown = (content: string, maxLength: number = 150): string => {
+export const extractTextFromMarkdown = (
+  content: string,
+  maxLength: number = 150,
+): string => {
   if (!content) return '';
 
   let idx = 0;
   const len = content.length;
 
   // 跳过YAML front matter (避免startsWith和多次indexOf)
-  if (content.charCodeAt(0) === 45 && content.charCodeAt(1) === 45 && content.charCodeAt(2) === 45) {
+  if (
+    content.charCodeAt(0) === 45 &&
+    content.charCodeAt(1) === 45 &&
+    content.charCodeAt(2) === 45
+  ) {
     // '---'
     idx = 4; // 跳过第一个 '---\n'
     // 查找结束的 '---'
@@ -63,7 +73,11 @@ export const extractTextFromMarkdown = (content: string, maxLength: number = 150
 
         if (line.length > 0) {
           // 检测代码块开关 (避免startsWith)
-          if (line.charCodeAt(0) === 96 && line.charCodeAt(1) === 96 && line.charCodeAt(2) === 96) {
+          if (
+            line.charCodeAt(0) === 96 &&
+            line.charCodeAt(1) === 96 &&
+            line.charCodeAt(2) === 96
+          ) {
             // '```'
             inCodeBlock = !inCodeBlock;
           } else if (!inCodeBlock) {
@@ -88,7 +102,9 @@ export const extractTextFromMarkdown = (content: string, maxLength: number = 150
 
   // 处理最后一行
   if (lineStart < searchEnd && resultLen < targetLen && !inCodeBlock) {
-    const line = content.slice(lineStart, Math.min(lineStart + 200, searchEnd)).trim();
+    const line = content
+      .slice(lineStart, Math.min(lineStart + 200, searchEnd))
+      .trim();
     if (line.length >= 3) {
       const processed = processLine(line);
       if (processed.length >= 3) {
@@ -137,7 +153,12 @@ function processLine(line: string): string {
   }
   // 数字列表 '1. 2. '
   else if (firstChar >= 48 && firstChar <= 57) {
-    while (start < len && line.charCodeAt(start) >= 48 && line.charCodeAt(start) <= 57) start++;
+    while (
+      start < len &&
+      line.charCodeAt(start) >= 48 &&
+      line.charCodeAt(start) <= 57
+    )
+      start++;
     if (start < len && line.charCodeAt(start) === 46) start++; // '.'
     while (start < len && line.charCodeAt(start) === 32) start++;
   }
@@ -149,7 +170,14 @@ function processLine(line: string): string {
   for (let i = 0; i < line.length; i++) {
     const code = line.charCodeAt(i);
     // 检查 [ ` * _ ~ <
-    if (code === 91 || code === 96 || code === 42 || code === 95 || code === 126 || code === 60) {
+    if (
+      code === 91 ||
+      code === 96 ||
+      code === 42 ||
+      code === 95 ||
+      code === 126 ||
+      code === 60
+    ) {
       hasSpecialChars = true;
       break;
     }

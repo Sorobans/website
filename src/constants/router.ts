@@ -32,7 +32,11 @@ export const routers: Router[] = [
     name: '文章',
     icon: 'fa-solid fa-pen-nib',
     children: [
-      { name: '分类', path: Routes.Categories, icon: 'fa-solid fa-layer-group' },
+      {
+        name: '分类',
+        path: Routes.Categories,
+        icon: 'fa-solid fa-layer-group',
+      },
       { name: '标签', path: Routes.Tags, icon: 'fa-solid fa-tags' },
       { name: '周刊', path: Routes.Weekly, icon: 'fa-regular fa-newspaper' },
     ],

@@ -74,7 +74,9 @@ function createCheckmarkSvg(): string {
  * Check if mermaid element is already wrapped
  */
 function isAlreadyWrapped(mermaidElement: HTMLElement): boolean {
-  return mermaidElement.parentElement?.classList.contains('mermaid-wrapper') ?? false;
+  return (
+    mermaidElement.parentElement?.classList.contains('mermaid-wrapper') ?? false
+  );
 }
 
 /**
@@ -82,7 +84,10 @@ function isAlreadyWrapped(mermaidElement: HTMLElement): boolean {
  */
 function enhanceMermaidDiagram(mermaidElement: HTMLElement): void {
   // Skip if already enhanced or wrapped
-  if (mermaidElement.dataset.toolbarEnhanced === 'true' || isAlreadyWrapped(mermaidElement)) {
+  if (
+    mermaidElement.dataset.toolbarEnhanced === 'true' ||
+    isAlreadyWrapped(mermaidElement)
+  ) {
     return;
   }
 
@@ -101,7 +106,10 @@ function enhanceMermaidDiagram(mermaidElement: HTMLElement): void {
   mermaidElement.dataset.toolbarEnhanced = 'true';
 
   // Get source code from data-diagram attribute (set by astro-mermaid)
-  const source = mermaidElement.getAttribute('data-diagram') || mermaidElement.textContent || '';
+  const source =
+    mermaidElement.getAttribute('data-diagram') ||
+    mermaidElement.textContent ||
+    '';
 
   // Bind copy button
   const copyBtn = wrapper.querySelector('.mermaid-copy');
@@ -174,7 +182,10 @@ function waitAndEnhance(): void {
     const mermaidElement = element as HTMLElement;
 
     // Skip if already enhanced or wrapped
-    if (mermaidElement.dataset.toolbarEnhanced === 'true' || isAlreadyWrapped(mermaidElement)) {
+    if (
+      mermaidElement.dataset.toolbarEnhanced === 'true' ||
+      isAlreadyWrapped(mermaidElement)
+    ) {
       return;
     }
 
@@ -223,7 +234,10 @@ function waitAndEnhance(): void {
         if (timeoutIndex > -1) {
           activeTimeouts.splice(timeoutIndex, 1);
         }
-        if (mermaidElement.dataset.toolbarEnhanced !== 'true' && !isAlreadyWrapped(mermaidElement)) {
+        if (
+          mermaidElement.dataset.toolbarEnhanced !== 'true' &&
+          !isAlreadyWrapped(mermaidElement)
+        ) {
           enhanceMermaidDiagram(mermaidElement);
         }
       }, 5000);

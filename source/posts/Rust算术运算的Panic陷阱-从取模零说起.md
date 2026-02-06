@@ -51,6 +51,7 @@ fn main() {
 **为什么会这样？**
 
 Rust 的设计哲学是：**宁可 panic 也不产生未定义行为（Undefined Behavior, UB）**。在很多底层语言（如 C/C++）中，除以零会导致 UB，这可能造成：
+
 - 程序段错误（Segmentation Fault）
 - 返回垃圾值
 - 安全漏洞
@@ -95,6 +96,7 @@ fn main() {
 **为什么？**
 
 对于 8 位有符号整数 `i8`：
+
 - 最小值：`i8::MIN = -128`
 - 最大值：`i8::MAX = 127`
 
@@ -128,12 +130,13 @@ fn main() {
 
 **行为差异：**
 
-| 模式 | 溢出行为 | 原因 |
-|------|----------|------|
-| **Debug** (`cargo build`) | Panic | 帮助开发者尽早发现 bug |
+| 模式                                  | 溢出行为       | 原因                         |
+| ------------------------------------- | -------------- | ---------------------------- |
+| **Debug** (`cargo build`)             | Panic          | 帮助开发者尽早发现 bug       |
 | **Release** (`cargo build --release`) | 二进制补码环绕 | 性能优化，避免运行时检查开销 |
 
 在 release 模式下：
+
 ```rust
 u8::MAX + 1      // => 0   (255 + 1 环绕为 0)
 u8::MIN - 1      // => 255 (0 - 1 环绕为 255)
@@ -167,6 +170,7 @@ fn main() {
 ```
 
 **适用场景：**
+
 - 用户输入处理
 - 外部数据验证
 - 需要优雅处理错误的场景
@@ -189,6 +193,7 @@ fn main() {
 ```
 
 **适用场景：**
+
 - 哈希计算
 - 密码学算法
 - 需要明确的模运算语义
@@ -212,6 +217,7 @@ fn main() {
 ```
 
 **适用场景：**
+
 - 音频/视频处理（音量、亮度限制）
 - 游戏开发（生命值、伤害计算）
 - UI 组件（滚动位置、进度条）
@@ -236,6 +242,7 @@ fn main() {
 ```
 
 **适用场景：**
+
 - 需要记录溢出事件
 - 实现自定义的错误报告
 - 性能敏感但需要溢出信息的代码
@@ -252,6 +259,7 @@ fn main() {
 ```
 
 **适用场景：**
+
 - 金融计算
 - 科学计算
 - 任何不能容忍静默溢出的场景
@@ -303,14 +311,14 @@ fn main() {
 
 让我们对比一下不同语言对除零的处理：
 
-| 语言 | `10 / 0` 行为 | `10 % 0` 行为 | 可捕获？ |
-|------|---------------|---------------|----------|
-| **Rust** | Panic（程序崩溃） | Panic（程序崩溃） | ❌ 不可用 try-catch 捕获 |
-| **Python** | 抛出 `ZeroDivisionError` | 抛出 `ZeroDivisionError` | ✅ 可用 try-except 捕获 |
-| **JavaScript** | `Infinity` | `NaN` | ✅ 不抛出异常，返回特殊值 |
-| **Java** | 抛出 `ArithmeticException` | 抛出 `ArithmeticException` | ✅ 可用 try-catch 捕获 |
-| **C/C++** | 未定义行为（UB） | 未定义行为（UB） | ❌ 无标准异常机制 |
-| **Go** | Panic | Panic | ⚠️ 可用 recover 捕获（不推荐） |
+| 语言           | `10 / 0` 行为              | `10 % 0` 行为              | 可捕获？                       |
+| -------------- | -------------------------- | -------------------------- | ------------------------------ |
+| **Rust**       | Panic（程序崩溃）          | Panic（程序崩溃）          | ❌ 不可用 try-catch 捕获       |
+| **Python**     | 抛出 `ZeroDivisionError`   | 抛出 `ZeroDivisionError`   | ✅ 可用 try-except 捕获        |
+| **JavaScript** | `Infinity`                 | `NaN`                      | ✅ 不抛出异常，返回特殊值      |
+| **Java**       | 抛出 `ArithmeticException` | 抛出 `ArithmeticException` | ✅ 可用 try-catch 捕获         |
+| **C/C++**      | 未定义行为（UB）           | 未定义行为（UB）           | ❌ 无标准异常机制              |
+| **Go**         | Panic                      | Panic                      | ⚠️ 可用 recover 捕获（不推荐） |
 
 **Rust 的设计权衡：**
 
@@ -454,6 +462,7 @@ mod tests {
 一定要注意rust一切可能引起panic!的可能性，才不会像cloudflare的unwarp方法一样，搞出的几十亿美金的全球网站崩溃漏洞。
 
 Sources:
+
 - [Rust RFC 560 - Integer Overflow](https://rust-lang.github.io/rfcs/0560-integer-overflow.html)
 - [Myths and Legends about Integer Overflow in Rust](https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/)
 - [What happens in Rust programming language when an integer arithmetic operation overflows? - Stack Overflow](https://stackoverflow.com/questions/68807024/what-happens-in-rust-programming-language-when-an-integer-arithmetic-operation-o)

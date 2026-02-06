@@ -103,7 +103,9 @@ function createActiveHeadingStore(offsetTop: number) {
     );
 
     // Observe all headings
-    const headings = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');
+    const headings = document.querySelectorAll(
+      'h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]',
+    );
     headings.forEach((heading) => {
       observer?.observe(heading);
     });
@@ -184,9 +186,15 @@ function createActiveHeadingStore(offsetTop: number) {
  * @param options - Active heading options
  * @returns ID of the currently active heading
  */
-export function useActiveHeading({ offsetTop = 120 }: UseActiveHeadingOptions = {}): string {
+export function useActiveHeading({
+  offsetTop = 120,
+}: UseActiveHeadingOptions = {}): string {
   // Memoize store creation to avoid recreating on every render
   const store = useMemo(() => createActiveHeadingStore(offsetTop), [offsetTop]);
 
-  return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
 }

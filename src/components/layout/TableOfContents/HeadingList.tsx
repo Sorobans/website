@@ -25,12 +25,21 @@ interface HeadingListProps {
 /**
  * HeadingList - Renders a recursive list of table of contents headings
  */
-const HeadingListComponent = ({ headings, depth = 0, activeId, expandedIds, onHeadingClick }: HeadingListProps) => {
+const HeadingListComponent = ({
+  headings,
+  depth = 0,
+  activeId,
+  expandedIds,
+  onHeadingClick,
+}: HeadingListProps) => {
   /**
    * Recursively render child headings
    * Memoized to prevent recreation on every render
    */
-  const renderChildren = (children: Heading[], childDepth: number): React.ReactElement[] => {
+  const renderChildren = (
+    children: Heading[],
+    childDepth: number,
+  ): React.ReactElement[] => {
     return children.map((child) => (
       <HeadingTreeItem
         key={child.id}

@@ -52,7 +52,8 @@ const HeadingTreeItemComponent = ({
         className={cn(
           'heading-link group hover:bg-foreground/5 relative flex items-center rounded-md py-2 text-sm transition-all duration-200 hover:border-l-2',
           {
-            'bg-primary/10 text-primary border-l-primary hover:text-primary hover:bg-primary/10 font-medium': isActive,
+            'bg-primary/10 text-primary border-l-primary hover:text-primary hover:bg-primary/10 font-medium':
+              isActive,
           },
         )}
         style={{
@@ -61,17 +62,20 @@ const HeadingTreeItemComponent = ({
         }}
         data-level={heading.level}
         aria-label={heading.text}
-        aria-current={isActive ? 'location' : undefined}
-      >
+        aria-current={isActive ? 'location' : undefined}>
         {/* Heading text - numbering will be added via CSS ::before */}
-        <span className="heading-text block flex-1 truncate leading-relaxed">{heading.text}</span>
+        <span className="heading-text block flex-1 truncate leading-relaxed">
+          {heading.text}
+        </span>
         {/* Active state indicator */}
         {isActive && <span className="text-primary ml-2 text-xs">•</span>}
       </a>
 
       {/* Render children nested within this item */}
       {hasChildren && isExpanded && renderChildren && (
-        <div className="heading-children">{renderChildren(heading.children, depth + 1)}</div>
+        <div className="heading-children">
+          {renderChildren(heading.children, depth + 1)}
+        </div>
       )}
     </div>
   );

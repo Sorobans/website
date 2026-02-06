@@ -25,11 +25,17 @@ export function MobileDrawerPanel({ children }: MobileDrawerPanelProps) {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('astro:before-preparation', handleBeforePreparation);
+    document.addEventListener(
+      'astro:before-preparation',
+      handleBeforePreparation,
+    );
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('astro:before-preparation', handleBeforePreparation);
+      document.removeEventListener(
+        'astro:before-preparation',
+        handleBeforePreparation,
+      );
     };
   }, []);
 
@@ -65,11 +71,14 @@ export function MobileDrawerPanel({ children }: MobileDrawerPanelProps) {
         )}
         role="dialog"
         aria-label="导航菜单"
-        aria-modal="true"
-      >
+        aria-modal="true">
         <div className="flex h-full w-full flex-col overflow-auto">
           <div className="flex justify-end pb-2 pr-4">
-            <CloseMenuButton className="flex" id="close-drawer" buttonRef={closeButtonRef} />
+            <CloseMenuButton
+              className="flex"
+              id="close-drawer"
+              buttonRef={closeButtonRef}
+            />
           </div>
           {children}
         </div>

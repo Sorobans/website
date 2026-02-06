@@ -22,7 +22,9 @@ try {
   similarityData = data.default as SimilarityMap;
 } catch {
   // File doesn't exist yet or failed to load
-  console.warn('similarities.json not found. Run `pnpm generate:similarities` to generate it.');
+  console.warn(
+    'similarities.json not found. Run `pnpm generate:similarities` to generate it.',
+  );
 }
 
 /**
@@ -31,7 +33,10 @@ try {
  * @param count Number of related posts to return
  * @returns Array of similar post data with similarity scores
  */
-export function getRelatedPostSlugs(currentSlug: string, count: number = 5): SimilarPost[] {
+export function getRelatedPostSlugs(
+  currentSlug: string,
+  count: number = 5,
+): SimilarPost[] {
   const related = similarityData[currentSlug];
   if (!related) return [];
   return related.slice(0, count);
@@ -44,7 +49,11 @@ export function getRelatedPostSlugs(currentSlug: string, count: number = 5): Sim
  * @param count Number of related posts to return
  * @returns Array of BlogPost objects sorted by similarity
  */
-export function getRelatedPosts(currentPost: BlogPost, allPosts: BlogPost[], count: number = 5): BlogPost[] {
+export function getRelatedPosts(
+  currentPost: BlogPost,
+  allPosts: BlogPost[],
+  count: number = 5,
+): BlogPost[] {
   try {
     const currentSlug = currentPost.data.link ?? currentPost.id;
     const relatedSlugs = getRelatedPostSlugs(currentSlug, count);
@@ -80,5 +89,8 @@ export function getRelatedPosts(currentPost: BlogPost, allPosts: BlogPost[], cou
  * Check if similarity data is available
  */
 export function hasSimilarityData(): boolean {
-  return featureConfig.semanticRecommendations && Object.keys(similarityData).length > 0;
+  return (
+    featureConfig.semanticRecommendations &&
+    Object.keys(similarityData).length > 0
+  );
 }

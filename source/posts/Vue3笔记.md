@@ -1,33 +1,46 @@
 ---
 title: Vue3学习笔记
-date:  2022-06-06
-tags: 
+date: 2022-06-06
+tags:
   - 学习笔记
   - Vue
   - Vue3
 categories: 学习笔记
 ---
+
 # Vue3基础
+
 ## Volar
+
     Vue3版本语法插件
+
 ## VueDevtools
+
     用于对Vue进行调试的工具
+
 ## Vite
+
     vite+ts+vue3
     Vue3项目使用Vite进行构建
     npm install
+
 ## ESlint
+
     Vite打包需要使用ESlint
     npm install eslint  --安装
     npx eslint --init  初始化
+
 ## 组合式API
+
     增强可维护性,可读性
     options API(vue2)
     (因为,配置项的分散,可能导致代码查看复杂)
 
     组合式API就是将同样功能的API书写在一个位置
     组合式API是代码的一种组合形式
+
 ### Setup(组合式API)
+
     Vue2:
     export default {
         name: App,
@@ -47,9 +60,11 @@ categories: 学习笔记
     // setup内部不能访问组件实例功能(因为被创建时,Vue实例还没创建)
     // 没有this
     // setup内直接声明,不是响应式数据.无法更改
+
 ### ref(响应式API)
+
     // 按需导入响应式API
-    import { ref } from 'vue'    
+    import { ref } from 'vue'
     // 响应式数据声明
     const text = ref('')
 
@@ -61,7 +76,9 @@ categories: 学习笔记
     // vue@事件调用的方法,也直接写在setup之内
 
     Vue3解决了Vue2里无法通过数组索引、长度加值的问题(正常js规则)
+
 ### reactive
+
     reactive就是基于传入对象创建Proxy实例
     reactive只能存储对象。(数组,set,obj)
     // 内部做了深度响应式处理.
@@ -72,16 +89,20 @@ categories: 学习笔记
     // 使用reactive
     const dataList = reactive({
     })
-    
+
     reactive调用值不用加value
+
 ### shallowReactive
+
     使用方法与Reactive方法相似
     但是,并不是深层响应式.只能够响应一层
     {}成员内部的对象或数组无法响应
     obj.a.b = '' (二层数据无法修改)
 
     (比如多层嵌套之类的结构,就不适合shallow)
+
 ### readonly与shallowReadonly
+
     共同点: 都不是响应式数据
 
     readonly用于创建对象的只读代理
@@ -92,13 +113,17 @@ categories: 学习笔记
     只有第一层只读.
     text.a = '' (无法修改)
     text.a.c = '' (能修改)
+
 ### 检测方法
+
     isReactive() // 是否reactive
     isReadonly() // 是否只读
     isProxy() // 是否是isProxy对象
 
     ref()创建的数据,并不是通过Proxy声明的对象
+
 ### toRefs
+
     toRefs用于将响应式对象转换为普通对象
     且属性均为ref类型
 
@@ -107,10 +132,14 @@ categories: 学习笔记
     比如 方法内的响应式数据,返回的值 被引入了,不是响应式的。
     可以直接使用 return toRefs()
     使用结构,把返回的对象,结构为 toRefs值
+
 ### toRef
+
     toRef将响应式对象的某个指定属性转换为ref
     toRefs(obj,key)
+
 ### computed
+
     const count = computed(() => {
         return `物品个数为: ${num.value}`
     })
@@ -125,7 +154,9 @@ categories: 学习笔记
 
         }
     })
+
 ### watch
+
     const dataList = reactLive({
         count: 0,
         num: 10
@@ -142,6 +173,7 @@ categories: 学习笔记
     // 监听对象的值时,新旧值都一致.
 
 #### 侦听多个元
+
     // 侦听多个元,统一进行一个处理
     watch(
         [d1, d2],
@@ -149,7 +181,9 @@ categories: 学习笔记
 
         }
     )
+
 #### watch配置项
+
     // 深度监听
     watch(
         data,
@@ -167,24 +201,32 @@ categories: 学习笔记
     flush: 'post'
 
     //
+
 ### watchEffect
+
     自动对回调内的数据,进行依赖收集的一种侦听器
     watchEffect(() => {
         console.log(`count${a}`)
     })
     // 只要内部使用的数据更新了,就再次执行,更新
+
 ### props组件传值
+
     // 子组件通过defineProps方法来接受值
     const props = defineProps({
         data: String
     })
+
 ### emit向父组件传值
+
     // 声明emit方法,内部选用父组件要用的事件
     const emit = defineEmits(['getHtml'])
 
     // 调用方法
     emit('getHtml', '123')
+
 ### 模板ref
+
     <!-- 登录的模态框 -->
     <u-top-tips ref="uTips"></u-top-tips>
 
@@ -194,18 +236,22 @@ categories: 学习笔记
 
     // 方法操作DOM,refs
     uTips.value.show({
-		title: '账号或密码格式错误,请检查',
-		type: 'success',
-		duration: '2300'
-	})
+    	title: '账号或密码格式错误,请检查',
+    	type: 'success',
+    	duration: '2300'
+    })
+
 ### 如何使用全局this对象(element plus)
+
 import { ref, shallowReactive, getCurrentInstance } from 'vue'
 
 const instance = getCurrentInstance()
 
 // 全局this
-const _this= instance.appContext.config.globalProperties
+const \_this= instance.appContext.config.globalProperties
+
 ### Vue创建Router
+
     import { createRouter, createWebHashHistory } from 'vue-router'
     const routes = [
         {
@@ -221,8 +267,11 @@ const _this= instance.appContext.config.globalProperties
         history: createWebHashHistory(), // Vue3中不叫type了
         routes
     })
+
 export default router
+
 ### vue router设置404页面配置
+
     {
         path: '/:pathMatch(.*)*',
         name: '404',
@@ -230,7 +279,9 @@ export default router
             default: () => import('../views/NotFountd/index.vue')
         }
     }
+
 ### 移动端插件
+
     生产依赖:
     "amfe-flexible": "^2.2.1",
     开发依赖:
@@ -257,7 +308,9 @@ export default router
         const newFontSize = initFontSize * (clienScreenWidth / sreenWidth)
             document.documentElement.style.fontSize = newFontSize + 'px'
     })()
+
 #### screenAuto.scss
+
     <!-- 部分情况js存在兼容问题,使用css多媒体响应会更好 -->
     $sreenWidth: 375;
     $initFontSize: 16;
@@ -270,18 +323,27 @@ export default router
             }
         }
     }
+
 ### Vue3使用引用组件
+
 script setup
+
 <!-- 直接引入 -->
+
 import xxx from 'xxx'
+
 <!-- 然后书写在template内 -->
+
 ### 可选链操作符
+
     return indexData.swiperBg?.default.imgList.list
 
     在对象属性后面加上  ?  表示这个对象如果是null || undfined
     不再访问后面的属性了,终止操作。避免程序加载白屏,报错
+
 ### vue3组件穿透符
-:deep(.van-notice-bar__content) {
+
+:deep(.van-notice-bar\_\_content) {
 display: flex !important;
 flex-direction: row;
 align-items: center;
@@ -290,7 +352,9 @@ align-items: center;
 vue2:
 ::v-deep .xxx {
 }
+
 ### JSX接scope插槽内容
+
     // 表格详情按钮
     const Details = (row) => {
         return (
@@ -300,10 +364,13 @@ vue2:
         )
     }
     <template #default="scope">
-        <Details :row="scope.row"/>  
+        <Details :row="scope.row"/>
     </template>
+
 ## Vue3编写JSX文件组件
+
 ### 安装插件
+
     <!-- vueCli创建的Vue3项目不用安装 -->
     npm install @vue/babel-plugin-jsx -D
 
@@ -313,12 +380,16 @@ vue2:
             '@vue/babel-plugin-jsx'
         ]
     }
+
 ### 函数式组件
+
     const App = (props, context) => (
         <div></div>
     )
     export default App
+
 ### 默认导出写法
+
     export default {
         setup(props,context) {
             const root = ref(null);
@@ -328,10 +399,14 @@ vue2:
     <!-- 可以在render中返回DOM元素,也可以在render中返回Dom元素 -->
     <!-- setup中需要使用箭头函数来返回 -->
     <!-- setup中访问不到this，但是render中可以通过this访问当前vue实例 -->
+
 ### JSX组件样式使用
+
     <!-- 这种是导入是属于全局导入,使用时最好在加上当前组件的根组件类名 -->
     import '../style/index.css'
+
 #### 模块化组件样式
+
     <!-- 导入与命名标准 -->
     import style '../style/index.module.css'
 
@@ -347,15 +422,22 @@ vue2:
       {props.name}
     </p>
     <p className={style.te}>123</p> // 不生效
+
 ### props接收
+
     通过方法的第一个参数,接收props参数
 
     setup(props) {}
+
 ### emit接收
+
     通过方法第二个参数接收
     setup(props, { emit })
+
 ### 插槽
+
 #### 父组件传递插槽
+
     const slots = {
       test: () => <div>具名插槽</div>,
       default: () => <div>默认插槽</div>,
@@ -363,7 +445,9 @@ vue2:
     <Mycom
       v-slots={slots}
      />
+
 #### 子组件接收插槽
+
     setup(props, { slots }) {
         // 子组件
         return () => (
@@ -375,7 +459,9 @@ vue2:
         );
     },
     <!-- 插槽方法调用里, （） 里填写传递给外面插槽的值. -->
+
 ## tiny6富文本配置
+
     "@tinymce/tinymce-vue": "^5.0.0",
     "tinymce": "^6.0.3",
     const init = {
@@ -417,13 +503,17 @@ vue2:
         reject(data)
       })
     }
+
 ## 快速遍历对象
+
     const objKeys = Object.keys(obj)
     objKeys.reduce((target, key) => {
       console.log(obj[key]);
       return target
     }, {})
+
 ## 对象数组快排
+
     const objArry = [
         {
             name: '小王',
@@ -440,7 +530,9 @@ vue2:
     ]
     objArry.sort((a, b) => a.sort-b.sort)
     console.log(objArry);
+
 ## html导出pdf和图片
+
     const exposePdf = () => {
         nextTick(() => {
             const domElement = pdfExposeRef.value

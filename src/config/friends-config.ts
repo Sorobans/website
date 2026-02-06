@@ -9,7 +9,7 @@ export interface FriendLink {
 
 export const friendsData: FriendLink[] = [
   {
-    site: 'matto\'s blog',
+    site: "matto's blog",
     url: 'https://www.matto.top/',
     owner: 'matto',
     desc: '天天摸鱼身体棒',

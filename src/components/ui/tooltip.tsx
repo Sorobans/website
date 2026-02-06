@@ -1,5 +1,13 @@
 import React, { cloneElement, useEffect, useRef, type JSX } from 'react';
-import { FloatingPortal, useDismiss, useFocus, useHover, useInteractions, useRole, type Placement } from '@floating-ui/react';
+import {
+  FloatingPortal,
+  useDismiss,
+  useFocus,
+  useHover,
+  useInteractions,
+  useRole,
+  type Placement,
+} from '@floating-ui/react';
 import { useControlledState } from '@hooks/useControlledState';
 import { useFloatingUI } from '@hooks/useFloatingUI';
 // import { fontVariants } from '@constants/font';
@@ -17,7 +25,15 @@ type TooltipProps = {
   className?: string;
 };
 
-function Tooltip({ children, title, placement = 'top', offsetX = 5, className, open: passedOpen, onOpenChange }: TooltipProps) {
+function Tooltip({
+  children,
+  title,
+  placement = 'top',
+  offsetX = 5,
+  className,
+  open: passedOpen,
+  onOpenChange,
+}: TooltipProps) {
   const isBrowser = typeof window !== 'undefined';
 
   // Use useControlledState for open/close state management
@@ -86,8 +102,7 @@ function Tooltip({ children, title, placement = 'top', offsetX = 5, className, o
               top: y ?? 0,
               left: x ?? 0,
             }}
-            {...floatingProps}
-          >
+            {...floatingProps}>
             {title}
           </div>
         )}

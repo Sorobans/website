@@ -14,7 +14,6 @@ function transformShokaConfig() {
 
     // 添加文件存在性检查
     if (!fs.existsSync(configPath)) {
-      ;
       return null;
     }
     const fileContents = fs.readFileSync(configPath, 'utf8');
@@ -24,8 +23,7 @@ function transformShokaConfig() {
 
     if (!config) return null;
     // 提取 category_map
-    const categoryMap = config.category_map || {};
-    ; // 添加调试日志
+    const categoryMap = config.category_map || {}; // 添加调试日志
     return { categoryMap };
   } catch (error) {
     console.error('转换分类配置时出错:', error);

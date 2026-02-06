@@ -5,7 +5,8 @@ const resources = {
   en: {
     translation: {
       heroTitle: 'Snow Blog Template',
-      heroSubtitle: 'Astro shell, React 19 islands, StyleX atoms, zero-backend search.',
+      heroSubtitle:
+        'Astro shell, React 19 islands, StyleX atoms, zero-backend search.',
       actionPrimary: 'Start writing',
       actionSecondary: 'View components',
       searchTitle: 'Search posts',

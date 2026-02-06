@@ -6,7 +6,10 @@ interface HomePageProps {
   links?: typeof homePageLinks;
 }
 
-const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePageProps) => {
+const HomePage = ({
+  profile = homePageProfile,
+  links = homePageLinks,
+}: HomePageProps) => {
   return (
     <section className="relative h-screen overflow-hidden bg-gradient-to-br">
       <div className="absolute inset-0">
@@ -31,11 +34,10 @@ const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePage
 
             <div className="text-center">
               <h1
-              className="text-[2.5rem] font-bold tracking-[1px] text-pink-main"
-              style={{ textShadow: '2px 2px 8px rgba(255,105,180,0.3)' }}
-            >
-              {profile.name}
-            </h1>
+                className="text-[2.5rem] font-bold tracking-[1px] text-pink-main"
+                style={{ textShadow: '2px 2px 8px rgba(255,105,180,0.3)' }}>
+                {profile.name}
+              </h1>
               <p className="mx-auto mt-3 max-w-[560px] px-5 text-[1.1rem] italic text-[#666]">
                 {profile.tagline}
               </p>
@@ -46,29 +48,34 @@ const HomePage = ({ profile = homePageProfile, links = homePageLinks }: HomePage
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#111111] to-[#2a2a2a] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(17,17,17,0.3)] transition hover:-translate-y-0.5"
                 href={links.xUrl}
                 target="_blank"
-                rel="noreferrer"
-              >
-                <i className="fa-brands fa-x-twitter text-base" aria-hidden="true" />
+                rel="noreferrer">
+                <i
+                  className="fa-brands fa-x-twitter text-base"
+                  aria-hidden="true"
+                />
                 X
               </a>
               <a
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#24292e] to-[#1f2327] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(36,41,46,0.3)] transition hover:-translate-y-0.5"
                 href={links.githubUrl}
                 target="_blank"
-                rel="noreferrer"
-              >
-                <i className="fa-brands fa-github text-base" aria-hidden="true" />
+                rel="noreferrer">
+                <i
+                  className="fa-brands fa-github text-base"
+                  aria-hidden="true"
+                />
                 GitHub
               </a>
               <a
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#ff7aa2] to-[#ff4f87] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(255,79,135,0.3)] transition hover:-translate-y-0.5"
-                href="/blog"
-              >
-                <i className="fa-solid fa-pen-nib text-base" aria-hidden="true" />
+                href="/blog">
+                <i
+                  className="fa-solid fa-pen-nib text-base"
+                  aria-hidden="true"
+                />
                 进入博客
               </a>
             </div>
-
           </div>
         </div>
 

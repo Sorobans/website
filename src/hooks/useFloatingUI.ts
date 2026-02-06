@@ -105,7 +105,9 @@ export function useFloatingUI({
     }
 
     if (enableFlip) {
-      middlewares.push(flip({ fallbackAxisSideDirection: flipFallbackDirection }));
+      middlewares.push(
+        flip({ fallbackAxisSideDirection: flipFallbackDirection }),
+      );
     }
 
     return middlewares;

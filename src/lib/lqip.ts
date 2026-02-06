@@ -63,7 +63,10 @@ export function getLqipStyle(imagePath: string): string | undefined {
 /**
  * Get LQIP props for component usage
  */
-export function getLqipProps(imagePath: string): { style?: string; class?: string } {
+export function getLqipProps(imagePath: string): {
+  style?: string;
+  class?: string;
+} {
   if (isExternalImage(imagePath)) {
     return { class: 'lqip-fallback' };
   }

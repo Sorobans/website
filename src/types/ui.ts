@@ -12,8 +12,20 @@ export type Size = 'sm' | 'md' | 'lg' | 'xl';
 /**
  * Component variant types extracted from CVA
  */
-export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'gradient-shoka';
-export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'shoka-tag';
+export type ButtonVariant =
+  | 'default'
+  | 'destructive'
+  | 'outline'
+  | 'secondary'
+  | 'ghost'
+  | 'link'
+  | 'gradient-shoka';
+export type BadgeVariant =
+  | 'default'
+  | 'secondary'
+  | 'destructive'
+  | 'outline'
+  | 'shoka-tag';
 
 /**
  * Open/close state for interactive components

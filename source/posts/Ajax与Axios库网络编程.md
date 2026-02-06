@@ -1,16 +1,20 @@
 ---
 title: Ajax网络编程与Axios库
 date: 2022-01-10
-tags: 
+tags:
   - ajax
   - axios
   - 网络请求
   - http
 categories: 学习笔记
 ---
+
 # Ajax网络变成与Axios库
+
 ## Ajax基础
+
 ### Ajax概述
+
     Google Suggest
     AJAX,最早出现在2005年的GoogleSuggest
     它不像HTML、JavaScript或CSS这样的一种"正式的"技术
@@ -21,12 +25,16 @@ categories: 学习笔记
     AJAX就是浏览器提供的一套API，可以通过JavaScript调用，从而实现通过代码控制请求与响应。
     实现通过JavaScript进行网络变成
     XML:最早在客户端与服务端之间传递数据时所采用的数据格式。
+
 ### 应用场景
+
     按需获取数据
     对用户数据效验
     自动更新页面内容
     提升用户体验，无刷新的体验
+
 ### 体验Ajax
+
     免费数据接口:
     https://jsonplaceholder.typicode.com
 
@@ -40,7 +48,9 @@ categories: 学习笔记
             // 使用请求成功的数据
         }
     });
+
 ### 原生Ajax
+
     发送ajax请求步骤
     1.创建XMLHttpRequest类型的对象
     2.准备发送,打开与一个网址之间的连接
@@ -60,19 +70,25 @@ categories: 学习笔记
             console.log(this.responseText);
         }
     };
+
 ### xhr对象
+
     XMLHttpRequest类型对象
     AJAXAPI中核心提供的是一个XMLHttpRequest类型，所有的AJAX操作都需要使用到这个类型。
     let xhr = new XMLhttpRequest();
     IE6兼容写法
     xhr = new ActiveXObject("Microsoft.XMLHTTP");
+
 ### open()方法开启请求
+
     本质上XMLHttpRequest就是JavaScript在Web平台中发送Http请求的手段，
     所以我们发送出去的请求仍然是HTTP请求，同样附和HTTO约定的格式。
     语法: xhr.open(method,url)
     method: 要使用的HTTP方法,比如[GET]、[POST](提交、上传)、[PUT](更改数据)、[DELETE](删除) 等。
     url: 要向其发送请求的URL地址,字符串格式。
+
 ### send()方法发送请求
+
     用于发送HTTP请求
     语法: xhr.send(body)
     body: 在XHR请求中要发送的数据体，根据请求头中的类型进行传参。
@@ -80,7 +96,9 @@ categories: 学习笔记
 
      xhr.open("GET","https://jsonplaceholder.typicode.com/users?id=1"); // 打开一个GET请求链接
       // 如果是get方法请求，不需要再send中传参数。如果它想传参数。直接传在网址上.
+
 ### setRequestHeader()方法设置请求头
+
     此方法必须在open()方法和send()之间调用。
     语法: xhr.setRequestHeader(header,value); // POST方法时一定
     header: 一般设置"Content-Type"，传输数据类型,即服务器需要我们传送的数据类型。
@@ -98,7 +116,9 @@ categories: 学习笔记
             console.log(this.responseText);
         }
     };
+
 ### 原生Ajax详解-响应状态分析
+
     xhr.onreadystatechange = function(){
         // 指xhr对象的readyState状态发生变化时触发。
     };
@@ -113,7 +133,9 @@ categories: 学习笔记
     2 HEADERS_RECEIVED send()方法已经被调用.并且已经可以获取状态行和响应头
     3 LOADING 响应体下载中,responseText属性可能已经包含部分数据
     4 DONE 响应体下载完成，可以直接使用reponseText
+
 ### 同步和异步
+
     同步: 一个人在同一个时刻只能做一件事情,在执行一些耗时的操作(不需要看管)不去做
     别的事,只是等待。
     异步: 在执行一些耗时的操作(不需要看管)去做别的事,而不是等待。
@@ -126,7 +148,9 @@ categories: 学习笔记
     为了让这个事件可以更加可靠(一定触发),在发送send()之前,一定是先注册readystatechange
     不论同步或异步都能触发成功
     了解同步模式即可,切记不要使用同步模式.
+
 ### XML数据格式
+
     如果希望服务端返回一个复杂数据，该如何处理?
     关心的问题就是服务端发出何种格式的数据，这种格式如何在客户端用JavaScript解析。
 
@@ -144,7 +168,9 @@ categories: 学习笔记
     <!-- 元数据:用来描述数据的数据 -->
     <!-- 这种数据的缺点: 元数据占用的数据量比较大的。不利于大量网络数据传输 -->
     <!-- 在其他语言中，解析数据比较复杂。不利用使用。 -->
+
 ### JSON数据格式
+
     JSON，js对象表示法。
     也是一种数据描述手段,类似于JavaScript字面量方式。
     服务端采用JSON格式返回数据,客户端按照JSON格式解析数据。
@@ -163,7 +189,9 @@ categories: 学习笔记
     之间有必然的联系。它们只是数据协议罢了。
     不管服务端是采用XML还是采用JSON本质上都是将数据返回给客户端。
     服务端应该根据相应内容的格式设置一个合理的Content-Type。
+
 ### JSON-server的使用
+
     json-server是一个node模块，运行Express服务器。你可以指定一个json
     文件作为API数据源。
 
@@ -173,7 +201,9 @@ categories: 学习笔记
 
     终端使用JSON-SERVER把json布著到服务器
     json-server --watch db.json
+
 ### json-server文件书写方法
+
     {
         "users": [
             {"id": 1,"name": "tom","age": 19,"class": 1},
@@ -192,12 +222,16 @@ categories: 学习笔记
             {"id": 3,"postId": 1003,"content": "good"}
         ]
     }
+
 ### 原生Ajax应用-GET方法
+
     通常在一次GET请求过程中，参数传递都是通过URL地址中的"?"参数传递。
     一般在GET请求中，无需设置请求头。
     xhr.open("GET","http://localhost:3000/users?age=19"); // 查询用户年龄为19的
     xhr.open("GET","http://localhost:3000/posts/1/comments"); // 查询帖子ID为1的的评论
+
 ### 原生Ajax应用-POST请求
+
     POST请求
     POST请求过程中,都是采用请求体承载需要提交的数据。
     需要设置请求头中的Content-Type,以便于服务端接收数据。
@@ -217,7 +251,9 @@ categories: 学习笔记
             console.log(this.responseText);
         }
     };
+
 ### 处理响应数据渲染
+
     客户端中拿到请求的数据过后最常见的就是把这些数据呈现到界面上。
     如果数据结构简单，可以直接通过字符串操作(拼接)的方式处理。
     如果数据过于复杂，字符串拼接维护成本太大。可以使用模板引擎或者
@@ -232,7 +268,7 @@ categories: 学习笔记
             console.log(JSON.parse(this.responseText)); //打印获取的json文本
             let tx = JSON.parse(this.responseText);
             for(let i = 0;i<tx.length;i++){
-                tb.innerHTML += 
+                tb.innerHTML +=
                 `<tr>
                     <td>${tx[i].id}</td>
                     <td>${tx[i].name}</td>
@@ -242,8 +278,11 @@ categories: 学习笔记
             }
         }
     };
+
 ## Ajax常用库
+
 ### jQuery中的ajax方法
+
     jQuery中有一套专门为ajax封装的函数。
     jQuery.ajax();
     常用选项参数介绍:
@@ -273,14 +312,18 @@ categories: 学习笔记
             // 不管响应还是没响应,都会被触发
         }
     });
+
 ### $.get()请求
+
     $.get();
     get请求快捷方法
     $.get(url,data,callback);
     $.get("http://localhost:3000/users",{"id": 7},function(data){
         console.log(data);
     });
+
 ### $.post()请求
+
     $.ajax({
         url: "http://localhost:3000/users",
         type: "post",
@@ -302,7 +345,9 @@ categories: 学习笔记
     },function(data){
         console.log(data);
     });
+
 ### 其他类型请求
+
     put 更改
     delete 删除
 
@@ -328,19 +373,26 @@ categories: 学习笔记
     });
     // 删除数据ID为23的项
     // delete请求没有必要用success和data数据体.
+
 ### $.ajaxSetup()
+
     $.ajaxSetup(); //设置全局AJAX默认参数
             $.ajaxSetup({
             url: "http://localhost:3000/users",
             type: "post"
     });
+
 ## Axios
+
 ### Axios介绍
+
     Axios是目前应用最广泛的AJAX封装库
     Axios库
     地址:https://unpkg.com/axios/dist/axios.min.js
     使用 script 标签引入
+
 ### 体验Axios
+
     axios.get("http://localhost:3000/users?id=1")
     .then(function(response){
         console.log(response.data);
@@ -350,7 +402,9 @@ categories: 学习笔记
         console.log(error);
         // 请求失败后执行的
     })
+
 ### Axios API
+
     可以通过向axios()传递相关配置来创建请求
     axios(config) config为对象格式的配置选项
     axios(url,config) config可选
@@ -360,7 +414,7 @@ categories: 学习笔记
     method 创建请求时使用的方法
     baseURL 传递相对URL前缀,将在前缀加在url前面 (看情况设置)
     headers 即将被发送的自定义请求头(默认为json,不需要设置)
-    params 即将与请求一起发送的URL参数 (GET用) 
+    params 即将与请求一起发送的URL参数 (GET用)
     data 作为请求主体被发送的数据 （POST用)
     timeout 指定请求超市的毫秒数(0表示无超时时间)
     responseType 表示服务器响应的数据类型，默认"json" (通常不需要设置)
@@ -395,12 +449,16 @@ categories: 学习笔记
         console.log(error);
         // 超时/错误打印
     });
+
 ### 全局配置默认值
+
     全局默认配置值
     可以将被用在各个请求的配置默认值
     axios.defaults.baseURL = 'https://......';
     axios.defaults.headers.post['Content-type'] = 'application/json';
+
 ### axios拦截器
+
     在请求或响应被then或catch处理前拦截它们
 
     //使用拦截器,对请求进行拦截处理
@@ -417,7 +475,9 @@ categories: 学习笔记
     axios.interceptors.response.use(function(response){
         return response.data;
     });
+
 ### 快速请求方法get和post
+
     快速请求方法
     axios.get(url[,config]);
     axios.post(url[,data[,config]]);
@@ -447,9 +507,11 @@ categories: 学习笔记
         console.log(res.data)
     })
     .catch(err => {
-        console.error(err); 
+        console.error(err);
     })
+
 ### XHR 2.0-onload和onprogress事件
+
     xhr.onload事件: 只在请求完成时触发
     xhr.onprogress 事件: 只在请求进行中触发
 
@@ -470,7 +532,9 @@ categories: 学习笔记
         // 接受数据的总个数
         console.log(e.total);
     };
+
 ### response和responseType属性
+
     response属性
     以对象的形式表述响应体,其类型取决于responseType的值。你可以尝试
     设置reponseType的值。以便通过特定的类型请求数据
@@ -481,12 +545,17 @@ categories: 学习笔记
     xhr.onload(function(){
         console.log(this.responseType);
     });
+
 ## 跨域和模板引擎应用
+
 ### 跨域请求问题和同源策略
+
     同源策略是浏览器的一种安全策略。所谓同源是指域名、协议、端口完全相同。
     在同源策略下，只有同源的地址才可以互相通过AJAX的方式请求。
     同源或者不同源说的是两个地址之间的关系。不同源地址之间的请求称之为跨域请求。
+
 ### JSONP原理
+
     JSON with Padding ，是一种借助于script标签发送跨域请求的技巧。
     原理就是在客户端借助script标签请求服务端的一个地址
     地址返回一段带有某个全局函数调用的JavaScript脚本
@@ -496,7 +565,9 @@ categories: 学习笔记
     JSONP只能发送GET请求
 
     JSONP用的是script标签.和xmlhttp没有任何关系
+
 ### jQuery中对jsonp的支持
+
     jQuery中的jsonp
     jQuery基本使用$.ajax()
     jQuery中使用JSONP就是将dataType设置为jsonp
@@ -513,24 +584,32 @@ categories: 学习笔记
             console.log(data);
         }
     });
+
 ### CORS跨域
+
     cors跨域。
     Corss Origin Resource Share,跨域资源共享.
     这种解决方案无需客户端作出任何变化,只是在被请求的服务端相应的时候
     添加一个access-Control-Allow-Origin的响应头,表示这个资源是否允许指定域请求.
     Access-Control-Allow-Origin的值:
                 表示允许任意源访问,不安全.
+
 ### 模板引擎作用
+
     减少字符串拼接
     在模板里面解析json,然后跟html内容拼接,性能会更好.
+
 ### artTemplate
+
     art-template是一个简约,超快的模板引擎。
     网址: https://github.com/aui/artTemplate
     中文使用文档: https://aui.github.io/art-template/zh-cn/docs
     常用语法:
     <% %>符号包裹起来的语句则为模板的逻辑表达式
     <%= content %>为输出表达式
+
 ### Axios onUploadProgress上传进度检测
+
     axios({
         method: 'POST',
         url: '/boss/',
@@ -543,22 +622,26 @@ categories: 学习笔记
             console.log(event.total, event.loaded)
         }
     })
+
 ### 文件上传对象接收(Element的httpRequest)
+
     const fd = new FormData()
     fd.append('file', option.file)
-    uploadFile(param){ 
-    // 获取上传的文件名 
-    var file = param.file 
+    uploadFile(param){
+    // 获取上传的文件名
+    var file = param.file
     //发送请求的参数格式为FormData
-    const formData = new FormData(); 
-    formData.append("file",file) 
-    // 调用param中的钩子函数处理各种情况，这样就可以用在组件中用钩子了。也可以用res.code==200来进行判断处理各种情况 
-    uploadFile(formData,param).then(res=>{ 
-        param.onSuccess(res) 
+    const formData = new FormData();
+    formData.append("file",file)
+    // 调用param中的钩子函数处理各种情况，这样就可以用在组件中用钩子了。也可以用res.code==200来进行判断处理各种情况
+    uploadFile(formData,param).then(res=>{
+        param.onSuccess(res)
         }).catch(err=>{
         param.onError(err) }
     ) },
+
 ## Axios-request配置
+
     // 设置Axios拦截器,请求头,token,域名
     import axios from 'axios'
     import { baseUrl } from './baseUrl'
@@ -581,7 +664,9 @@ categories: 学习笔记
         return config
     })
     export default request
+
 ## 文件下载
+
     // ECU数据导出
     export const intertableDetailsEcuExport = () => {
         // console.log(params);
@@ -620,7 +705,9 @@ categories: 学习笔记
         }
         //   console.log(data);
     }
+
 ### 循环多文件下载
+
     for (const item of this.fileTableData.data) {
         if (item.isChecked) {
           const { data } = await axios({

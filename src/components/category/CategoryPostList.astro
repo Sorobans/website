@@ -1,7 +1,7 @@
 ---
 import { CONTENT_PADDING } from '@constants/layout';
 import { Routes } from '@constants/router';
-import { getPostHref, getPostIndexMap, getPostsByCategory, type Category } from '@lib/content';
+import { getPostHref, getPostIndexMap, getPostsByCategoryPath, type Category } from '@lib/content';
 import SubCategory from './SubCategory.astro';
 import { cn } from '@lib/utils';
 import { parseDate } from '@lib/datetime';
@@ -13,7 +13,7 @@ interface Props {
   rootCategory: Category | null;
 }
 const { categories, countMap, rootCategory } = Astro.props;
-const posts = await getPostsByCategory(rootCategory?.name ?? '');
+const posts = await getPostsByCategoryPath(rootCategory?.path ?? '');
 const postIndexMap = await getPostIndexMap();
 ---
 
@@ -37,7 +37,7 @@ const postIndexMap = await getPostIndexMap();
             <div class="category-first-level-container flex flex-col">
               {category?.children?.length &&
                 category.children.map((child) => (
-                  <SubCategory category={child} parentName={category.name} countMap={countMap} />
+                  <SubCategory category={child} countMap={countMap} />
                 ))}
             </div>
           ),

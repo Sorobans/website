@@ -1,15 +1,41 @@
 /**
- * Category-related utility functions
+ * 分类相关工具函数
  */
 
 import { categoryMap } from '@constants/category';
 import { withBlogBase } from '@constants/router';
-import { getCollection } from 'astro:content';
-import type { BlogPost, BlogSchema } from '@/types/blog';
 
+import { getVisibleBlogPosts } from './repository';
 import type { Category, CategoryListResult } from './types';
 
 export const DEFAULT_CATEGORY_NAME = '技术教程';
+
+const REVERSE_CATEGORY_MAP = Object.fromEntries(
+  Object.entries(categoryMap).map(([key, value]) => [value, key]),
+);
+
+function normalizeCategoryPathInput(
+  categoryNames: string | string[],
+): string[] {
+  return Array.isArray(categoryNames) ? categoryNames : [categoryNames];
+}
+
+/**
+ * 分类计数键使用完整路径，避免同名分类互相污染。
+ */
+export function getCategoryCountKey(categoryNames: string | string[]): string {
+  return JSON.stringify(normalizeCategoryPathInput(categoryNames));
+}
+
+/**
+ * 读取分类路径对应的计数，未命中时返回 0。
+ */
+export function getCategoryCount(
+  countMap: Record<string, number>,
+  categoryNames: string | string[],
+): number {
+  return countMap[getCategoryCountKey(categoryNames)] ?? 0;
+}
 
 function normalizeSegment(segment: string): string {
   try {
@@ -19,12 +45,51 @@ function normalizeSegment(segment: string): string {
   }
 }
 
-function normalizeCategories(categories?: string | string[] | string[][]): string[] | string[][] {
-  if (!categories) return [DEFAULT_CATEGORY_NAME];
+function normalizeCategories(
+  categories?: string | string[] | string[][],
+): string[][] {
+  if (!categories) return [[DEFAULT_CATEGORY_NAME]];
+
   if (Array.isArray(categories)) {
-    return categories.length ? categories : [DEFAULT_CATEGORY_NAME];
+    if (categories.length === 0) return [[DEFAULT_CATEGORY_NAME]];
+
+    const first = categories[0];
+    if (Array.isArray(first)) {
+      const path = first.filter(
+        (name) => typeof name === 'string' && name.trim().length > 0,
+      );
+      return [path.length > 0 ? path : [DEFAULT_CATEGORY_NAME]];
+    }
+
+    const path = categories.filter(
+      (name): name is string =>
+        typeof name === 'string' && name.trim().length > 0,
+    );
+    return [path.length > 0 ? path : [DEFAULT_CATEGORY_NAME]];
   }
-  return [categories];
+
+  return [[categories]];
+}
+
+function upsertCategoryPath(rootCategories: Category[], path: string[]): void {
+  let currentLevel = rootCategories;
+  const currentPath: string[] = [];
+
+  for (const name of path) {
+    currentPath.push(name);
+    let current = currentLevel.find((category) => category.name === name);
+    if (!current) {
+      current = { name, path: [...currentPath] };
+      currentLevel.push(current);
+    } else if (!current.path?.length) {
+      current.path = [...currentPath];
+    }
+
+    if (!current.children) {
+      current.children = [];
+    }
+    currentLevel = current.children;
+  }
 }
 
 export function getCategorySlug(name: string): string {
@@ -34,124 +99,97 @@ export function getCategorySlug(name: string): string {
 }
 
 /**
- * Get hierarchical category list with counts (excluding drafts in production)
+ * 获取层级分类和分类文章数（生产环境会过滤草稿）。
  */
 export async function getCategoryList(): Promise<CategoryListResult> {
-  const allBlogPosts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
-    // 在生产环境中，过滤掉草稿
-    const { draft } = data;
-    return import.meta.env.PROD ? draft !== true : true;
-  })) as BlogPost[];
-  const countMap: { [key: string]: number } = {}; // TODO: 需要优化，应该以分类路径为键名而不是 name 如数据结构既是根分类也是笔记-后端-数据结构。
+  const allBlogPosts = await getVisibleBlogPosts();
+  const countMap: Record<string, number> = {};
   const resCategories: Category[] = [];
 
-  // 统计每个分类的直接文章数量
-  for (let i = 0; i < allBlogPosts.length; ++i) {
-    const post = allBlogPosts[i];
-    const { catalog, categories } = post.data;
-    if (catalog === false) {
-      continue;
+  for (const post of allBlogPosts) {
+    if (post.data.catalog === false) continue;
+
+    const categoryPath = getCategoryArr(post.data.categories);
+    for (let index = 0; index < categoryPath.length; index++) {
+      const currentPath = categoryPath.slice(0, index + 1);
+      const key = getCategoryCountKey(currentPath);
+      countMap[key] = (countMap[key] || 0) + 1;
     }
 
-    const normalizedCategories = normalizeCategories(categories);
-    const firstCategory = normalizedCategories[0];
-    if (Array.isArray(firstCategory)) {
-      // categories[0] = ['笔记', '算法']
-      if (!firstCategory.length) continue;
-
-      for (let j = 0; j < firstCategory.length; ++j) {
-        const name = firstCategory[j];
-        countMap[name] = (countMap[name] || 0) + 1;
-        if (j === 0) {
-          addCategoryRecursively(resCategories, [], name);
-        } else {
-          const parentNames = firstCategory.slice(0, j);
-          addCategoryRecursively(resCategories, parentNames, name);
-        }
-      }
-    } else if (typeof firstCategory === 'string') {
-      // categories[0] = '工具'
-      countMap[firstCategory] = (countMap[firstCategory] || 0) + 1;
-      addCategoryRecursively(resCategories, [], firstCategory);
-    }
+    upsertCategoryPath(resCategories, categoryPath);
   }
 
   return { categories: resCategories, countMap };
 }
 
 /**
- * 递归添加子分类 有副作用的函数 如 ['分类1', '分类2', '分类3'] 创建一级分类 '分类1'、二级分类 '分类2'、三级分类 '分类3'
- * @param rootCategories 根分类
- * @param parentNames 父分类名 ['分类1', '分类2']
- * @param name 子分类名 '分类3'
+ * 兼容旧接口：按父级路径添加一个分类节点。
  */
-export function addCategoryRecursively(rootCategories: Category[], parentNames: string[], name: string) {
-  if (parentNames.length === 0) {
-    const index = rootCategories.findIndex((c) => c.name === name); // 如果当前分类已存在，则直接返回
-    if (index === -1) rootCategories.push({ name });
-    return;
-  } else {
-    const rootParentName = parentNames[0];
-    const index = rootCategories.findIndex((c) => c.name === rootParentName);
-    if (index === -1) {
-      // 如果父级分类不存在，则创建
-      const rootParentCategory = { name: rootParentName, children: [] };
-      rootCategories.push(rootParentCategory);
-      addCategoryRecursively(rootParentCategory.children, parentNames.slice(1), name);
-    } else {
-      // 如果父级分类存在,找到这个分类
-      const rootParentCategory = rootCategories[index];
-      if (!rootParentCategory?.children) rootParentCategory.children = [];
-      addCategoryRecursively(rootParentCategory.children, parentNames.slice(1), name);
-    }
-  }
+export function addCategoryRecursively(
+  rootCategories: Category[],
+  parentNames: string[],
+  name: string,
+) {
+  upsertCategoryPath(rootCategories, [...parentNames, name]);
 }
 
 /**
  * 获取分类完整链接
- * @param categories 分类
- * @param parentLink 父分类链接
- * @returns 分类链接
  */
-export function getCategoryLinks(categories?: Category[], parentLink?: string): string[] {
+export function getCategoryLinks(
+  categories?: Category[],
+  parentLink?: string,
+): string[] {
   if (!categories?.length) return [];
   const res: string[] = [];
-  categories.forEach((category: Category) => {
+
+  for (const category of categories) {
     const link = getCategorySlug(category.name);
     const fullLink = parentLink ? `${parentLink}/${link}` : link;
     res.push(fullLink);
-    if (category?.children?.length) {
-      const children = getCategoryLinks(category?.children, fullLink);
-      res.push(...children);
+
+    if (category.children?.length) {
+      res.push(...getCategoryLinks(category.children, fullLink));
     }
-  });
+  }
+
   return res;
 }
 
 /**
- * Get category name by link
- * @param link categories/xxx/front-end
- * @returns 前端
+ * 统计分类树节点总数。
+ */
+export function getCategoryNodeCount(categories?: Category[]): number {
+  if (!categories?.length) return 0;
+
+  return categories.reduce((count, category) => {
+    return count + 1 + getCategoryNodeCount(category.children);
+  }, 0);
+}
+
+/**
+ * 通过链接获取分类名称
  */
 export function getCategoryNameByLink(link: string): string {
   if (!link) return '';
 
-  // Remove leading/trailing slashes and split
   const cleanLink = link.replace(/^\/+|\/+$/g, '');
   if (!cleanLink) return '';
 
-  const segments = cleanLink.split('/').filter(Boolean); // Filter out empty segments
+  const segments = cleanLink.split('/').filter(Boolean);
   if (segments.length === 0) return '';
 
   const lastSegment = segments[segments.length - 1];
-  const reverseCategoryMap = Object.fromEntries(Object.entries(categoryMap).map(([key, value]) => [value, key]));
-  return reverseCategoryMap[lastSegment] ?? normalizeSegment(lastSegment);
+  return REVERSE_CATEGORY_MAP[lastSegment] ?? normalizeSegment(lastSegment);
 }
 
 /**
- * Get category by link
+ * 通过链接查找分类节点
  */
-export function getCategoryByLink(categories: Category[], link?: string): Category | null {
+export function getCategoryByLink(
+  categories: Category[],
+  link?: string,
+): Category | null {
   if (!link || !categories?.length) return null;
   const cleanLink = link.replace(/^\/+|\/+$/g, '');
   if (!cleanLink) return null;
@@ -163,9 +201,12 @@ export function getCategoryByLink(categories: Category[], link?: string): Catego
   for (const segment of segments) {
     const normalized = normalizeSegment(segment);
     const nextCategory = currentCategories.find(
-      (category) => getCategorySlug(category.name) === segment || category.name === normalized,
+      (category) =>
+        getCategorySlug(category.name) === segment ||
+        category.name === normalized,
     );
     if (!nextCategory) return null;
+
     currentCategory = nextCategory;
     currentCategories = nextCategory.children ?? [];
   }
@@ -174,34 +215,38 @@ export function getCategoryByLink(categories: Category[], link?: string): Catego
 }
 
 /**
- * 获取分类的父分类（递归查找）
+ * 获取分类父节点
  */
-export function getParentCategory(category: Category | null, categories: Category[]): Category | null {
-  if (!categories?.length || !category) return null;
+export function getParentCategory(
+  category: Category | null,
+  categories: Category[],
+): Category | null {
+  if (!category || categories.length === 0) return null;
 
-  for (const c of categories) {
-    if (!c.children?.length) continue;
+  const queue: Array<{ node: Category; parent: Category | null }> =
+    categories.map((node) => ({
+      node,
+      parent: null,
+    }));
 
-    // 直接检查当前层级
-    if (c.children.some((child) => child.name === category.name)) {
-      return c;
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) continue;
+
+    if (current.node.name === category.name) {
+      return current.parent;
     }
 
-    // 递归检查子分类
-    for (const child of c.children) {
-      if (child.children?.length) {
-        const result = getParentCategory(category, [child]);
-        if (result) return result;
-      }
+    for (const child of current.node.children ?? []) {
+      queue.push({ node: child, parent: current.node });
     }
   }
+
   return null;
 }
 
 /**
- * Build category path from category names
- * @param categoryNames Array of category names or single category name
- * @returns Category path like "/categories/note/front-end"
+ * 根据分类名称构建分类路径
  */
 export function buildCategoryPath(categoryNames: string | string[]): string {
   if (!categoryNames) return '';
@@ -214,19 +259,13 @@ export function buildCategoryPath(categoryNames: string | string[]): string {
 }
 
 /**
- * 统一 ['分类1', '分类2'] 和 '分类'
+ * 统一分类输入格式：
+ * - '分类' -> ['分类']
+ * - ['分类1', '分类2'] -> ['分类1', '分类2']
+ * - [['分类1', '分类2']] -> ['分类1', '分类2']
  */
-export function getCategoryArr(categories?: string | string[] | string[][]) {
-  const normalizedCategories = normalizeCategories(categories);
-  const firstCategory = normalizedCategories[0];
-
-  if (Array.isArray(firstCategory)) {
-    return firstCategory.length ? firstCategory : [DEFAULT_CATEGORY_NAME];
-  }
-
-  if (typeof firstCategory === 'string') {
-    return [firstCategory];
-  }
-
-  return [DEFAULT_CATEGORY_NAME];
+export function getCategoryArr(
+  categories?: string | string[] | string[][],
+): string[] {
+  return normalizeCategories(categories)[0];
 }

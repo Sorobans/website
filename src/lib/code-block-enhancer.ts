@@ -99,7 +99,10 @@ export interface ToolbarOptions {
 /**
  * 创建工具栏 HTML
  */
-export function createToolbar(language: string, options: ToolbarOptions = {}): string {
+export function createToolbar(
+  language: string,
+  options: ToolbarOptions = {},
+): string {
   const { enableCopy = true, enableFullscreen = true } = options;
   // 转义语言名防止 XSS
   const safeLanguage = escapeHtml(language);
@@ -177,7 +180,10 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 /**
  * 增强单个代码块
  */
-export function enhanceCodeBlock(preElement: HTMLElement, options: ToolbarOptions = {}): CodeBlockInfo | null {
+export function enhanceCodeBlock(
+  preElement: HTMLElement,
+  options: ToolbarOptions = {},
+): CodeBlockInfo | null {
   // 避免重复增强
   if (preElement.dataset.enhanced === 'true') {
     return null;
@@ -204,7 +210,10 @@ export function enhanceCodeBlock(preElement: HTMLElement, options: ToolbarOption
   wrapper.appendChild(preElement);
 
   // 在 pre 之前插入工具栏（作为兄弟节点）
-  preElement.insertAdjacentHTML('beforebegin', createToolbar(language, options));
+  preElement.insertAdjacentHTML(
+    'beforebegin',
+    createToolbar(language, options),
+  );
 
   // 标记为已增强
   preElement.dataset.enhanced = 'true';
@@ -231,7 +240,10 @@ export interface EnhanceOptions {
 /**
  * 增强所有代码块
  */
-export function enhanceAllCodeBlocks(container: Element, options: EnhanceOptions = {}): void {
+export function enhanceAllCodeBlocks(
+  container: Element,
+  options: EnhanceOptions = {},
+): void {
   const { enableCopy = true, enableFullscreen = true } = options;
   const codeBlocks = container.querySelectorAll('pre');
 
@@ -243,7 +255,8 @@ export function enhanceAllCodeBlocks(container: Element, options: EnhanceOptions
 
     // 绑定复制按钮（按钮在 wrapper 中，不在 pre 内部）
     if (enableCopy) {
-      const copyBtn = preElement.parentElement?.querySelector('.code-block-copy');
+      const copyBtn =
+        preElement.parentElement?.querySelector('.code-block-copy');
       if (copyBtn) {
         // 保存原始 SVG
         const originalSvg = copyBtn.innerHTML;
@@ -287,7 +300,9 @@ export function enhanceAllCodeBlocks(container: Element, options: EnhanceOptions
 
     // 绑定全屏按钮（按钮在 wrapper 中，不在 pre 内部）
     if (enableFullscreen) {
-      const fullscreenBtn = preElement.parentElement?.querySelector('.code-block-fullscreen');
+      const fullscreenBtn = preElement.parentElement?.querySelector(
+        '.code-block-fullscreen',
+      );
       if (fullscreenBtn) {
         fullscreenBtn.addEventListener('click', () => {
           options.onFullscreen?.(info);

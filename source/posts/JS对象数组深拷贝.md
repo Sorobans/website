@@ -10,24 +10,24 @@ tags: 技术分享
  * @returns { object }
  */
 const deepCopy = (obj) => {
-  let target = null
+  let target = null;
   if (typeof obj === 'object') {
     if (Array.isArray(obj)) {
-      target = []
-      obj.forEach(item => {
-        target.push(deepCopy(item))
-      })
+      target = [];
+      obj.forEach((item) => {
+        target.push(deepCopy(item));
+      });
     } else if (obj) {
-      target = {}
+      target = {};
       for (const [key, value] of Object.entries(obj)) {
-        target[key] = deepCopy(obj[key])
+        target[key] = deepCopy(obj[key]);
       }
     } else {
-      target = obj
+      target = obj;
     }
   } else {
-    target = obj
+    target = obj;
   }
-  return target
-}
+  return target;
+};
 ```

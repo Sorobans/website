@@ -21,7 +21,12 @@
  */
 
 import { useCallback } from 'react';
-import { findHeadingById, getParentIds, getSiblingIds, type Heading } from './useHeadingTree';
+import {
+  findHeadingById,
+  getParentIds,
+  getSiblingIds,
+  type Heading,
+} from './useHeadingTree';
 
 export interface UseHeadingClickHandlerOptions {
   /** 层级化的标题树 */
@@ -36,7 +41,10 @@ export interface UseHeadingClickHandlerOptions {
  * @param options - 配置选项
  * @returns 标题点击处理函数
  */
-export function useHeadingClickHandler({ headings, setExpandedIds }: UseHeadingClickHandlerOptions): (id: string) => void {
+export function useHeadingClickHandler({
+  headings,
+  setExpandedIds,
+}: UseHeadingClickHandlerOptions): (id: string) => void {
   return useCallback(
     (id: string) => {
       const element = document.getElementById(id);

@@ -56,11 +56,13 @@ function Logo({ logoElement, logoText, logoSrc, className }: LogoProps) {
         <img
           src={logoSrc}
           alt={blogLayoutConfig?.alternate ?? blogLayoutConfig?.name}
-          className={cn("h-8", className)}
+          className={cn('h-8', className)}
           height={32}
         />
       ) : (
-        <span className={cn("logo-text text-primary", className)}>{logoText}</span>
+        <span className={cn('logo-text text-primary', className)}>
+          {logoText}
+        </span>
       )}
     </a>
   );
@@ -156,7 +158,9 @@ export function MobilePostHeader({
         ) : (
           <motion.div
             key="logo-mode"
-            className={'absolute w-fit translate-x-[-50%] translate-y-[-50%] left-[50%] top-[50%] z-70'}
+            className={
+              'absolute w-fit translate-x-[-50%] translate-y-[-50%] left-[50%] top-[50%] z-70'
+            }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

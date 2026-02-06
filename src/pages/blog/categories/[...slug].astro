@@ -23,8 +23,10 @@ export async function getStaticPaths() {
 }
 
 const { category } = Astro.props;
-const { categories: allCategories, countMap } = await getCategoryList();
-const layoutFooterData = await getLayoutFooterData();
+const [{ categories: allCategories, countMap }, layoutFooterData] = await Promise.all([
+  getCategoryList(),
+  getLayoutFooterData(),
+]);
 
 // 如果是子分类，只展示当前分类的内容
 const displayCategories = category ? [category] : allCategories;

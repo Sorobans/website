@@ -1,5 +1,6 @@
 name: astro-react-zustand
 description: Build and hydrate React 19 islands inside Astro using @astrojs/react, with Zustand stores for shared state. Use when creating/updating React components with client directives, wiring Zustand stores, or debugging SSR/CSR hydration.
+
 ---
 
 # Astro React Zustand
@@ -12,6 +13,7 @@ Embed React islands in Astro, manage shared state with Zustand, and avoid hydrat
 
 - Integration: keep `@astrojs/react` in `astro.config.mjs` integrations. Use client directives (`client:load|visible|idle|only="react"`) when placing React components in `.astro`.
 - Entry point example:
+
 ```astro
 ---
 import Counter from '../components/Counter';
@@ -37,6 +39,7 @@ export const useCounter = create<CounterState>((set) => ({
 ```
 
 Use selectors to limit re-renders:
+
 ```ts
 const count = useCounter((s) => s.count);
 const inc = useCounter((s) => s.inc);
@@ -46,9 +49,11 @@ const inc = useCounter((s) => s.inc);
 
 - Keep store modules free of browser-only APIs; guard with `typeof window !== 'undefined'` inside actions if needed.
 - For initial server data, pass props into islands and hydrate store inside `useEffect` to avoid mismatches:
+
 ```tsx
 useEffect(() => useCounter.setState({ count: initialCount }), [initialCount]);
 ```
+
 - Prefer `client:visible`/`client:idle` for non-critical UI to reduce bundle cost; use `client:only="react"` for pure React pages.
 
 ## Component Template

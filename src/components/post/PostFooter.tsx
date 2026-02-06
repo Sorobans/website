@@ -4,12 +4,24 @@ import RelatedPostList from './RelatedPostList';
 
 type Props = PostFooterData;
 
-export default function PostFooter({ randomPosts, relatedPosts, hasSimilarityData, postIndexMap }: Props) {
+export default function PostFooter({
+  randomPosts,
+  relatedPosts,
+  hasSimilarityData,
+  postIndexMap,
+}: Props) {
   return (
     <div className="tablet:grid-cols-1 grid grid-cols-2 gap-4 px-10 md:px-6">
-      <RandomPostList posts={randomPosts.slice(0, 5)} postIndexMap={postIndexMap} />
+      <RandomPostList
+        posts={randomPosts.slice(0, 5)}
+        postIndexMap={postIndexMap}
+      />
       {hasSimilarityData && (
-        <RelatedPostList posts={relatedPosts} fallbackPosts={randomPosts.slice(5)} postIndexMap={postIndexMap} />
+        <RelatedPostList
+          posts={relatedPosts}
+          fallbackPosts={randomPosts.slice(5)}
+          postIndexMap={postIndexMap}
+        />
       )}
     </div>
   );

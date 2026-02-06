@@ -12,8 +12,7 @@ import Layout from '@layouts/Layout.astro';
 import { getWeeklyPosts } from '@lib/content';
 import { getLayoutFooterData } from '@lib/layout/footer-data';
 
-const posts = await getWeeklyPosts();
-const layoutFooterData = await getLayoutFooterData();
+const [posts, layoutFooterData] = await Promise.all([getWeeklyPosts(), getLayoutFooterData()]);
 const pageTitle = weeklyConfig.title || weeklyConfig.categoryName;
 ---
 

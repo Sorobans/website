@@ -8,6 +8,7 @@
 [astro-koharu](https://github.com/cosZone/astro-koharu)
 
 ## 功能优化
+
 在基于 [astro-koharu](https://github.com/cosZone/astro-koharu) 的基础做了以下修整。
 
 删除了一些可能大多数人都不太想要的一些功能, 和增加 / 更改了一些东西
@@ -30,7 +31,9 @@
 - 一些比较重逻辑的astro组件删除，重写为react组件。
 - 尽量保持 astro 提供layout. 和内容生成.
 - 优化了header的背景动画
+
 ## 风格描述
+
 - 基于 **Astro**，静态输出，加载轻快
 - 萌系 / 二次元 / 粉蓝配色，适合 ACG、前端、手账向个人站
 - 支持多分类、多标签，但不会强迫你用复杂信息架构
@@ -59,6 +62,7 @@ pnpm dev
 ```
 
 ## 功能特性
+
 - 提交自动部署GithubPage
 - 构建时自动ai摘要
 - 基于 Astro 5.x，静态站点生成，性能优异

@@ -46,7 +46,10 @@ const OpenMenuButton = ({ className, id, buttonRef }: MenuButtonProps) => {
   };
 
   return (
-    <div className={cn(className)} id={id} style={{ viewTransitionName: 'home-menu-icon' }}>
+    <div
+      className={cn(className)}
+      id={id}
+      style={{ viewTransitionName: 'home-menu-icon' }}>
       <button
         className={cn(
           'flex-center text-shoka size-10 cursor-pointer rounded-full bg-white/20 select-none',
@@ -59,8 +62,7 @@ const OpenMenuButton = ({ className, id, buttonRef }: MenuButtonProps) => {
         ref={buttonRef}
         style={{
           viewTransitionName: 'menu-icon',
-        }}
-      >
+        }}>
         <motion.i
           className={cn('text-xl', 'fa-solid fa-bars')}
           variants={iconVariants}
@@ -91,8 +93,7 @@ const CloseMenuButton = ({ className, id, buttonRef }: MenuButtonProps) => {
         aria-label="关闭菜单"
         aria-expanded={isOpen}
         type="button"
-        ref={buttonRef}
-      >
+        ref={buttonRef}>
         <motion.i
           className={cn('text-xl', 'fa-solid fa-xmark')}
           variants={iconVariants}

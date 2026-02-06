@@ -25,7 +25,7 @@ function mightThrow() {
 
 // 统一捕获同步/异步错误
 Promise.try(mightThrow)
-  .then(console.log)  // 成功输出 'Success'
+  .then(console.log) // 成功输出 'Success'
   .catch(console.error); // 失败捕获所有错误
 ```
 
@@ -38,13 +38,13 @@ const fetchData = (params) => {
   // 同步参数校验
   if (!params.id) throw new Error('缺少ID');
   // 异步请求
-  return fetch(`/api/data/${params.id}`).then(res => res.json());
+  return fetch(`/api/data/${params.id}`).then((res) => res.json());
 };
 
 // 统一错误处理
 Promise.try(() => fetchData({}))
-  .then(data => console.log(data))
-  .catch(err => alert(err.message)); // 直接捕获"缺少ID"错误
+  .then((data) => console.log(data))
+  .catch((err) => alert(err.message)); // 直接捕获"缺少ID"错误
 ```
 
 ## 2. Set 集合运算：告别 Lodash 依赖

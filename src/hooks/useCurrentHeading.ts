@@ -35,7 +35,10 @@ function createHeadingStore(offsetTop: number) {
   let currentHeading: CurrentHeading | null = null;
   const listeners = new Set<() => void>();
   let observer: IntersectionObserver | null = null;
-  const visibleHeadings = new Map<string, { top: number; element: HTMLElement }>(); // id -> { top, element }
+  const visibleHeadings = new Map<
+    string,
+    { top: number; element: HTMLElement }
+  >(); // id -> { top, element }
 
   const notifyListeners = () => {
     listeners.forEach((listener) => listener());
@@ -70,7 +73,10 @@ function createHeadingStore(offsetTop: number) {
     });
 
     if (closestElement && closestId) {
-      const level = parseInt((closestElement as HTMLElement).tagName.substring(1), 10) as 2 | 3;
+      const level = parseInt(
+        (closestElement as HTMLElement).tagName.substring(1),
+        10,
+      ) as 2 | 3;
       updateHeading({
         id: closestId,
         text: (closestElement as HTMLElement).textContent?.trim() || '',
@@ -88,7 +94,9 @@ function createHeadingStore(offsetTop: number) {
     visibleHeadings.clear();
     currentHeading = null;
 
-    const article = document.querySelector('.custom-content') ?? document.querySelector('article');
+    const article =
+      document.querySelector('.custom-content') ??
+      document.querySelector('article');
     if (!article) return;
 
     // Root margin: negative top margin to account for header offset
@@ -119,9 +127,9 @@ function createHeadingStore(offsetTop: number) {
     );
 
     // Observe H2/H3 headings in article (excluding link preview blocks)
-    const headings = Array.from(article.querySelectorAll<HTMLElement>('h2, h3')).filter(
-      (heading) => !heading.closest('.link-preview-block'),
-    );
+    const headings = Array.from(
+      article.querySelectorAll<HTMLElement>('h2, h3'),
+    ).filter((heading) => !heading.closest('.link-preview-block'));
 
     headings.forEach((heading) => {
       if (heading.id) {
@@ -203,9 +211,15 @@ function createHeadingStore(offsetTop: number) {
  * @param options - Options for heading detection
  * @returns Current heading info or null if not scrolled past any heading
  */
-export function useCurrentHeading({ offsetTop = 80 }: UseCurrentHeadingOptions = {}): CurrentHeading | null {
+export function useCurrentHeading({
+  offsetTop = 80,
+}: UseCurrentHeadingOptions = {}): CurrentHeading | null {
   // Memoize store creation to avoid recreating on every render
   const store = useMemo(() => createHeadingStore(offsetTop), [offsetTop]);
 
-  return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
 }

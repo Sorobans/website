@@ -52,7 +52,7 @@ function ChatRoom({ roomId }) {
     }
   }, [roomId, message]); // message 变化会重复记录
 
-  return <input value={message} onChange={e => setMessage(e.target.value)} />;
+  return <input value={message} onChange={(e) => setMessage(e.target.value)} />;
 }
 
 // ✅ 好的做法
@@ -65,7 +65,7 @@ function ChatRoom({ roomId }) {
 
   return (
     <>
-      <input value={message} onChange={e => setMessage(e.target.value)} />
+      <input value={message} onChange={(e) => setMessage(e.target.value)} />
       <button onClick={handleSend}>发送</button>
     </>
   );
@@ -118,7 +118,7 @@ function Counter() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCount(c => c + 1); // 使用更新函数,不依赖 count
+      setCount((c) => c + 1); // 使用更新函数,不依赖 count
     }, 1000);
     return () => clearInterval(timer);
   }, []); // 空依赖数组,定时器不会重置
@@ -155,8 +155,9 @@ function ChatRoom({ roomId, theme }) {
 ```javascript
 // ❌ 不好的做法
 function SearchResults({ query }) {
-  const options = { // 每次渲染都是新对象
-    includeArchived: true
+  const options = {
+    // 每次渲染都是新对象
+    includeArchived: true,
   };
 
   useEffect(() => {
@@ -183,9 +184,12 @@ function SearchResults({ query }) {
 
 // ✅ 解决方案 3: 使用 useMemo
 function SearchResults({ query, includeArchived }) {
-  const options = useMemo(() => ({
-    includeArchived
-  }), [includeArchived]);
+  const options = useMemo(
+    () => ({
+      includeArchived,
+    }),
+    [includeArchived],
+  );
 
   useEffect(() => {
     fetchResults(query, options);
@@ -279,7 +283,7 @@ function ChatRoom({ roomId, theme, currentUser }) {
 
   // ✅ 使用 Effect Event 处理非响应式逻辑
   const onMessage = useEffectEvent((message) => {
-    setMessages(msgs => [...msgs, message]); // 使用更新函数
+    setMessages((msgs) => [...msgs, message]); // 使用更新函数
     showNotification(message, theme); // 读取最新 theme,但不触发重连
   });
 

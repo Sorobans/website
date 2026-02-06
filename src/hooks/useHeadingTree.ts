@@ -37,7 +37,10 @@ let cachedKey = '';
 
 const buildHeadingKey = (headings: Heading[]): string =>
   headings
-    .map((heading) => `${heading.id}:${heading.level}:${heading.text}:${buildHeadingKey(heading.children)}`)
+    .map(
+      (heading) =>
+        `${heading.id}:${heading.level}:${heading.text}:${buildHeadingKey(heading.children)}`,
+    )
     .join('|');
 
 const refreshHeadingSnapshot = (): boolean => {
@@ -62,7 +65,9 @@ type HeadingInput = HeadingSource | MarkdownHeading;
 /**
  * Build hierarchical structure from flat heading list
  */
-function buildHeadingTree(flatHeadings: Array<{ id: string; text: string; level: number }>): Heading[] {
+function buildHeadingTree(
+  flatHeadings: Array<{ id: string; text: string; level: number }>,
+): Heading[] {
   const tree: Heading[] = [];
   const stack: Heading[] = [];
 
@@ -73,7 +78,10 @@ function buildHeadingTree(flatHeadings: Array<{ id: string; text: string; level:
     };
 
     // Find the appropriate parent
-    while (stack.length > 0 && stack[stack.length - 1].level >= newHeading.level) {
+    while (
+      stack.length > 0 &&
+      stack[stack.length - 1].level >= newHeading.level
+    ) {
       stack.pop();
     }
 
@@ -119,39 +127,42 @@ function getHeadingSnapshot(): Heading[] {
     return [];
   }
 
-  const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
+  const articleContent =
+    document.querySelector('.custom-content') ??
+    document.querySelector('article');
 
   if (!articleContent) {
     return [];
   }
 
-  const headingElements = Array.from(articleContent.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5, h6')).filter(
-    (heading) => !heading.closest('.link-preview-block'),
-  );
+  const headingElements = Array.from(
+    articleContent.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5, h6'),
+  ).filter((heading) => !heading.closest('.link-preview-block'));
 
   if (headingElements.length === 0) {
     return [];
   }
 
-  const flatHeadings: Array<{ id: string; text: string; level: number }> = headingElements.map((heading, index) => {
-    let id = heading.id;
-    if (!id) {
-      const text = heading.textContent || '';
-      id =
-        text
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .trim() || `heading-${index}`;
-      heading.id = id;
-    }
+  const flatHeadings: Array<{ id: string; text: string; level: number }> =
+    headingElements.map((heading, index) => {
+      let id = heading.id;
+      if (!id) {
+        const text = heading.textContent || '';
+        id =
+          text
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .trim() || `heading-${index}`;
+        heading.id = id;
+      }
 
-    return {
-      id,
-      text: heading.textContent || '',
-      level: parseInt(heading.tagName.substring(1)),
-    };
-  });
+      return {
+        id,
+        text: heading.textContent || '',
+        level: parseInt(heading.tagName.substring(1)),
+      };
+    });
 
   return buildHeadingTree(flatHeadings);
 }
@@ -182,7 +193,9 @@ function subscribe(callback: () => void) {
     }
 
     // Find the target element
-    const observerTarget = document.querySelector('.custom-content') ?? document.querySelector('article');
+    const observerTarget =
+      document.querySelector('.custom-content') ??
+      document.querySelector('article');
 
     if (observerTarget) {
       observer = new MutationObserver(() => {
@@ -200,8 +213,12 @@ function subscribe(callback: () => void) {
   };
 
   // Try immediately first
-  const articleContent = document.querySelector('.custom-content') ?? document.querySelector('article');
-  const hasHeadings = articleContent ? articleContent.querySelector('h1, h2, h3, h4, h5, h6') : null;
+  const articleContent =
+    document.querySelector('.custom-content') ??
+    document.querySelector('article');
+  const hasHeadings = articleContent
+    ? articleContent.querySelector('h1, h2, h3, h4, h5, h6')
+    : null;
 
   if (articleContent && hasHeadings) {
     // Content is ready, setup immediately
@@ -245,7 +262,11 @@ function subscribe(callback: () => void) {
 }
 
 export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
-  const domHeadings = useSyncExternalStore(subscribe, () => cachedHeadings, () => EMPTY_HEADINGS);
+  const domHeadings = useSyncExternalStore(
+    subscribe,
+    () => cachedHeadings,
+    () => EMPTY_HEADINGS,
+  );
 
   return useMemo(() => {
     if (domHeadings.length > 0) {
@@ -261,7 +282,10 @@ export function useHeadingTree(sourceHeadings?: HeadingInput[]): Heading[] {
 /**
  * Find a heading by ID in the tree structure
  */
-export function findHeadingById(headings: Heading[], id: string): Heading | null {
+export function findHeadingById(
+  headings: Heading[],
+  id: string,
+): Heading | null {
   for (const heading of headings) {
     if (heading.id === id) {
       return heading;
@@ -290,7 +314,10 @@ export function getParentIds(heading: Heading): string[] {
 /**
  * Get all siblings of a heading (headings at the same level with the same parent)
  */
-export function getSiblingIds(targetHeading: Heading, allHeadings: Heading[]): string[] {
+export function getSiblingIds(
+  targetHeading: Heading,
+  allHeadings: Heading[],
+): string[] {
   const siblings: string[] = [];
 
   if (!targetHeading.parent) {

@@ -25,8 +25,7 @@ export interface PostItemCardProps {
  * Segmented control component props
  */
 export interface SegmentedProps<T extends string | number = string | number>
-  extends ControlledComponentProps<T>,
-    WithClassName {
+  extends ControlledComponentProps<T>, WithClassName {
   /** Segmented options */
   options: OptionType<T>[];
   /** Custom class for indicator */

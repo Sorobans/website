@@ -9,9 +9,8 @@ import Layout from '@layouts/Layout.astro';
 import { getCategoryLinks, getCategoryList } from '@lib/content';
 import { getLayoutFooterData } from '@lib/layout/footer-data';
 
-const { categories, countMap } = await getCategoryList();
+const [{ categories, countMap }, layoutFooterData] = await Promise.all([getCategoryList(), getLayoutFooterData()]);
 const links = getCategoryLinks(categories, '');
-const layoutFooterData = await getLayoutFooterData();
 ---
 
 <Layout title={`全部分类 | ${blogLayoutConfig.title}`}>

@@ -1,11 +1,10 @@
 ---
-import { extractTextFromMarkdown } from '@/lib/sanitize';
 import CustomContent from '@components/common/CustomContent.astro';
 import GiscusComments from '@components/common/GiscusComments';
 import HomeSider from '@components/layout/HomeSider.astro';
 import TwoColumnLayout from '@components/layout/TwoColumnLayout.astro';
 import LayoutFooter from '@components/layout/LayoutFooter';
-import { SummaryPanel, type SummarySource } from '@components/post/SummaryPanel';
+import { SummaryPanel } from '@components/post/SummaryPanel';
 import Cover from '@components/ui/cover/Cover.astro';
 import { HomeSiderType } from '@constants/enum';
 import { CONTENT_PADDING } from '@constants/layout';
@@ -13,12 +12,13 @@ import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Layout from '@layouts/Layout.astro';
 import {
-  buildCategoryPath,
   getCategoryArr,
+  getPostCategoryBreadcrumbs,
   getPostDescription,
   getPostIndex,
   getPostIndexMap,
-  getPostSummary,
+  getPostKeywords,
+  getPostSummaryData,
   getSortedPosts,
 } from '@lib/content';
 import { getLayoutFooterData } from '@lib/layout/footer-data';
@@ -26,8 +26,7 @@ import { parseDate } from '@lib/datetime';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const postCollections = await getSortedPosts();
-  const postIndexMap = await getPostIndexMap();
+  const [postCollections, postIndexMap] = await Promise.all([getSortedPosts(), getPostIndexMap()]);
 
   return postCollections.map((post) => {
     const postIndex = getPostIndex(post, postIndexMap);
@@ -39,21 +38,18 @@ export async function getStaticPaths() {
   });
 }
 const { post } = Astro.props;
-const { Content, headings } = await render(post);
-const { title, categories = [], tags = [], date } = post?.data ?? {};
-const normalizedTags = Array.isArray(tags) ? tags : tags ? [tags] : [];
-
+const [{ Content, headings }, layoutFooterData] = await Promise.all([render(post), getLayoutFooterData(post)]);
+const { title, categories = [], date } = post?.data ?? {};
 // 使用统一的工具函数获取文章描述
 const finalDescription = getPostDescription(post);
-
-const categoryKeywords = getCategoryArr(categories);
+const keywords = getPostKeywords(post);
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: title,
   description: finalDescription,
-  keywords: categoryKeywords.length ? normalizedTags.concat(categoryKeywords) : normalizedTags,
+  keywords,
   author: {
     '@type': 'Person',
     name: blogLayoutConfig.author ?? blogLayoutConfig.name,
@@ -64,43 +60,8 @@ const jsonLd = {
 
 const categoryArr = getCategoryArr(categories);
 const categoryStr = categoryArr?.length ? ` | ${categoryArr.join(' / ')}` : '';
-
-// Generate breadcrumb data for categories
-const breadcrumbCategories = [];
-if (categoryArr?.length) {
-  for (let i = 0; i < categoryArr.length; i++) {
-    const partialCategories = categoryArr.slice(0, i + 1);
-    const link = await buildCategoryPath(partialCategories);
-    breadcrumbCategories.push({
-      name: categoryArr[i],
-      link: link,
-    });
-  }
-}
-
-// 确定显示的摘要内容和来源类型
-const postSlug = post.data?.link ?? post.id;
-let summaryText: string | null = null;
-let summarySource: SummarySource | null = null;
-
-if (post.data.description) {
-  // 优先使用手写描述
-  summaryText = post.data.description;
-  summarySource = 'description';
-} else {
-  // 尝试获取 AI 摘要
-  const aiSummary = getPostSummary(postSlug);
-  if (aiSummary) {
-    summaryText = aiSummary;
-    summarySource = 'ai';
-  } else {
-    // 降级到自动提取
-    summaryText = extractTextFromMarkdown(post.body ?? '', 200);
-    summarySource = 'auto';
-  }
-}
-
-const layoutFooterData = await getLayoutFooterData(post);
+const breadcrumbCategories = getPostCategoryBreadcrumbs(post);
+const summaryData = getPostSummaryData(post);
 ---
 
 <Layout
@@ -141,11 +102,7 @@ const layoutFooterData = await getLayoutFooterData(post);
           ))
         }
       </nav>
-      {
-        summaryText && summarySource && (
-          <SummaryPanel client:visible summary={summaryText} source={summarySource} className="mt-2" />
-        )
-      }
+      {summaryData.text && <SummaryPanel client:visible summary={summaryData.text} source={summaryData.source} className="mt-2" />}
       <article class="prose md:prose-sm dark:prose-invert">
         <CustomContent Content={Content} />
       </article>

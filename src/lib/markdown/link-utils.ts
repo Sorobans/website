@@ -16,7 +16,12 @@ export interface LinkInfo {
 /** 通用 Markdown AST 节点类型 */
 export interface MarkdownNode {
   type: string;
-  children?: Array<{ type: string; url?: string; value?: string; children?: Array<{ type: string; value?: string }> }>;
+  children?: Array<{
+    type: string;
+    url?: string;
+    value?: string;
+    children?: Array<{ type: string; value?: string }>;
+  }>;
 }
 
 /**
@@ -33,7 +38,11 @@ export function extractTweetId(url: string): string | null {
     const hostname = urlObj.hostname.toLowerCase();
 
     // Check if it's a Twitter/X domain
-    if (!['twitter.com', 'www.twitter.com', 'x.com', 'www.x.com'].includes(hostname)) {
+    if (
+      !['twitter.com', 'www.twitter.com', 'x.com', 'www.x.com'].includes(
+        hostname,
+      )
+    ) {
       return null;
     }
 
@@ -61,7 +70,9 @@ export function isTweetUrl(url: string): boolean {
  * - https://codepen.io/username/details/PenId
  * - With query parameters or hash
  */
-export function extractCodePenId(url: string): { user: string; penId: string } | null {
+export function extractCodePenId(
+  url: string,
+): { user: string; penId: string } | null {
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();

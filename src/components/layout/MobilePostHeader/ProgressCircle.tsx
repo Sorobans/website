@@ -16,7 +16,11 @@ interface ProgressCircleProps {
   className?: string;
 }
 
-export function ProgressCircle({ size = 28, strokeWidth = 2, className }: ProgressCircleProps) {
+export function ProgressCircle({
+  size = 28,
+  strokeWidth = 2,
+  className,
+}: ProgressCircleProps) {
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
 
@@ -38,8 +42,7 @@ export function ProgressCircle({ size = 28, strokeWidth = 2, className }: Progre
       className={className}
       aria-label="阅读进度"
       role="progressbar"
-      style={{ transform: 'rotate(-90deg)' }}
-    >
+      style={{ transform: 'rotate(-90deg)' }}>
       {/* Background circle (track) */}
       <circle
         cx={center}

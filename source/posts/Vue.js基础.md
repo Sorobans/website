@@ -1,21 +1,29 @@
 ---
 title: Vue.js基础
 date: 2022-02-05
-tags: 
+tags:
   - 学习笔记
   - VUE2
 categories: 学习笔记
 ---
+
 # VUE.js基础
+
 ## 传统开发
+
     传统的原生和jQuert开发,DOM操作频繁,
     DOM操作与逻辑代码混合,可维护性差
     不同功能区域书写在一起,可维护性差
     模块之前的依赖关系复杂
+
 ## Vue简介
+
     Vue是渐进式JavaScript框架
+
 ## Vue.js核心特性
+
 ### 数据驱动视图
+
     数据变化会自动更新到对应元素中去,无需手动操作dom,这种
     行为称作单向数据绑定
 
@@ -28,28 +36,37 @@ categories: 学习笔记
         Model 代表数据
         View 代表视图模板
         ViewModel 代表业务逻辑处理代码
-    
+
     基于MVVM模型实现的数据驱动视图解放了DOM操作
     View与Model处理分离,降低代码耦合度
     但双向绑定时的bug调试难度增大
     大型项目的View与Model过多,维护成本高
+
 ### 组件化开发
+
     组件化开发,允许我们将网页功能封装为自定义HTML标签,
     复用时书写自定义标签名即可。
-    
+
     组件不仅可以封装结构,还可以封装样式与逻辑代码,大大提高了
     开发效率和可维护性
+
 ## Vue.js安装
+
     本地引入
     cdn引入
     npm安装
 
     npm install vue@2.6.12
+
 ## Vue.js基础语法
+
 ### Vue实例
+
     Vue实例是通过Vue函数创建的对象,
     是使用Vue功能的基础
+
 #### el选项
+
     用于选取一个DOM元素,作为Vue实例的挂载目标
     只有挂载的元素,内部才会被Vue进行处理.
     外部为普通HTML元素。
@@ -67,13 +84,17 @@ categories: 学习笔记
 
     未设置el的vue实例,也可以通过vm.$mount()进行挂载,
     参数形式与el规则相同。
+
 #### 插值表达式
+
     挂载元素可以使用Vue.js的模板语法,模板中可以通过
     插值表达式为元素进行动态内容设置，写法为{{}}
 
     注意点: 插值表达式只能书写在标签内容区域,可以与其他内容混合。
         内部只能书写JavaScript表达式,不能书写语句
+
 #### data选项
+
     用于存储Vue实例需要使用的数据,值为对象类型。
     data中的数据可以通过vm.$data.数据或vm.数据访问。
 
@@ -83,7 +104,9 @@ categories: 学习笔记
     data中存在数组时,索引操作与length操作无法自动更新视图。
     这时可以借助Vue.set()方法替代操作。
     Vue.set(实例内的data内数组,索引,数据);
+
 #### methods选项
+
     用于存储需要在Vue实例中使用的函数
 
     methods中的方法可以通过实例.方法名访问。
@@ -93,24 +116,35 @@ categories: 学习笔记
             console.log(this.title,this.content);
         }
     }
+
 ### 指令
+
     指令本质就是HTML自定义属性
     Vue.js的指令就是以v-开头的自定义属性。
+
 #### v-once指令
+
     使元素内部的插值表达式只生效一次
     <p>{{content}}</p>
     <p v-once>{{content}}</p>
+
 #### v-text指令
+
     元素内容整体替换为纯文本数据
     (不能为html标签结构,其中也不像插值表达式一样能够添加运算符)
     <p v-text="content"></p>
     p.textinner = vue.content;
+
 #### v-html指令
+
     元素内容整体替换为指定的HTML文本
     (文本内的标签会被生成为真正的元素)
     <p v-html="content"></p>
+
 #### 属性绑定
+
 ##### v-bind指令
+
     用于动态绑定HTML属性
     <p v-bind:title="title"></p>
 
@@ -136,7 +170,9 @@ categories: 学习笔记
             title: '示例内容'
         }
     }
+
 ##### Class绑定
+
     class是HTML属性,可以通过v-bind进行绑定。
     并且与class属性共存
 
@@ -157,7 +193,9 @@ categories: 学习笔记
     <p :class="['a',{b: isB},'c',classC]"></p>
     a,c是传统不用控制的类名,{b: isB}则是需要条件控制的类名。
     ''是字符串数据.不加引号则是Vue对象内data的数据。
+
 ##### Style绑定
+
     style是HTML属性,可以通过v-bind进行绑定,并且可以与
     style属性共存。
 
@@ -179,8 +217,11 @@ categories: 学习笔记
 
     当我们希望给元素绑定多个样式对象时,可以设置为数组。
     <p :style="[styleObj1,styleObj2]">
+
 ### 渲染指令
+
 #### v-for指令
+
     用于遍历数据渲染结构,常用的数组与对象均可遍历
     <li v-for="index in arr">{{index}}</li>
     <li v-for="value in obj">{{value}}</li>
@@ -190,12 +231,16 @@ categories: 学习笔记
 
     v-for还可以通过数值来创建元素:
     <p v-for="(value,index) in 5"></p>
+
 ##### :key
+
     通过:key给元素设置:key值。
     可以提高渲染效率
     建议使用item或value、id
     不建议使用索引
+
 ##### template标签
+
     通过<template>标签设置模板占位符。可以将部分元素
     或内容作为整体进行操作。
     <template v-for="item in items">
@@ -203,13 +248,17 @@ categories: 学习笔记
         <p></p>
     </template>
     template不能被绑定:key属性.
+
 #### v-show指令
+
     用于控制元素显示与隐藏,适用于显示隐藏频繁切换时使用。
     <p v-show="true"></p>
     <p v-show="false"></p>
 
     template 无法使用v-show指令
+
 #### v-if指令
+
     用于根据条件控制元素的创建与移除
     <p v-if="false">
     <p v-else-if="true">
@@ -221,10 +270,14 @@ categories: 学习笔记
     (同一标签内,Vue会先渲染v-for再渲染v-if)
     v-if可以放在v-for的父标签里。比如在需要v-for的标签外
     嵌套 v-if 的 template 占位符标签。来进行优化
+
 ### v-on指令
+
     用于进行元素的事件绑定
     <button v-on:click="content='新内容'">
+
 #### v-on使用代码
+
     <div id="app">
         <p>{{content}}</p>
         <button v-on:click="myfun()">按钮</button>
@@ -241,9 +294,13 @@ categories: 学习笔记
             }
         }
     });
+
 #### v-on指令简写
+
     <button @click="myfun()"></button>
+
 #### v-on指令-事件对象
+
     事件程序代码较多时,可以在methods中设置函数,并设置
     为事件处理程序。
 
@@ -259,7 +316,9 @@ categories: 学习笔记
     当我们想使用事件对象,又想自定义参数传参时,Vue有解决方案。
     Vue提供了$event的实参标识符.当输入$event时,vue就知道我们想使用事件对象。
     便会帮我们处理.
+
 ### v-model指令
+
     v-model指令,用于给input、textarea、select元素设置
     双向数据绑定。
 
@@ -270,7 +329,9 @@ categories: 学习笔记
             value: ""
         }
     })
+
 #### 单选按钮绑定
+
     <p>radio数据为: {{value3}}</p>
     <input type="radio" name="sex" id="male" value="male" v-model="value3">
     <label for="male">男</label>
@@ -280,10 +341,14 @@ categories: 学习笔记
     data: {
         value3: "famale"
     }
+
 #### 复选框绑定
+
     复选框绑定分为单个选项与多个选项两种情况。书写方式不同。
     单个复选框可以设置为空字符串.多个复选框可以为对象或数组形式
+
 ##### 案例
+
     对象:
     <div id="app">
         <p>同意协议的值为: {{agree_va}}</p>
@@ -334,7 +399,9 @@ categories: 学习笔记
             }
         });
     </script>
+
 #### 选择框绑定
+
     选择框绑定分为单选框与多选框绑定两种情况，
     书写方式不同。
     单选
@@ -344,7 +411,9 @@ categories: 学习笔记
     多选
     <select v-model="value7" multiple>
     data: {value7:[]}
+
 ##### 单选选择框
+
     <div id="app">
         <p>单选框的值为{{sex}}</p>
         <select name="sex" id="" v-model="sex">
@@ -362,9 +431,11 @@ categories: 学习笔记
             data: {
                 sex: "nano",
             }
-        }); 
+        });
     </script>
+
 ##### 多选选择框
+
     <p>多选框的值为:{{hobbly}}</p>
     <select style="width: 120px;text-align: center;height: 125px;" name="hobbly" id="" v-model="hobbly" multiple="multiple">
         <option value="吃饭">吃饭</option>
@@ -381,37 +452,55 @@ categories: 学习笔记
                 sex: "nano",
                 hobbly: [],
             }
-        }); 
+        });
     </script>
+
 ##### v-model指令小结
+
     input输入框: 绑定字符串值
     textarea输入框: 绑定字符串值
     radio: 绑定字符串值
     checkbox: 单个绑定布尔值,多个绑定数组
     select: 单选绑定字符串,多选绑定数组值。
+
 ## 修饰符
+
     修饰符是以点开头的指令后缀,用于给当前指令设置特殊操作。
+
 ### 事件修饰符
+
 #### .prevent修饰符
+
     用于阻止默认事件行为,相当于event.preventDefault()。
     <a @click.prevent="fun()">链接</a>
+
 #### .stop修饰符
+
     用于阻止事件传播(事件冒泡),相当于event.stopPropagation()。
     <div @click="fn1">
         <a @click.prevent.stop="fun2"></a>
         <!-- Vue.js允许我们在同一指令设置多个修饰符 -->
     </div>
+
 #### .once修饰符
+
     用于设置事件只触发一次
     <button @click.once="fn"></button>
+
 ### 按键修饰符
+
 #### 按键码
+
     按键码指的是将按键的按键码,作为修饰符以标识按键的操作方式。
+
 #### 内容按键
+
     <input @keyup.49="fn">
     数字按键,建议使用键码。
     字母按键可以使用别名。
+
 #### 特殊功能按键
+
     特殊按键指的是键盘中类似的esc、enter、delete等功能按键,为了
     更好兼容性，应首选内置别名。
     <input @keyup.esc="fn">
@@ -425,37 +514,54 @@ categories: 学习笔记
     .down
     .left
     .right
+
 #### 按键修饰符连写
+
     <input @keyup.a.b.c="fn">
     其中.a.b.c表示的是或者,三者其一触发条件。
+
 ### 系统修饰符
+
     系统按键指的是ctrl、alt、shift等按键
     单独点击系统操作符无效。
     系统按键通常与其他按键组合使用。
     <input type="text" @keyup.ctrl.c="fn">
     ctrl+c触发事件fn
+
 ### 鼠标修饰符
+
     用于设置点击事件由鼠标哪个按键来完成
     .left、.right、.middle 三个修饰符
     <button @click.right="fn"></button>
+
 ### v-model修饰符
+
 #### .trim修饰符
+
     用于自动过滤用户输入内容首尾两端的空格
     text,textarea
     <input type="text" v-model.trim="inputValue">
+
 #### .lazy修饰符
+
     用于将v-model的触发事件触发更改为change事件触发。
     将每次输入进行更新。更改为失去焦点后,进行数据更新
     <input type="text" v-model.lazy="fn">
+
 #### .number修饰符
+
     用于自动将用户输入的值转换为数值类型,如无法被parseFloat()转换
     则返回原始内容。
     <input type="number" @keyup.+.-="keyFn" v-model.number="inputValue"  >
+
 ## 自定义指令
+
     指令用于简化DOM操作,相当于对基础DOM操作的一种封装。
     当我们希望使用一些内置指令不具备的DOM功能时,
     可以进行自定义指令设置。
+
 ### 自定义全局指令
+
     指的是可以被任意Vue实例或组件使用的指令
 
     通过Vue.directive 设置自定义全局指令
@@ -469,7 +575,9 @@ categories: 学习笔记
     });
 
     <input v-focus>
+
 ### 自定义局部指令
+
     指的是可以在当前Vue实例或组件内使用的指令。
     new Vue({
         directives: {
@@ -480,7 +588,9 @@ categories: 学习笔记
             }
         }
     })
+
 ### 钩子函数
+
     一个指令定义对象可以提供如下几个钩子函数(均为可选)
 
     bind：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置。
@@ -492,10 +602,14 @@ categories: 学习笔记
     componentUpdated：指令所在组件的 VNode 及其子 VNode 全部更新后调用。
 
     unbind：只调用一次，指令与元素解绑时调用。
+
 ## 过滤器
+
     过滤器用于进行文本内容格式化处理。
     过滤器可以在插值表达式和v-bind中使用。
+
 ### 全局过滤器
+
     全局过滤器可以在任意Vue实例使用
     Vue.filter('过滤器名称',function(value){
         return value+'处理结果';
@@ -507,8 +621,11 @@ categories: 学习笔记
     <div>{{ content | filterContent }}</div>
 
 #### 可以将一个数据传入到多个过滤器中进行处理
+
     <div>{{ content | filterA | filterB }}</div>
+
 #### 过滤器多参数
+
     一个过滤器可以传入多个参数
     Vue.filter('过滤器名称',function(value,par1,par2){
         return value+'处理结果';
@@ -516,7 +633,9 @@ categories: 学习笔记
     <div>{{ content | filterContent(par1,par2) }}</div>
 
     无论怎么传值,参数一始终是被添加过滤器的那个内容。
+
 ### 局部过滤器
+
     局部过滤器只能在当前Vue实例中使用。
     new Vue({
         filters: {
@@ -530,7 +649,9 @@ categories: 学习笔记
     })
 
     如果全局过滤器与局部过滤器重名,则是局部过滤器失效。
+
 ## 计算属性
+
     Vue.js的视图不建议书写复杂逻辑,这样不利于维护。
     封装函数是个很好的解决方式,但有时重复的计算会消耗不必要的性能。
     如果,有多个重复的计算,这时候就到了应用计算属性的时候。
@@ -548,13 +669,17 @@ categories: 学习笔记
 
     计算属性帮我们计算完毕后,会缓存起来。后面有用到的地方时不会再去重新计算。
     如果有中途值发生了改变,则会重新计算,然后再次缓存起来。
+
 ### methods与computed区别
+
     computed具有缓存型,methods没有。
     computed通过属性名访问,methods需要调用
     computed仅适用于计算操作。
 
     computed不能传参,methods能够传参。
+
 ### 计算属性的setter
+
     计算属性默认只有getter,Vue.js也允许给计算属性设置setter。
     new Vue({
         computed: {
@@ -574,7 +699,9 @@ categories: 学习笔记
             }
         }
     })
+
 ## 侦听器
+
     监听器用于监听数据变化并执行指定操作
     new(Vue({
         watch: {
@@ -586,7 +713,9 @@ categories: 学习笔记
     }))
     value与data内数据同名。方法名与data数据变量名同名。
     // 只要被监听的值变了,就会执行侦听器内的操作。
+
 ### 侦听器与对象
+
     为了监听对象内部值的变化,需要将watch书写为对象,并设置
     选项deep: true,这时通过handler设置处理函数。
     new Vue({
@@ -609,7 +738,9 @@ categories: 学习笔记
 
     注意: 当更改(非替换)数组或对象时,回调函数中的新值与旧值相同,
     因为它们的引用都指向同一个对象、数组。
+
 ### 侦听器与数组
+
     watch: {
         arr(val,oldVal) {
             console.log('arr修改了',val,oldVal);
@@ -617,20 +748,26 @@ categories: 学习笔记
     }
     通过length、与索引下标修改数组的数据不会触发侦听器。
     推荐使用Vue.set方法。或者是js自带的Array方法。
+
 ## Vue DevTools
+
     是Vue.js官方提供用来调试Vue应用的工具。
 
     注意事项:
      网页必须应用了Vue.js功能才能看到Vue DevTools
      网页必须使用Vue.js而不是Vue.min.js
      网页必须是http协议打开,而不是file打开
+
 ## Vue.js生命周期
+
     Vue.js声明周期,指的就是Vue实例的生命周期。
     Vue实例的生命周期,指的是实例从创建到运行,再到销毁的过程。
     https://cn.vuejs.org/v2/guide/instance.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%BE%E7%A4%BA
 
     new 创建阶段 挂载阶段 更新阶段 销毁阶段
+
 ### 生命周期函数
+
     通过设置声明周期函数,可以在生命周期的特定阶段
     执行功能。
     声明周期函数,也称为生命周期钩子
@@ -650,23 +787,29 @@ categories: 学习笔记
     销毁阶段:
         beforeDestroy: 实例销毁之前调用
         destroyed: 实例销毁后调用。
+
 ## TdoMVC
+
     TodoMVC是一个经典项目,让开发者快速实践到框架开发方式。
     功能完备不冗余,多样实现引深思。
+
 ## 事项数据持久化
+
     获取本地存储
     更新本地存储
+
 ### 获取本地存储数据
+
     浏览器本地存储,localStorage内有两个方法分别为,getItem,setItem
     以下为设置缓存的封装的方法
-	const TODOS_KEY = 'todus-vue';
+    const TODOS_KEY = 'todus-vue';
     let todoStorage = {
         get () {
             return JSON.parse(localStorage.getItem(TODOS_KEY)) || [];
         },
-		set(todos) {
-			localStorage.setItem(TODOS_KEY,JSON.stringify(todos));
-		}
+    	set(todos) {
+    		localStorage.setItem(TODOS_KEY,JSON.stringify(todos));
+    	}
     };
 
     搭配Vue监听器,进行数据的监听,发生变化就更新到本地存储:
@@ -677,25 +820,35 @@ categories: 学习笔记
             // handler内监听的数据,第一参数,数据会自动传参给.set。
         }
     }
+
 # Vue.js组件
+
 ## 概述
+
     组件用于封装页面的部分功能,将功能的结构,样式、逻辑代码封装为整体。
     提高功能的复用性与可维护性,更好的专注于业务逻辑。
 
     组件使用时为自定义的HTML标签形式,通过组件名作为自定义标签名。
+
 ## 组件注册
+
 ### 全局注册
+
     全局注册的组件在注册后,可以用于任意实例或组件中。
     Vue.component('组件名',{/*选项对象*/});
     注意: 全局注册必须设置在根Vue实例创建之前。
     Vue.component("my-component",{
         template: "<div>这是我们全局注册的组件</div>"
     });
+
 ### 组件基础
+
     本质上,组件是可服用的Vue实例。所以它们可与new Vue接收相同的选项.
     例如data、methods以及生命周期钩子等。
     仅有的例外是像el这样的根实例特有的选项。
+
 #### 组件命名规则
+
     组件具有两种命名规则:
     kebab-case: "my-component"
     PascalCase: "MyComponment"
@@ -704,12 +857,16 @@ categories: 学习笔记
     Vue.componment('MyComponent',{});
 
     无论采用哪种命名规则,在DOM中只有kebab-case可以使用。
+
 #### template选项
+
     template用于设置组件的结构.最终被引入根实例,或其他组件中。
     Vue.compoonment('my-component',{
         template: `<div>组件A</div>`
     })
+
 #### data选项
+
     data选项用于存储组件的数据,与根实例不同,组件的data选项必须为函数。
     数据设置在返回值对象中。
     Vue.component('my-component',{
@@ -726,7 +883,9 @@ categories: 学习笔记
         // 这种实现方式是为了确保每个组件实例可以维护一份返回对象的
         // 独立拷贝,不会互相影响。
     });
+
 ### 局部注册
+
     局部注册的组件只能用在当前实例或组件中。
     new Vue({
         components: {
@@ -744,7 +903,9 @@ categories: 学习笔记
             }
         }
     })
+
 #### 单独配置组件的选项对象
+
     let MyComponentA = {/**/};
     let MyComponentB = {/**/};
     const ap = new Vue({
@@ -757,9 +918,13 @@ categories: 学习笔记
             // 上面那种ES6语法没有第一种兼容性好
         }
     });
+
 ## 组件通信
+
     在组件间传递数据的操作,成为组件通信。
+
 ### 父组件向子组件传值
+
     通过子组件的props选项接收父组件的传值。
     Vue.component('my-component-a',{
         props: ['title'],
@@ -780,7 +945,9 @@ categories: 学习笔记
             }
         }
     })
+
 #### props命名规则
+
     建议prop命名使用camelCase(驼峰命名法),父组件绑定时使用kebab-case
     Vue.component('my-component',{
         props: ['myTitle'],
@@ -788,12 +955,16 @@ categories: 学习笔记
     });
 
     <my-component-a :my-title="item.title"></my-component-a>
+
 #### 单向数据流
+
     父子组件间的所有prop都是单向下行绑定的。
     prop是子组件设置的,接受父组件传输的数据。
     子组件内部的prop不能反向的影响父组件
     prop内的数据是只读的不可操作。
+
 #### 操作prop数据
+
     如果子组件要处理prop数据,应当存储在data或computed中后操作.
     Vue.component('XhItems',{
         props: ['itemTitle','itemContent'],
@@ -820,6 +991,7 @@ categories: 学习笔记
     });
 
 ##### 总结
+
     // 总结:
     // 通过computed处理的值,父组件值更新后,computed会重新更新一遍。
     // 通过data处理的值,父组件数据更新后,不会更新到子组件。
@@ -832,9 +1004,13 @@ categories: 学习笔记
     // 因为对象是引用数据类型,直接将整个数据类型传入子组件.子组件更新数据后
     // 这个影响会传入父组件,会造成父组件的数据更改。
     // 所以,建议将对象中的成员,传入子组件内。而不是整个对象传入子组件,在子组件内操作。
+
 #### props类型
+
     props接收的属性,默认是不受限制的。
+
 ##### prop类型限制
+
     prop可以设置类型检查,这时需要将props更改为一个带有验证需求的对象,
     并指定对应类型。
 
@@ -852,7 +1028,9 @@ categories: 学习笔记
             parData: [String,Number]
         }
     });
+
 #### props多规则
+
     当prop需要设置多种规则时,可以将prop的值设置为选项对象。
     Vue.component('MyconponentA',{
         props: {
@@ -864,18 +1042,22 @@ categories: 学习笔记
             }
         }
     });
+
 ##### required非空
+
     required用于用于设置数据为必填项
     Vue.component('MyComponentA',{
         props: {
             parNum: {
                 type: Number,
                 // 设置此选项为必填项
-                required: true 
+                required: true
             }
         }
     });
+
 ##### default默认值
+
     default用于给选项指定默认值,当父组件未传递数据时生效.
     default与required两个规则是相冲突的。
     Vue.component('MyComponentA',{
@@ -906,7 +1088,9 @@ categories: 学习笔记
             }
         }
     });
+
 ##### validator自定义效验规则
+
     validator用于给传入prop的设置校验函数,return值为false时
     Vue.js会发出警告
 
@@ -924,21 +1108,27 @@ categories: 学习笔记
     // 注意点
     // validator(){}是在实例创建之前进行效验验证的。
     // 所以它不能对data进行验证
+
 #### 非props属性
+
     当父组件给子组件设置了属性,但此属性在props中不存在,这时会自动绑定到子组件的根元素上。
     <my-component-a>
     </my-component-a>
 
     如果组件根元素已经存在了对应属性，则会替换组件内部的值。
     class与style是个例外,当内外都设置时,属性会自动合并。
+
 #### inheritAttrs
+
     如果不希望继承父组件设置的属性,可以设置inheritAttrs:false,
     仅适用于普通属性,class与style不受影响。
     Vue.component('MyComponent',{
         inheritAttrs:false,
         template: ``
     });
+
 ### 子组件向父组件传值
+
     子组件向父组件传值需要通过自定义事件实现。
 
     案例:
@@ -955,7 +1145,9 @@ categories: 学习笔记
             totalCount: 0
         }
     });
+
 #### $emit()触发子组件自定义事件
+
     子组件数据发生变化时,通过$emit()触发自定义事件。
     Vue.component(
     methods: {
@@ -968,7 +1160,9 @@ categories: 学习笔记
     父组件监听子组件的自定义事件,并设置处理程序.
     <component-item @count-change="totalCount++">
     </component>
+
 #### 自定义事件传值
+
     Vue.component("ShopItme",{
         methods: {
         countAdd(Number){
@@ -980,7 +1174,9 @@ categories: 学习笔记
 
     父组件在监听事件时需要接收子组件传递的数据(通过event来接收)
     <shop-itme  @count-change="shopCount+=$event">
+
 #### 子组件与v-model
+
     v-model用于组件时,需要通过props与自定义事件实现。
 
     <xue-hua v-model="x.value" v-for="x in xh" :type="x.type"></xue-hua>
@@ -1011,9 +1207,13 @@ categories: 学习笔记
             }
         }
     });
+
 ### 非父子组件传值
+
     非父子组件指的是兄弟组件或完全无关的两个组件。
+
 #### 兄弟组件传值
+
     兄弟组件可以通过父组件进行数据中转
     <div id="app">
         <!-- 根实例接收子组件A的数据,fvalue(根实例的数据) = $event(内部b通过$emit传出来的数据) -->
@@ -1055,7 +1255,9 @@ categories: 学习笔记
             }
         });
     </script>
+
 #### EventBus(其他组件传值)
+
     当组件嵌套关系复杂时,根据组件关系传值会较为繁琐。
     组件为了数据中专,data中会存在许多与当前组件无关的数据。
     EventBus(事件总线)是一个独立的事件中心,用于管理不同组件的传值操作。
@@ -1065,13 +1267,17 @@ categories: 学习笔记
 
     // EventBus.js
     let bus = new Vue;
+
 ##### 传递组件值的方法
+
     发送数据的组件触发bus事件,接收的组件给bus注册对应事件。
     给bus注册对应事件通过$on()操作。
     bus.$on('countChange',(productCount)=>{
         this.totalCount += productCount;
     });
+
 ###### 代码案例
+
     <div id="app">
         <shoping></shoping>
         <count-shop></count-shop>
@@ -1125,20 +1331,30 @@ categories: 学习笔记
             }
         });
     </script>
+
 ### 其他通信方式
+
     这些方式都时可以直接访问到其他组件,对其他组件直接处理。
     这些方式,没有特殊需求不建议使用。
+
 #### $root
+
     $root用于访问当前组件树的根实例,设置简单的Vue应用时可以
     通过此方式进行组件传值。
     this.$root.data成员 += xx;
+
 #### $parent
+
     用于访问父组件内的数据。
     this.$parent
+
 #### $children
+
     用于访问子组件内的数据。
     this.$children
+
 #### $refs
+
     $refs用于获取设置了ref属性的HTML标签或子组件。
     给普通HTML标签设置ref属性,$refs可以获取DOM对象。
     给子组件设置ref属性,渲染后通过$refs获取子组件实例。
@@ -1146,10 +1362,14 @@ categories: 学习笔记
     mounted() {
         this.$refs.comA.value = "修改子组件数据";
     }
+
 #### mounted和created区别
+
     created创建完vue实例后,但是还没有渲染视图加载到html上。
     mounted是创建完Vue实例,并且在html上面也挂载完毕。
+
 ## 组件插槽
+
     组件插槽可以便捷设置组件内容
     <div id="#app">
         <com-a>
@@ -1157,11 +1377,15 @@ categories: 学习笔记
             <span>组件的主体内容</span>
         </com-a>
     </div>
+
 ### 单个插槽
+
     如果希望组件标签可以像HTML标签一样设置内容。
     那么组件的使用灵活度会很高。
     但平常我们书写的组件,组件首尾标签的内容会被抛弃。
+
 #### 插槽使用
+
     我们需要通过<slot>进行插槽设置。
     Vue.component("ComA",{
         template: `
@@ -1175,7 +1399,9 @@ categories: 学习笔记
         这是第二个组件的内容,
         <span></span>
     </com-a>
+
 #### 注意渲染位置
+
     需要这主意模板内容的渲染位置:
     <com-a>
         这里只能访问父组件的数据
@@ -1183,14 +1409,18 @@ categories: 学习笔记
     </com-a>
     父级模板的内容都只能作用在父级。
     处于父组件结构中,只能用父组件的数据。
+
 #### 插槽默认值
+
     我们可以在<slot>中为插槽设置默认值,也称为后备内容。
     Vue.component("ComA",{
         template: `
             <slot>这是默认文本</slot>
         `
     })
+
 ### 具名插槽
+
     如果组件中有多个位置需要设置插槽,据需要给<slot>设置
     name,成为具名插槽。
     组件模板设置
@@ -1222,10 +1452,14 @@ categories: 学习笔记
     </com-a>
 
     <!-- 只有在template内才能使用 v-slot -->
+
 #### v-slot简写
+
     v-slot可以简写成#
     <template #header></template>
+
 ### 作用域插槽
+
     让插槽可以使用子组件的数据
     组件将需要被插槽使用的数据通过v-bind绑定给<slot>,
     这种用于给插槽传递数据的属性成为prop。
@@ -1255,8 +1489,11 @@ categories: 学习笔记
     <com-a v-slot:default="{value}">
         {{ value }}
     </com-a>
+
 ## 内置组件
+
 ### 动态组件
+
     动态组件适用于多个组件频繁切换的处理。
     <component>用于将一个'元组件'渲染为动态组件。
     以is属性值决定渲染哪个组件。
@@ -1265,13 +1502,17 @@ categories: 学习笔记
     用于实现多个组件的快速切换,例如选项卡的效果。
     组件切换时，会将当前组件销毁,然后切换到下一个组件。
     所以,当前组件状态是不会保留的。
+
 ### keep-alive组件
+
     主要用于保留组件状态,或避免组件重新渲染。
     <keep-alive>
         <component :is="currentComA">
         </component>
     <keep-alive>
+
 #### include属性
+
     include属性用于指定哪些组件会被缓存,具体多种设置方式。
     <keep-alive include="ComA,ComB,ComC">
         <component is:"currnetCom"></component>
@@ -1282,7 +1523,9 @@ categories: 学习笔记
     <keep-alive :include="['ComA','ComB']">
     正则表达式形式:
     <keep-alive :include="/^Com[ABC]$/">
+
 #### exclude属性
+
     exclude属性用于指定哪些组件不会被缓存。
     <keep-alive exclude="ComD">
         <component></component>
@@ -1293,13 +1536,19 @@ categories: 学习笔记
     <keep-alive :exclude="['ComD']">
     正则表达式形式:
     <keep-alive :exclude="/^Com[D]$/">
+
 #### max属性
+
     max属性用于设置最大缓存个数。
     <keep-alive max="2"></keep-alive>
+
 ### 过渡组件
+
     用于在Vue插入,更新或者移除DOM时,提供多种不同方式的
     应用过渡、动画效果。
+
 #### transition组件
+
     用于给元素和组件添加进入/离开过渡
     条件渲染(使用v-if)
     条件展示(使用v-show)
@@ -1336,7 +1585,9 @@ categories: 学习笔记
             transition: 1000ms;
         }
     </style>
+
 ##### transiton组件的相关属性
+
     给组件设置name属性，用于给多个元素，组件设置不同的过渡效果。
     这时需要将v-更改为对应name-的形式。
     例如:
@@ -1345,10 +1596,12 @@ categories: 学习笔记
 
     通过appear属性，可以让组件在初始渲染时实现过渡
     <transition appear>
+
 #### 自定义过渡类名
+
     自定义类名比普通类名优先级更高。
     在使用第三方CSS动画库时非常有用。
-    
+
     用于设置自定义过渡类名的属性如下:
     enter-class
     enter-active-class
@@ -1369,14 +1622,16 @@ categories: 学习笔记
     一般使用动画库时只能够用到两种属性:
     入场动画: enter-active-class
     离场动画: leave-active-class
+
 ##### 使用动画库案例
+
     <div id="app">
         <transition leave-active-class="animate__backOutUp" enter-active-class="animate__fadeInLeft">
             <h1 v-show="show" class="animate__animated">An animated element</h1>
         </transition>
         <button @click="show = !show">切换</button>
     </div>
-    
+
     <script src="../node_modules/vue/dist/vue.js"></script>
     <script>
         const ap = new Vue({
@@ -1386,15 +1641,17 @@ categories: 学习笔记
             }
         });
     </script>
+
 ##### 动态组件使用案例
+
     <div id="app">
-        
+
         <keep-alive :include="/^Com[AB]$/">
             <transition name="xh"  appear enter-active-class="animate__fadeInLeft">
                 <component class="animate__animated" :is="current"></component>
             </transition>
         </keep-alive>
-        
+
             <button v-for="btn in btnTitle" :key="btn.title" @click="currentCom(btn.title)">{{btn.name}}</button>
 
     </div>
@@ -1456,7 +1713,9 @@ categories: 学习笔记
             }
         });
     </script>
+
 #### transition-group组件
+
     <transition-group> 用于给列表统一设置过渡动画。
      tag属性用于设置容器元素,默认为<span>
      过渡会应用于内部元素,而不是容器
@@ -1473,10 +1732,15 @@ categories: 学习笔记
      v-leave-active {
          position: absolute;
      }
+
 # VueRouter
+
 ## 概述
+
     Vue Router是Vue.js的官方插件,用来快速实现单页应用。
+
 ## 什么是单页应用
+
     SPA 单页面应用程序,简称单页应用。
     指的是,网站的“所有”功能都在单页页面中进行呈现。
     具有代表性的有后台管理系统、移动端、小程序等。
@@ -1490,10 +1754,14 @@ categories: 学习笔记
         不利于SEO
         初次首屏加载速度较慢
         页面复杂度比较高
+
 ## 前端路由
+
     前端路由,指的是URL与内容间的映射关系。
     URL、内容、映射关系
+
 ### Hash方式
+
     通过hashchange事件监听hash变化，并进行网页内容更新。
     window.onhashchange = function(){
         let hash = location.hash.replace("#",'');
@@ -1511,7 +1779,9 @@ categories: 学习笔记
         }
         document.getElementById('container').innerHTML = str;
     };
+
 #### 封装hash Router
+
     let router = {
         routes: {},
         route(path,callback) {
@@ -1524,11 +1794,15 @@ categories: 学习笔记
             };
         }
     };
+
 #### 特点总结
+
     hash方式兼容性好
     地址中有#，不太美观。
     前进后退功能较为繁琐。
+
 ### History方式
+
     History方式采用HTML5提供的新功能实现前端路由。
     在操作时需要通过history.pushState()变更URL并执行对应操作。
     let router = {
@@ -1550,15 +1824,24 @@ categories: 学习笔记
             });
         }
     };
+
 #### 总结
+
     书写简单,兼容性差,刷新会导致404,需要后端程序员配合开发。
+
 ## Vue Router概述
+
     是Vue.js官方的路由管理器,让构建单页面应用变得易如反掌。
+
 ## 基本使用
+
 ### 安装
+
     直接下载/CDN
     npm install vue-router
+
 ### router-link与router-view
+
     VueRouter提供了用于进行路由设置的组件<router-link>
     与<router-view>。
     <router-link>默认是A标签，如果希望它在操作中是其他标签。
@@ -1587,13 +1870,15 @@ categories: 学习笔记
     let router = new VueRouter({
         routes: routes;// 可以将规则直接书写在,routes内。
     });
-    
+
     创建Vue实例,通过router属性注入路由。
     let vm = new Vue({
         el: "#app",
         router: router
     });
+
 #### 代码案例
+
     <div id="app">
         <!-- 设置用于进行路由操作的组件 -->
         <router-link to="/">首页</router-link>
@@ -1631,7 +1916,9 @@ categories: 学习笔记
             router
         });
     </script>
+
 ### 命名视图
+
     如果导航后,希望同时在同级展示多个视图,这时就需要进行视图命名。
     <div id="#app">
         <router-link to="/">首页</router-link>
@@ -1657,7 +1944,9 @@ categories: 学习笔记
             }
         }
     ];
+
 #### 代码案例
+
     // 设置router规则
     let routes = [
         {path: "/",components: {
@@ -1668,13 +1957,15 @@ categories: 学习笔记
         }},
         {path: "/user",component: User}
     ];
+
 ## 动态路由
+
     当我们需要将某一类URL都映射到同一个组件,
     就需要使用动态路由。
     定义路由规则时将路径中的某个部分使用“：”进行标记,
     即可设置为动态路由。
     let routes = [
-        {path: "/user/:id",components: 
+        {path: "/user/:id",components:
         {
             default: User
         }}
@@ -1700,7 +1991,9 @@ categories: 学习笔记
             }
         }
     }
+
 ### 侦听路由参数
+
     如果要响应路由的参数变化,可以通过
     watch监听$route。
     let user = {
@@ -1713,7 +2006,9 @@ categories: 学习笔记
             }
         }
     };
+
 ### 路由传参处理
+
     通过路由的props设置数据,并通过组件props接收。
     路由设置:
     let routes = [
@@ -1738,7 +2033,9 @@ categories: 学习笔记
         props: ['id'],
         template: `<div>这是{{id}}功能</div>`
     };
+
 #### 路由传参处理其他方式
+
     包含多个命名视图时,需要将路由的props设置为对象。
     let routes = [
         {
@@ -1782,7 +2079,9 @@ categories: 学习笔记
             }
         }
     }];
+
 ## 嵌套路由
+
     实际场景中,路由经常由多层嵌套的组件组合而成。这时需要使用嵌套路由的配置。
     使用children来进行嵌套路由中的子路由设置。
     路由设置:
@@ -1812,7 +2111,9 @@ categories: 学习笔记
             </div>
         `
     };
+
 ## 编程式导航
+
     编程式导航,指的是通过方法设置导航。
     可以通过,router.push()用来导航到一个新的URL.
     vm.$router.push('/user');
@@ -1820,7 +2121,9 @@ categories: 学习笔记
 
     <router-link>的to属性使用绑定方式时,也可属性对象结构。
     <router-link :to="{path: ''}">
+
 ### 命名路由
+
     设置路由时添加name属性。
     let School = {
         template: `<div>School组件: {{$route.params}}</div>`,
@@ -1837,7 +2140,9 @@ categories: 学习笔记
 
     也可以在<router-link>中使用命名路由
     <router-link :to="{name: 'school',params: {id: 2}}">用户学校</router-link>
+
 ### 重定向
+
     当我们访问到错误url时,可以通过redirect属性来重定向URl
     let routes = [
         {path: '/user/:id',
@@ -1846,7 +2151,9 @@ categories: 学习笔记
         redirect: '/'
         }
     ];
+
 ### 别名
+
     别名是一种美化路由的方式。可以缩短url长度
     可以通过alias属性来进行设置
     let routes = [
@@ -1865,7 +2172,9 @@ categories: 学习笔记
         id: 1,date: 0101
     }}">
     <router-link to="/10/0612">
+
 ### 导航守卫
+
     设置导航守卫后,每个路由在触发url之前都会执行导航守卫功能。
     router.beforeEach((to,from,next)=>{
         if(to.path === '/user') {
@@ -1879,14 +2188,18 @@ categories: 学习笔记
     // from表示从哪个路由跳转来的
     // 根据from和to判断,来判断是否符合条件。
     // 可以在next中传入false,可以阻止用户下一步访问。
+
 ### History模式
+
     需要通过Vue Router实例的mode选项来设置,
     这样URL会更加美观。但同样需要后端支持避免问题。
     let router = new VueRouter({
         mode: 'history',
         routes
     });
+
 ### 路由元信息
+
     首先需要在路由规则中设置meta验证
     meta: {
       // 需要进行认证
@@ -1919,8 +2232,11 @@ categories: 学习笔记
     query内部记录的状态值在其他VUE实例中获取的方法:
     // 根据用户开始访问,可能存储的 redirect 数据进行跳转设置
     this.$router.push(this.$route.query.redirect || '/home')
+
 # Vue CLI
+
 ## Vue CLI介绍
+
     Vue CLI是一个基于Vue.js进行快速开发的完整系统。
     称为脚手架工具。
     统一项目架构风格
@@ -1928,11 +2244,15 @@ categories: 学习笔记
     提供单文件组件
 
     操作方式: 命令行工具
+
 ## 安装
+
     安装: npm install -g @vue/cli
     查看CLI版本: vue --version
     升级: npm update @vue/cli -g
+
 ## 项目搭建
+
     创建项目:
     vue create project-demo
 
@@ -1942,7 +2262,9 @@ categories: 学习笔记
     use NPM/use Yarn
 
     创建完成后,npm run serve进行运行项目
+
 ## 目录与文件
+
     文件目录介绍:
         public 预览文件目录
         src
@@ -1950,7 +2272,7 @@ categories: 学习笔记
             components  项目组件目录
             App.vue  根组件
             main.js  入口文件
-    
+
     单文件组件,可以将组件的功能统一保存在以.vue为拓展名的文件中。
     <template></template>对应了组件的结构,模板
     <script>内负责逻辑代码打包书写,以及模块的规则、逻辑功能功能导出。
@@ -1964,22 +2286,31 @@ categories: 学习笔记
     <stlye scoped>标签scoped表示,样式只能被当前组件所引用。
 
     App.vue根组件内,通过improt 来引入其他组件。
+
 ## 打包与部署
+
     打包就是将VueCLI项目编译为浏览器可识别的文件。
     命令: npm run build
 
     部署指的是将Vue项目dist目录部署到服务器上
     serve命令进行布著
+
 # VueX
+
 ## 概述
+
     Vuex是一个专门为Vue.js应用程序开发的状态管理工具。
     它采用集中存储管理应用的所有组件的状态。并以相应的
     规则保证状态以一种可预测的方式发生变化。
+
 ## Vuex-State
+
     state用于存储数据.
     在Vue单页面程序中,所有组件都可以通过$store.state.成员，对state
     内部的数据进行访问。
+
 ## Vue-Mutation
+
     更改Vuex的store中的状态的唯一方法是一觉mutation。
     Vuex中的mutation非常类似于事件,每个mutation都有
     一个字符串的事件类型和一个回调函数。
@@ -2018,11 +2349,13 @@ categories: 学习笔记
         type: 'increment',
         num: 10
     })
+
 ## Vuex-Action
+
     Action类似于mutation,不同在于:
         Action提交的是mutation，而不是直接变更状态。
         Action可以包含任意异步操作。
-    
+
     {
         stete: {
             count: 0
@@ -2042,20 +2375,26 @@ categories: 学习笔记
     }
     使用actions的方式:
     this.$store.dispatch('jiaHandle', { count: 5, delay: 2000 })
+
 ## modules
+
     由于使用单一状态树,应用所有状态会集中到一个比较大的对象，当应用
     变得非常复杂时,store对象就有可能变得相当臃肿。
     为了解决以上问题,Vuex允许我们将store分割成模块。每个模块拥有自己的state
     、mutation、action、getter、甚至是嵌套子模块-从上至下进行同样方式
     的分割。
+
 ## Getters
+
     有时候我们需要从store中的state中派生出一些状态，例如对列表进行过滤并计数。
     computend: {
         doneTodosCount () {
             return this.$store.state.todus.filter(todo => todo.done).length
         }
     }
+
 # vue2Render教程
+
     renderHeader (h, { column }) {
       const that = this
       console.log(that)

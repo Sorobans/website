@@ -29,7 +29,12 @@ export type AnimationTrigger = 'mount' | 'scroll' | 'hover' | 'manual';
 /**
  * Common animation variants
  */
-export type AnimationVariantName = 'fade' | 'slide' | 'scale' | 'rotate' | 'expand';
+export type AnimationVariantName =
+  | 'fade'
+  | 'slide'
+  | 'scale'
+  | 'rotate'
+  | 'expand';
 
 /**
  * Motion variant configuration
@@ -107,4 +112,11 @@ export interface StaggerProps {
 /**
  * Spring preset names
  */
-export type SpringPreset = 'default' | 'gentle' | 'wobbly' | 'stiff' | 'slow' | 'micro' | 'microRebound';
+export type SpringPreset =
+  | 'default'
+  | 'gentle'
+  | 'wobbly'
+  | 'stiff'
+  | 'slow'
+  | 'micro'
+  | 'microRebound';

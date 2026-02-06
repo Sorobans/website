@@ -1,6 +1,9 @@
 import { readdir } from 'node:fs/promises';
 
-const backgroundsDir = new URL('../../source/img/backgrounds/', import.meta.url);
+const backgroundsDir = new URL(
+  '../../source/img/backgrounds/',
+  import.meta.url,
+);
 
 export async function getBackgroundImages(): Promise<string[]> {
   try {

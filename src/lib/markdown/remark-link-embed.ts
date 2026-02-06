@@ -92,7 +92,8 @@ async function fetchOGData(url: string): Promise<OGData> {
       headers: {
         'User-Agent':
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        Accept:
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
         'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'no-cache',
@@ -191,7 +192,11 @@ function generateLinkPreviewHTML(ogData: OGData): string {
         }
       }
     } catch (error) {
-      console.warn('[Link Embed] Failed to extract readable text from URL:', url, error);
+      console.warn(
+        '[Link Embed] Failed to extract readable text from URL:',
+        url,
+        error,
+      );
     }
 
     // Sanitize all user-generated content
@@ -200,7 +205,11 @@ function generateLinkPreviewHTML(ogData: OGData): string {
     const safeDisplayText = sanitizeText(displayText);
     const safeSubtitle = subtitle
       ? sanitizeText(subtitle)
-      : sanitizeText(originUrl.length > 60 ? originUrl.substring(0, 60) + '...' : originUrl);
+      : sanitizeText(
+          originUrl.length > 60
+            ? originUrl.substring(0, 60) + '...'
+            : originUrl,
+        );
 
     return `<div class="link-preview-block not-prose" data-state="error">
   <a href="${safeUrl}" target="_blank" class="hover:border-primary/50 group block rounded-lg border bg-card p-4 transition-all hover:shadow-md" aria-label="${safeDisplayText}">
@@ -256,7 +265,11 @@ function generateLinkPreviewHTML(ogData: OGData): string {
  * Generate HTML for CodePen embed using official embed format
  * https://blog.codepen.io/documentation/embedded-pens/
  */
-function generateCodePenEmbedHTML(user: string, penId: string, url: string): string {
+function generateCodePenEmbedHTML(
+  user: string,
+  penId: string,
+  url: string,
+): string {
   // Sanitize inputs
   const safeUser = sanitizeText(user);
   const safePenId = sanitizeText(penId);
@@ -272,7 +285,11 @@ function generateCodePenEmbedHTML(user: string, penId: string, url: string): str
  * This version uses metascraper to fetch OG data at build time
  */
 export function remarkLinkEmbed(options: RemarkLinkEmbedOptions = {}) {
-  const { enableTweetEmbed = true, enableCodePenEmbed = true, enableOGPreview = true } = options;
+  const {
+    enableTweetEmbed = true,
+    enableCodePenEmbed = true,
+    enableOGPreview = true,
+  } = options;
 
   return async function (tree: Root) {
     const nodesToReplace: Array<{
@@ -310,30 +327,34 @@ export function remarkLinkEmbed(options: RemarkLinkEmbedOptions = {}) {
     });
 
     // Second pass: fetch OG data in parallel for better performance
-    const fetchPromises = nodesToReplace.map(async ({ url, type, tweetId, codepen }) => {
-      if (type === 'tweet' && enableTweetEmbed && tweetId) {
-        return {
-          type: 'html' as const,
-          value: `<div data-tweet-embed data-tweet-id="${tweetId}"></div>`,
-        };
-      } else if (type === 'codepen' && enableCodePenEmbed && codepen) {
-        ;
-        const html = generateCodePenEmbedHTML(codepen.user, codepen.penId, url);
-        return {
-          type: 'html' as const,
-          value: html,
-        };
-      } else if (type === 'general' && enableOGPreview) {
-        ;
-        const ogData = await fetchOGData(url);
-        const html = generateLinkPreviewHTML(ogData);
-        return {
-          type: 'html' as const,
-          value: html,
-        };
-      }
-      return null;
-    });
+    const fetchPromises = nodesToReplace.map(
+      async ({ url, type, tweetId, codepen }) => {
+        if (type === 'tweet' && enableTweetEmbed && tweetId) {
+          return {
+            type: 'html' as const,
+            value: `<div data-tweet-embed data-tweet-id="${tweetId}"></div>`,
+          };
+        } else if (type === 'codepen' && enableCodePenEmbed && codepen) {
+          const html = generateCodePenEmbedHTML(
+            codepen.user,
+            codepen.penId,
+            url,
+          );
+          return {
+            type: 'html' as const,
+            value: html,
+          };
+        } else if (type === 'general' && enableOGPreview) {
+          const ogData = await fetchOGData(url);
+          const html = generateLinkPreviewHTML(ogData);
+          return {
+            type: 'html' as const,
+            value: html,
+          };
+        }
+        return null;
+      },
+    );
 
     // Wait for all fetches to complete in parallel
     const embedNodes = await Promise.all(fetchPromises);

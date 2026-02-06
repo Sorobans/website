@@ -38,7 +38,9 @@ color: "${formData.color || '#ffc0cb'}"`;
     void copy(yaml);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -61,13 +63,17 @@ color: "${formData.color || '#ffc0cb'}"`;
                 <SakuraSVG className="size-6 animate-spin text-[#FFC0CB] duration-10000" />
                 申请友链
               </h2>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{friendsIntro.applyDesc}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {friendsIntro.applyDesc}
+              </p>
             </div>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="group relative">
-                  <label htmlFor="friend-site" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  <label
+                    htmlFor="friend-site"
+                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
                     站点名称
                   </label>
                   <input
@@ -81,7 +87,9 @@ color: "${formData.color || '#ffc0cb'}"`;
                   />
                 </div>
                 <div className="group relative">
-                  <label htmlFor="friend-owner" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  <label
+                    htmlFor="friend-owner"
+                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
                     昵称
                   </label>
                   <input
@@ -97,7 +105,9 @@ color: "${formData.color || '#ffc0cb'}"`;
               </div>
 
               <div className="group relative">
-                <label htmlFor="friend-url" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                <label
+                  htmlFor="friend-url"
+                  className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
                   站点链接
                 </label>
                 <input
@@ -112,7 +122,9 @@ color: "${formData.color || '#ffc0cb'}"`;
               </div>
 
               <div className="group relative">
-                <label htmlFor="friend-desc" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                <label
+                  htmlFor="friend-desc"
+                  className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
                   站点描述
                 </label>
                 <textarea
@@ -128,7 +140,9 @@ color: "${formData.color || '#ffc0cb'}"`;
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="group relative">
-                  <label htmlFor="friend-image" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  <label
+                    htmlFor="friend-image"
+                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
                     头像链接
                   </label>
                   <input
@@ -142,7 +156,9 @@ color: "${formData.color || '#ffc0cb'}"`;
                   />
                 </div>
                 <div className="group relative">
-                  <label htmlFor="friend-color-picker" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  <label
+                    htmlFor="friend-color-picker"
+                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
                     主题色
                   </label>
                   <div className="flex items-center gap-3">
@@ -161,7 +177,9 @@ color: "${formData.color || '#ffc0cb'}"`;
                       id="friend-color-text"
                       value={formData.color}
                       aria-label="主题色值"
-                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, color: e.target.value })
+                      }
                       className="flex-1 rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
                     />
                   </div>
@@ -173,11 +191,12 @@ color: "${formData.color || '#ffc0cb'}"`;
           {/* Right Side: Preview / Code */}
           <div className="relative flex flex-col justify-center rounded-xl bg-gray-50 p-6 md:p-3 dark:bg-gray-800/50">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold tracking-wider uppercase">配置预览</h3>
+              <h3 className="text-xl font-bold tracking-wider uppercase">
+                配置预览
+              </h3>
               <button
                 onClick={handleCopy}
-                className="group relative px-3 py-2 text-base font-bold transition-transform hover:-translate-y-1 dark:text-white"
-              >
+                className="group relative px-3 py-2 text-base font-bold transition-transform hover:-translate-y-1 dark:text-white">
                 <div className="border-foreground absolute inset-0 rotate-[1deg] rounded-lg border-2 border-dashed transition-all group-hover:rotate-0 dark:border-white"></div>
                 {copied ? '已复制!' : '复制配置'}
               </button>

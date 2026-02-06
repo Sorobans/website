@@ -1,4 +1,9 @@
-import { colors, shadows, borderRadius, animation as animationTokens } from './src/constants/design-tokens.ts';
+import {
+  colors,
+  shadows,
+  borderRadius,
+  animation as animationTokens,
+} from './src/constants/design-tokens.ts';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -114,7 +119,16 @@ export default {
         '5.5xl': '3.5rem',
       },
       fontFamily: {
-        sans: ['寒蝉全圆体', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: [
+          '寒蝉全圆体',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+        ],
         'chill-round': ['寒蝉全圆体', 'sans-serif'],
       },
       clipPath: {

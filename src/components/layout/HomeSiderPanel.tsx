@@ -54,7 +54,9 @@ export function HomeSiderPanel({
 }: HomeSiderPanelProps) {
   const isPostPage = type === HomeSiderType.POST;
   const storeSegment = useStore(homeSiderSegmentType);
-  const effectiveSegment = isPostPage ? storeSegment : HomeSiderSegmentType.INFO;
+  const effectiveSegment = isPostPage
+    ? storeSegment
+    : HomeSiderSegmentType.INFO;
 
   useEffect(() => {
     if (!isPostPage) {
@@ -88,12 +90,18 @@ export function HomeSiderPanel({
       <div
         className="vertical-scrollbar pt-10 scroll-gutter-stable relative block w-full flex-1 min-h-0 overflow-x-hidden overflow-y-auto md:pt-4 md:pl-3"
         data-type={type}
-        data-default-type={defaultSegmentValue}
-      >
-        <div className={slotClassName(HomeSiderSegmentType.INFO)} data-slot-type="info">
-          <HomeInfoPanel className={type === HomeSiderType.HOME ? 'pt-18 md:pt-0' : ''} {...homeInfo} />
+        data-default-type={defaultSegmentValue}>
+        <div
+          className={slotClassName(HomeSiderSegmentType.INFO)}
+          data-slot-type="info">
+          <HomeInfoPanel
+            className={type === HomeSiderType.HOME ? 'pt-18 md:pt-0' : ''}
+            {...homeInfo}
+          />
         </div>
-        <div className={slotClassName(HomeSiderSegmentType.DIRECTORY)} data-slot-type="directory">
+        <div
+          className={slotClassName(HomeSiderSegmentType.DIRECTORY)}
+          data-slot-type="directory">
           {isPostPage && (
             <TableOfContents
               enableNumbering={tocNumbering}
@@ -101,15 +109,24 @@ export function HomeSiderPanel({
             />
           )}
         </div>
-        <div className={slotClassName(HomeSiderSegmentType.SERIES)} data-slot-type="series">
+        <div
+          className={slotClassName(HomeSiderSegmentType.SERIES)}
+          data-slot-type="series">
           {isPostPage && (
-            <SeriesPostList posts={seriesPostItems} currentPostSlug={currentPostSlug} />
+            <SeriesPostList
+              posts={seriesPostItems}
+              currentPostSlug={currentPostSlug}
+            />
           )}
         </div>
       </div>
 
       {isPostPage && (
-        <SeriesNavigation prevPost={prevPostItem ?? null} nextPost={nextPostItem ?? null} className="w-full px-2" />
+        <SeriesNavigation
+          prevPost={prevPostItem ?? null}
+          nextPost={nextPostItem ?? null}
+          className="w-full px-2"
+        />
       )}
 
       <ScrollProgress className="mt-auto w-full rounded-full pt-4 sticky bottom-0" />

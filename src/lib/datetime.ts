@@ -15,7 +15,9 @@ export enum DateFormat {
   'HH:mm',
 }
 
-export const parseDate = (time: string | number | Date | undefined, format: keyof typeof DateFormat) =>
-  time ? dayjs(time).format(format) : '';
+export const parseDate = (
+  time: string | number | Date | undefined,
+  format: keyof typeof DateFormat,
+) => (time ? dayjs(time).format(format) : '');
 
 export const secondOfDays = 86400;

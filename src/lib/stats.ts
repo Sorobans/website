@@ -1,20 +1,28 @@
 /**
- * Site statistics utilities
+ * 站点统计工具
  */
 
-import { getCollection } from 'astro:content';
-import type { BlogPost, BlogSchema } from '@/types/blog';
 import readingTime from 'reading-time';
+import { getVisibleBlogPosts } from './content/repository';
+
+function formatWordCount(count: number): string {
+  if (count >= 1000) {
+    return `${Math.floor(count / 1000)}k`;
+  }
+  return count.toString();
+}
+
+function formatReadingTime(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours}:${mins.toString().padStart(2, '0')}`;
+}
 
 /**
- * Calculate total word count and reading time for all posts (excluding drafts in production)
+ * 统计全站字数与阅读时长（生产环境自动排除草稿）
  */
 export async function getSiteStats() {
-  const posts = (await getCollection('blog', ({ data }: { data: BlogSchema }) => {
-    // 在生产环境中，过滤掉草稿
-    const { draft } = data;
-    return import.meta.env.PROD ? draft !== true : true;
-  })) as BlogPost[];
+  const posts = await getVisibleBlogPosts();
 
   let totalWords = 0;
   let totalMinutes = 0;
@@ -26,21 +34,6 @@ export async function getSiteStats() {
     totalWords += stats.words;
     totalMinutes += Math.ceil(stats.minutes);
   }
-
-  // Format word count (e.g., 871k)
-  const formatWordCount = (count: number): string => {
-    if (count >= 1000) {
-      return `${Math.floor(count / 1000)}k`;
-    }
-    return count.toString();
-  };
-
-  // Format reading time (e.g., 13:12 for 13 hours 12 minutes)
-  const formatReadingTime = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}:${mins.toString().padStart(2, '0')}`;
-  };
 
   return {
     totalWords,

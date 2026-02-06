@@ -11,7 +11,11 @@
  * 6. Stores top N similar posts per post in JSON
  */
 
-import { pipeline, env, type FeatureExtractionPipeline } from '@huggingface/transformers';
+import {
+  pipeline,
+  env,
+  type FeatureExtractionPipeline,
+} from '@huggingface/transformers';
 import { glob } from 'glob';
 import fs from 'fs/promises';
 import path from 'path';
@@ -126,7 +130,10 @@ async function getPlainText(markdown: string): Promise<string> {
       .replace(/^import\s+.*$/gm, '')
       .replace(/^export\s+.*$/gm, '')
       // Remove common section headings that don't add semantic value
-      .replace(/^\s*(TLDR|Introduction|Conclusion|Summary|References?|Footnotes?)\s*$/gim, '')
+      .replace(
+        /^\s*(TLDR|Introduction|Conclusion|Summary|References?|Footnotes?)\s*$/gim,
+        '',
+      )
       // Remove all-caps headings
       .replace(/^[A-Z\s]{4,}$/gm, '')
       // Remove table remnants
@@ -149,7 +156,9 @@ async function getPlainText(markdown: string): Promise<string> {
 function extractSlug(filePath: string, link?: string): string {
   if (link) return link;
   // Extract from path: source/posts/foo/bar.md -> foo/bar
-  const relativePath = filePath.replace(/^source\/posts\//, '').replace(/\.md$/, '');
+  const relativePath = filePath
+    .replace(/^source\/posts\//, '')
+    .replace(/\.md$/, '');
   // Convert to lowercase to match Astro's auto-generated collection entry IDs
   return relativePath.toLowerCase();
 }
@@ -157,7 +166,10 @@ function extractSlug(filePath: string, link?: string): string {
 /**
  * Process a single markdown file
  */
-async function processFile(filePath: string, summaries: SummariesMap): Promise<PostData | null> {
+async function processFile(
+  filePath: string,
+  summaries: SummariesMap,
+): Promise<PostData | null> {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
     const { data: frontmatter, content: body } = matter(content);
@@ -167,7 +179,6 @@ async function processFile(filePath: string, summaries: SummariesMap): Promise<P
 
     // Skip files without title
     if (!frontmatter.title) {
-      ;
       return null;
     }
 
@@ -206,15 +217,16 @@ async function processFile(filePath: string, summaries: SummariesMap): Promise<P
 /**
  * Load and process all markdown files
  */
-async function loadPosts(files: string[], summaries: SummariesMap): Promise<PostData[]> {
-  ;
+async function loadPosts(
+  files: string[],
+  summaries: SummariesMap,
+): Promise<PostData[]> {
   const posts: PostData[] = [];
   for (let i = 0; i < files.length; i++) {
     process.stdout.write(`\r  Processing ${i + 1}/${files.length}...`);
     const post = await processFile(files[i], summaries);
     if (post) posts.push(post);
   }
-  ;
   return posts;
 }
 
@@ -222,14 +234,17 @@ async function loadPosts(files: string[], summaries: SummariesMap): Promise<Post
  * Generate embeddings for all posts one by one
  * Batch processing doesn't work reliably with this model
  */
-async function generateEmbeddings(posts: PostData[], extractor: FeatureExtractionPipeline): Promise<Float32Array[]> {
+async function generateEmbeddings(
+  posts: PostData[],
+  extractor: FeatureExtractionPipeline,
+): Promise<Float32Array[]> {
   const embeddings: Float32Array[] = [];
-
-  ;
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
-    process.stdout.write(`\r  Processing ${i + 1}/${posts.length}: ${post.slug.slice(0, 40)}...`);
+    process.stdout.write(
+      `\r  Processing ${i + 1}/${posts.length}: ${post.slug.slice(0, 40)}...`,
+    );
 
     const output = (await extractor(post.text, {
       pooling: 'mean',
@@ -239,17 +254,18 @@ async function generateEmbeddings(posts: PostData[], extractor: FeatureExtractio
     embeddings.push(normalize(output.data));
   }
 
-  ;
   return embeddings;
 }
 
 /**
  * Compute top N similar posts for each post
  */
-function computeSimilarities(posts: PostData[], embeddings: Float32Array[], topN: number): SimilarityMap {
+function computeSimilarities(
+  posts: PostData[],
+  embeddings: Float32Array[],
+  topN: number,
+): SimilarityMap {
   const result: SimilarityMap = {};
-
-  ;
 
   for (let i = 0; i < posts.length; i++) {
     const similarities: SimilarPost[] = [];
@@ -276,7 +292,10 @@ function computeSimilarities(posts: PostData[], embeddings: Float32Array[], topN
 /**
  * Save results to JSON file
  */
-async function saveResults(data: SimilarityMap, outputPath: string): Promise<void> {
+async function saveResults(
+  data: SimilarityMap,
+  outputPath: string,
+): Promise<void> {
   const dir = path.dirname(outputPath);
   await fs.mkdir(dir, { recursive: true });
   await fs.writeFile(outputPath, JSON.stringify(data, null, 2));
@@ -287,15 +306,8 @@ async function main() {
   const startTime = Date.now();
 
   try {
-    ;
-    ;
-    ;
-
     // 1. Load AI summaries if enabled
     const summaries = await loadSummaries();
-    if (USE_AI_SUMMARY && Object.keys(summaries).length > 0) {
-      ;
-    }
 
     // 2. Load the embedding model
     const extractor = await pipeline('feature-extraction', MODEL_NAME);
@@ -326,7 +338,9 @@ async function main() {
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     const entryCount = Object.keys(similarities).length;
-    console.log(chalk.green(`\nDone. Saved ${entryCount} similarities in ${elapsed}s.`));
+    console.log(
+      chalk.green(`\nDone. Saved ${entryCount} similarities in ${elapsed}s.`),
+    );
   } catch (error) {
     console.error(chalk.red('\nError:'), error);
     process.exitCode = 1;

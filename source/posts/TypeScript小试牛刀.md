@@ -1,42 +1,59 @@
 ---
 title: Typescript小试牛刀
-date:  2022-02-08
-tags: 
+date: 2022-02-08
+tags:
   - 学习笔记
   - Typescript
 categories: 学习笔记
 ---
+
 # TypeScript基础
+
 ## 编译TS文件
+
 初始化ts目录 tsc --init
 编译: tsc 01.ts
 监视ts文件: tsc --watch 01.ts
+
 ## Ts严格编译模式
+
     tsc --noEmitOnError --watch 01.ts
+
 ## 显式类型
+
     function greet (person: string, date: Date) {
     }
+
 ### 类型推断
+
     let msg = "Hello";
     msg = 123; // erro
 
     /*很多时候可以不加类型约束*/
     // 如果靠着类型推断,如果后面的传入的值
     // 不符合初始值的类型，便会报错
+
 ## 降级编译
+
     在tsconfig.json内,
     修改target的编译目标。
     可以将ts代码编译为想要的版本、
+
 ## 严格模式
+
     tscconfig.json:
     "strict": true, // 严格类型模式
     "noImplicitAny": true, // 判断any类型错误
     "strictNullChecks": true, // null和undfined无法隐式推断
+
 ## 基元类型
+
     string、number、boolean
     始终使用小写的:
     string、number、boolean
+
 ### Array
+
     数组类型书写方式:
     type[] 、 Array<type>
 
@@ -44,7 +61,9 @@ categories: 学习笔记
 
     let arr: number[] = [1,2,3,]
     let arr2: Array<number> = [1,5,6,]
+
 ### any
+
     不希望某个特定值导致类型检查错误
     let obj:any = {
         x:0
@@ -54,13 +73,19 @@ categories: 学习笔记
     obj.bar = 100
     obj = 'hello'
     cons n: number = obj
+
 ## 编译目标目录配置
+
     outDir
+
 ## 变量类型注释
+
     let myNmae:string = "雪花"
 
     // :类型
+
 ## 函数
+
     TypeScript还可以定义函数的返回值类型
     function greet(name: string):void {
     }
@@ -69,14 +94,18 @@ categories: 学习笔记
     const getFavor = ():number=> {
         return 26
     }
+
 ### 上下文类型
+
     const names = ["小千", "小锋"]
     for (let value of names) {
         console.log(value)
     }
     比如这样，TypeScript自动推断出,value的类型。
     这种的类型推断又叫做上下文类型。
+
 ### 对象类型
+
     function printCoord(pt: {x: number,y: number}) {
         console.log('坐标的X值为:'+ pt.x)
         console.log('坐标的X值为:'+ pt.y)
@@ -97,7 +126,9 @@ categories: 学习笔记
         first: '雪',
         last: "花"
     })
+
 ## 联合类型
+
     通过管道符 | 可以声明联合类型。
     const printId = (id: number | string)=> {
         console.log('You ID is' + id);
@@ -116,7 +147,9 @@ categories: 学习笔记
         // }
         return x.slice(0,3)
     }
+
 ## 类型别名
+
     我们可以通过 type 关键字 来声明自定义类型
     type ID = number | string
         const printID = (id: ID) => {
@@ -126,7 +159,9 @@ categories: 学习笔记
     const sannizeInput = (str: ID):UserInputSanitizedString => {
         return str + 'new Input'
     }
+
 ## 接口与extends关键字
+
     接口通过interface来定义
     // 拓展接口
     interface Animal {
@@ -140,7 +175,9 @@ categories: 学习笔记
         name: 'winie',
         honey: true
     }
+
 ## 类型别名的类型拓展
+
     type Animal = {
         name: string
     }
@@ -151,7 +188,9 @@ categories: 学习笔记
         name: 'winnie',
         honey: true
     }
+
 ## 接口与类型别名字段添加
+
     重复定义两个相同的接口,
     不同的成员。能够实现对接口的拓展
 
@@ -169,18 +208,23 @@ categories: 学习笔记
     也不能够通过同一个名字来拓展。
 
 ## interface和type总结
+
     interface:
         值类型: 只能为对象
         拓展: extends 继承关键字、同名接口声明不同成员
     type:
         值类型: 可以为单类型,也可以为联合类型，也可以为{}
         拓展: 只能够通过 & 来对自定义类型实现拓展
+
 ## 类型断言
+
     const  myCanvas = document.getElementById('main_canvas') as HTMLCanvasElement
     const x = ('hello' as unknown) as number
 
     当不知道这个值的类型的时候，可以使用 as 关键字将它断言成差不多的类型。
+
 ## 文字类型
+
     let xcy:'123' = '123'
     // xcy的值,只能为文字约束的:'123'
     function printText (direction: 'left' | 'right' | 'center'): -1 | 0 |1 {
@@ -198,9 +242,11 @@ categories: 学习笔记
     }
     configGure({width: 100})
     configGure('auto')
+
 ### Ts对象,文字类型,自动类型断言可能遇见的错误
+
     <!-- Ts对象,可能会在自动类型断言遇见的错误  -->
-    // 
+    //
     const Ajax = (url: string, method: 'GET' | 'POST'):void => {}
     const req = {
         url: 'https://www.baidu.com',
@@ -212,13 +258,17 @@ categories: 学习笔记
     // 也可以在对象声明的后面,添加as const,将其内部成员常量化(只读)，来解决。
     // const req = {} as const (对象成员常量化)
     Ajax(req.url, req.method)
+
 ## null与undefine类型
+
     function liveUndfined(x?: number | null) {
         // 断言符号,?表示参数可以为undfined、
         // ! 可以将 可能为null或undfined的值,断言不为undfined或null
         console.log(x!.toFixed());
     }
+
 ## 枚举
+
     枚举通过enum关键字来定义
     enum Direction {
         Up = 1,
@@ -231,7 +281,9 @@ categories: 学习笔记
 
     <!-- 枚举特性 -->
     <!-- 当设置了Up值为1,Down,Left,Right的值会依次递增1 -->
+
 ## bigint和symbol(不太常用的原语)
+
     // bigint表示非常大的整数
     // bymbol 表示全局唯一引用 (构造函数)
 
@@ -246,8 +298,11 @@ categories: 学习笔记
         // 因为Symbol特性,firstName和LastName是始终不相等的
         console.log('Ok')
     }
+
 ## typeof类型守卫
+
 ### 类型缩小
+
     类型缩小,就是从宽类型转换为窄类型的过程
     常用于处理,联合类型变量的场景
 
@@ -257,7 +312,9 @@ categories: 学习笔记
             // 类型保护,类型缩小
         }
     }
+
 ### 真值缩小
+
     function getUsersOnline(numUserOnline: number) {
         if (numUserOnline) {
             return `现在共有${numUsersOnline}人在线`

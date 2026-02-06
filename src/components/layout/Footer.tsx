@@ -15,13 +15,18 @@ export default function Footer({ className, stats }: Props) {
 
   return (
     <footer className={cn('mt-auto pb-6 md:pb-4', className)}>
-      <div className={cn('mx-auto flex flex-col items-center gap-3 px-6 md:px-3', MAX_WIDTH.content)}>
+      <div
+        className={cn(
+          'mx-auto flex flex-col items-center gap-3 px-6 md:px-3',
+          MAX_WIDTH.content,
+        )}>
         <div className="text-muted-foreground flex flex-wrap items-center justify-center gap-6 text-sm md:gap-4">
           <button
             className="flex items-center gap-2 opacity-75 transition-opacity duration-300 hover:opacity-100"
-            title="站点总字数"
-          >
-            <i className="fa-regular fa-file-lines text-sm" aria-hidden="true"></i>
+            title="站点总字数">
+            <i
+              className="fa-regular fa-file-lines text-sm"
+              aria-hidden="true"></i>
             <span className="font-medium">{stats.formattedWords}</span>
             <span className="text-xs">字</span>
           </button>
@@ -30,8 +35,7 @@ export default function Footer({ className, stats }: Props) {
 
           <button
             className="flex items-center gap-2 opacity-75 transition-opacity duration-300 hover:opacity-100"
-            title="站点阅读时长"
-          >
+            title="站点阅读时长">
             <i className="fa-regular fa-clock text-sm" aria-hidden="true"></i>
             <span className="font-medium">{stats.formattedTime}</span>
           </button>
@@ -40,9 +44,10 @@ export default function Footer({ className, stats }: Props) {
 
           <button
             className="flex items-center gap-2 opacity-75 transition-opacity duration-300 hover:opacity-100"
-            title="文章总数"
-          >
-            <i className="fa-regular fa-newspaper text-sm" aria-hidden="true"></i>
+            title="文章总数">
+            <i
+              className="fa-regular fa-newspaper text-sm"
+              aria-hidden="true"></i>
             <span className="font-medium">{stats.postCount}</span>
             <span className="text-xs">篇</span>
           </button>
@@ -60,9 +65,13 @@ export default function Footer({ className, stats }: Props) {
             </>
           )}
           <SakuraSVG className="mx-1 size-5 animate-spin text-[#FFC0CB] duration-10000" />
-          <span className="author font-medium opacity-75" itemProp="copyrightHolder">
+          <span
+            className="author font-medium opacity-75"
+            itemProp="copyrightHolder">
             {blogLayoutConfig.name}
-            {blogLayoutConfig?.alternate ? `@${blogLayoutConfig.alternate}` : ''}
+            {blogLayoutConfig?.alternate
+              ? `@${blogLayoutConfig.alternate}`
+              : ''}
           </span>
         </div>
 
@@ -72,8 +81,7 @@ export default function Footer({ className, stats }: Props) {
             href="https://github.com/XueHua-s/astro-snow"
             target="_blank"
             rel="noreferrer"
-            className="footer-link font-medium transition-all duration-300"
-          >
+            className="footer-link font-medium transition-all duration-300">
             snow-koharu
           </a>
           <span className="opacity-50">In·</span>
@@ -82,8 +90,7 @@ export default function Footer({ className, stats }: Props) {
             href="https://github.com/amehime/hexo-theme-shoka"
             target="_blank"
             rel="noreferrer"
-            className="footer-link font-medium transition-all duration-300"
-          >
+            className="footer-link font-medium transition-all duration-300">
             astro-koharu
           </a>
         </div>

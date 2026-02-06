@@ -1,71 +1,39 @@
 /**
- * Global UI State Management
- *
- * Nanostores-based global state for UI components that need to communicate across
- * the Astro/React boundary.
- *
- * This replaces the previous CustomEvent pattern for better type safety and reactivity.
- *
- * @example
- * ```tsx
- * // In menuButtons.tsx
- * import { drawerOpen } from '@store/ui';
- *
- * function MenuIcon() {
- *   const handleToggle = () => {
- *     drawerOpen.set(!drawerOpen.get());
- *   };
- * }
- *
- * // In HomeSider.astro or FloatingGroup.astro
- * import { drawerOpen } from '@store/ui';
- * import { useStore } from '@nanostores/react';
- *
- * function Sidebar() {
- *   const isDrawerOpen = useStore(drawerOpen);
- *   // Component reacts to state changes
- * }
- * ```
+ * 全局 UI 状态管理（Nanostores）
+ * 目标：保持对外 API 不变，但将重复的开关逻辑收敛到统一控制器。
  */
 
 import { atom } from 'nanostores';
 
 /**
- * Mobile drawer open/close state
- *
- * Controls the visibility of the mobile navigation drawer/sidebar.
- * Used by MenuIcon, HomeSider, and FloatingGroup components.
+ * 统一布尔状态控制器，避免每个状态都手写一组重复函数。
  */
-export const drawerOpen = atom<boolean>(false);
+function createBooleanState(initialValue: boolean) {
+  const state = atom<boolean>(initialValue);
 
-/**
- * Mobile menu open/close state
- *
- * Controls the visibility of the mobile dropdown menu.
- * Used for responsive navigation menus.
- */
-export const mobileMenuOpen = atom<boolean>(false);
+  return {
+    state,
+    open: () => state.set(true),
+    close: () => state.set(false),
+    toggle: () => state.set(!state.get()),
+  };
+}
 
-/**
- * Modal open/close state
- *
- * Generic modal state for future use.
- */
-export const modalOpen = atom<boolean>(false);
+const drawerState = createBooleanState(false);
+const mobileMenuState = createBooleanState(false);
+const modalState = createBooleanState(false);
+const searchState = createBooleanState(false);
 
-/**
- * Search modal open/close state
- *
- * Controls the visibility of the search modal.
- */
-export const searchOpen = atom<boolean>(false);
+/** 移动抽屉开关状态 */
+export const drawerOpen = drawerState.state;
+/** 移动菜单开关状态 */
+export const mobileMenuOpen = mobileMenuState.state;
+/** 通用弹窗开关状态 */
+export const modalOpen = modalState.state;
+/** 搜索弹窗开关状态 */
+export const searchOpen = searchState.state;
 
-/**
- * Code fullscreen data
- *
- * Contains the data for the code block fullscreen dialog.
- * When set to non-null, the dialog opens. When set to null, it closes.
- */
+/** 代码全屏数据 */
 export interface CodeBlockData {
   code: string;
   codeHTML: string;
@@ -77,103 +45,58 @@ export interface CodeBlockData {
 
 export const codeFullscreenData = atom<CodeBlockData | null>(null);
 
-/**
- * Mermaid fullscreen data
- *
- * Contains the data for the mermaid diagram fullscreen dialog.
- * When set to non-null, the dialog opens with zoom/pan support.
- */
+/** Mermaid 全屏数据 */
 export interface MermaidFullscreenData {
-  svg: string; // Rendered SVG HTML
-  source: string; // Original mermaid source code
+  svg: string;
+  source: string;
 }
 
 export const mermaidFullscreenData = atom<MermaidFullscreenData | null>(null);
 
-/**
- * Helper functions for common operations
- */
-
-/**
- * Toggle drawer state
- */
 export function toggleDrawer(): void {
-  drawerOpen.set(!drawerOpen.get());
+  drawerState.toggle();
 }
 
-/**
- * Open drawer
- */
 export function openDrawer(): void {
-  drawerOpen.set(true);
+  drawerState.open();
 }
 
-/**
- * Close drawer
- */
 export function closeDrawer(): void {
-  drawerOpen.set(false);
+  drawerState.close();
 }
 
-/**
- * Toggle mobile menu state
- */
 export function toggleMobileMenu(): void {
-  mobileMenuOpen.set(!mobileMenuOpen.get());
+  mobileMenuState.toggle();
 }
 
-/**
- * Toggle modal state
- */
 export function toggleModal(): void {
-  modalOpen.set(!modalOpen.get());
+  modalState.toggle();
 }
 
-/**
- * Toggle search state
- */
 export function toggleSearch(): void {
-  searchOpen.set(!searchOpen.get());
+  searchState.toggle();
 }
 
-/**
- * Open search dialog
- */
 export function openSearch(): void {
-  searchOpen.set(true);
+  searchState.open();
 }
 
-/**
- * Close search dialog
- */
 export function closeSearch(): void {
-  searchOpen.set(false);
+  searchState.close();
 }
 
-/**
- * Open code fullscreen dialog with data
- */
 export function openCodeFullscreen(data: CodeBlockData): void {
   codeFullscreenData.set(data);
 }
 
-/**
- * Close code fullscreen dialog
- */
 export function closeCodeFullscreen(): void {
   codeFullscreenData.set(null);
 }
 
-/**
- * Open mermaid fullscreen dialog with data
- */
 export function openMermaidFullscreen(data: MermaidFullscreenData): void {
   mermaidFullscreenData.set(data);
 }
 
-/**
- * Close mermaid fullscreen dialog
- */
 export function closeMermaidFullscreen(): void {
   mermaidFullscreenData.set(null);
 }

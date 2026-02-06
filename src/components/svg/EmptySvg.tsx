@@ -4,7 +4,12 @@
  */
 export default function EmptySvg({ className }: { className?: string }) {
   return (
-    <svg className={className} width="48" height="38" viewBox="0 0 48 38" fill="current">
+    <svg
+      className={className}
+      width="48"
+      height="38"
+      viewBox="0 0 48 38"
+      fill="current">
       <g filter="url(#filter0_b_3364_6889)">
         <path
           fillRule="evenodd"
@@ -21,12 +26,20 @@ export default function EmptySvg({ className }: { className?: string }) {
           width="148"
           height="138"
           filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
+          colorInterpolationFilters="sRGB">
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feGaussianBlur in="BackgroundImageFix" stdDeviation="25" />
-          <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_3364_6889" />
-          <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_3364_6889" result="shape" />
+          <feComposite
+            in2="SourceAlpha"
+            operator="in"
+            result="effect1_backgroundBlur_3364_6889"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_backgroundBlur_3364_6889"
+            result="shape"
+          />
         </filter>
       </defs>
     </svg>

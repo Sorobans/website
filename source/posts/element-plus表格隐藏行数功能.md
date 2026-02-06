@@ -24,23 +24,23 @@ tags: 技术分享
 
 ```css
 .el-folding > tr:nth-child(n + 4) {
-    display: none;
+  display: none;
 }
 .el-folding-line {
-    transition-duration: 200ms;
-    cursor: pointer;
-    border-bottom: 1px solid var(--el-table-border-color);
+  transition-duration: 200ms;
+  cursor: pointer;
+  border-bottom: 1px solid var(--el-table-border-color);
 }
 .el-folding-line:active {
-    background-color: #F5F6FB;
+  background-color: #f5f6fb;
 }
 .el-folding-extends {
-    /*cursor: pointer;*/
-    transition-duration: 400ms;
+  /*cursor: pointer;*/
+  transition-duration: 400ms;
 }
 .el-folding-extends.rotate {
-    cursor: pointer;
-    transform: rotate(180deg);
+  cursor: pointer;
+  transform: rotate(180deg);
 }
 ```
 
@@ -51,48 +51,48 @@ tags: 技术分享
 ```javascript
 // element-table折叠指令
 app.directive('elfold', (el, binding) => {
-  const elBody = el.querySelector(".el-table__body>tbody")
-  const elBodyC = elBody.children
+  const elBody = el.querySelector('.el-table__body>tbody');
+  const elBodyC = elBody.children;
   if (elBodyC.length > 3) {
     // 给表格添加只展示三行的类名
     if (el.querySelector('.rotate')) {
-      elBody.classList.remove('el-folding')
+      elBody.classList.remove('el-folding');
     } else {
-      elBody.classList.add('el-folding')
+      elBody.classList.add('el-folding');
     }
     // 判断有没有创建过面板
-    const foldingLine = el.querySelector('.el-folding-line')
+    const foldingLine = el.querySelector('.el-folding-line');
     if (foldingLine) {
       if (el?.removeElement) {
-        el.removeElement(foldingLine)
+        el.removeElement(foldingLine);
       }
     }
     if (!foldingLine) {
       // 创建折叠面板元素
-      const extendsTop = document.createElement('div')
-      extendsTop.className = "flex-ct p5 el-folding-line"
-      const extendsTopButton = document.createElement('i')
-      extendsTopButton.className = "fa fa-angle-down el-folding-extends"
-      extendsTopButton.style.fontSize = "30px"
-      extendsTop.append(extendsTopButton)
-      el.append(extendsTop)
+      const extendsTop = document.createElement('div');
+      extendsTop.className = 'flex-ct p5 el-folding-line';
+      const extendsTopButton = document.createElement('i');
+      extendsTopButton.className = 'fa fa-angle-down el-folding-extends';
+      extendsTopButton.style.fontSize = '30px';
+      extendsTop.append(extendsTopButton);
+      el.append(extendsTop);
       // 控制变量
-      let controller = true
+      let controller = true;
       extendsTop.addEventListener('click', () => {
         if (controller) {
-          extendsTopButton.classList.add('rotate')
-          elBody.classList.remove('el-folding')
+          extendsTopButton.classList.add('rotate');
+          elBody.classList.remove('el-folding');
         } else {
-          extendsTopButton.classList.remove('rotate')
-          elBody.classList.add('el-folding')
+          extendsTopButton.classList.remove('rotate');
+          elBody.classList.add('el-folding');
         }
-        controller = !controller
-      })
+        controller = !controller;
+      });
     }
   } else {
-    elBody.classList.remove('el-folding')
+    elBody.classList.remove('el-folding');
   }
-})
+});
 ```
 
 ## 效果展示

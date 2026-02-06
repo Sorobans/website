@@ -14,7 +14,8 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
   const { isOpen, setIsOpen } = useToggle({ defaultOpen: false });
   const { name, icon, children } = item;
 
-  const currentPath = typeof window === 'undefined' ? '' : window.location.pathname;
+  const currentPath =
+    typeof window === 'undefined' ? '' : window.location.pathname;
 
   const renderDropdownContent = useCallback(
     () => (
@@ -29,12 +30,17 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
                   {
                     'rounded-ss-2xl': index === 0,
                     'rounded-ee-2xl': index === children.length - 1,
-                    'bg-gradient-shoka-button text-muted': currentPath === child.path,
+                    'bg-gradient-shoka-button text-muted':
+                      currentPath === child.path,
                   },
-                )}
-              >
+                )}>
                 <div className="flex items-center gap-2 text-white transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white">
-                  {child.icon && <i className={cn('text-sm', child.icon)} aria-hidden="true" />}
+                  {child.icon && (
+                    <i
+                      className={cn('text-sm', child.icon)}
+                      aria-hidden="true"
+                    />
+                  )}
                   {child.name}
                 </div>
               </a>
@@ -46,7 +52,12 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
   );
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen} placement="bottom-start" trigger="hover" render={renderDropdownContent}>
+    <Popover
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      placement="bottom-start"
+      trigger="hover"
+      render={renderDropdownContent}>
       <button
         className={cn(
           'inline-flex h-10 items-center px-4 py-2 text-base tracking-wider',
@@ -56,14 +67,18 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
         )}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-label={`${name}菜单`}
-      >
-        {icon && <i className={cn('mr-1.5 text-sm', icon)} aria-hidden="true" />}
+        aria-label={`${name}菜单`}>
+        {icon && (
+          <i className={cn('mr-1.5 text-sm', icon)} aria-hidden="true" />
+        )}
         {name}
         <i
-          className={cn('fa-solid fa-caret-down absolute -right-1.5 text-xl transition-transform duration-300', {
-            'rotate-180': isOpen,
-          })}
+          className={cn(
+            'fa-solid fa-caret-down absolute -right-1.5 text-xl transition-transform duration-300',
+            {
+              'rotate-180': isOpen,
+            },
+          )}
           aria-hidden="true"
         />
       </button>
@@ -75,6 +90,9 @@ const DropdownNavComponent = ({ item, className }: DropdownNavProps) => {
 const DropdownNav = memo(DropdownNavComponent);
 
 // Wrap with error boundary for graceful error handling
-const DropdownNavWithErrorBoundary = withFloatingErrorBoundary(DropdownNav, 'DropdownNav');
+const DropdownNavWithErrorBoundary = withFloatingErrorBoundary(
+  DropdownNav,
+  'DropdownNav',
+);
 
 export default DropdownNavWithErrorBoundary;

@@ -24,14 +24,25 @@ export function HeadingTitle({ heading, className }: HeadingTitleProps) {
         <motion.span
           key={heading.id}
           className={`block truncate text-sm font-medium ${className || ''}`}
-          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20, filter: 'blur(4px)' }}
-          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12, filter: 'blur(4px)' }}
+          initial={
+            shouldReduceMotion
+              ? { opacity: 0 }
+              : { opacity: 0, y: 20, filter: 'blur(4px)' }
+          }
+          animate={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 1, y: 0, filter: 'blur(0px)' }
+          }
+          exit={
+            shouldReduceMotion
+              ? { opacity: 0 }
+              : { opacity: 0, y: -12, filter: 'blur(4px)' }
+          }
           transition={{
             default: { type: 'spring', stiffness: 400, damping: 30 },
             filter: { type: 'tween', duration: 0.2, ease: 'easeOut' },
-          }}
-        >
+          }}>
           {heading.text}
         </motion.span>
       )}

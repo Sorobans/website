@@ -10,7 +10,9 @@ type PagefindUiOptions = {
 };
 
 type PagefindUiModule = {
-  PagefindUI: new (options: PagefindUiOptions & { element: HTMLElement; bundlePath: string }) => unknown;
+  PagefindUI: new (
+    options: PagefindUiOptions & { element: HTMLElement; bundlePath: string },
+  ) => unknown;
 };
 
 const getBundlePath = () => {
@@ -53,7 +55,8 @@ export default function SearchWithDialog() {
       return;
     }
 
-    const module = (await import('@pagefind/default-ui')) as unknown as PagefindUiModule;
+    const module =
+      (await import('@pagefind/default-ui')) as unknown as PagefindUiModule;
     const { PagefindUI } = module;
     new PagefindUI({
       element: searchRootRef.current,
@@ -109,16 +112,26 @@ export default function SearchWithDialog() {
         className="group cursor-pointer transition duration-300 hover:scale-125"
         aria-label="搜索"
         title="搜索 (⌘K)"
-        onClick={openSearch}
-      >
-        <i className="fa-solid fa-magnifying-glass text-2xl" aria-hidden="true"></i>
+        onClick={openSearch}>
+        <i
+          className="fa-solid fa-magnifying-glass text-2xl"
+          aria-hidden="true"></i>
       </button>
 
       <div
         id="search-component-portal"
-        style={{ display: 'none', position: 'absolute', pointerEvents: 'none', visibility: 'hidden' }}
-      >
-        <div id="search-for-dialog" ref={searchRootRef} className="pagefind-ui" data-pagefind-ui />
+        style={{
+          display: 'none',
+          position: 'absolute',
+          pointerEvents: 'none',
+          visibility: 'hidden',
+        }}>
+        <div
+          id="search-for-dialog"
+          ref={searchRootRef}
+          className="pagefind-ui"
+          data-pagefind-ui
+        />
       </div>
 
       <style>{`

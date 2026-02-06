@@ -5,7 +5,12 @@
  * Uses custom hooks for state management and sub-components for better organization.
  */
 
-import { useActiveHeading, useExpandedState, useHeadingTree, useHeadingClickHandler } from '@hooks/index';
+import {
+  useActiveHeading,
+  useExpandedState,
+  useHeadingTree,
+  useHeadingClickHandler,
+} from '@hooks/index';
 import { HeadingList } from './HeadingList';
 import type { MarkdownHeading } from '@/types/markdown';
 
@@ -41,16 +46,15 @@ export function TableOfContents({
     defaultExpanded,
   });
 
-  ;
-  ;
-
   // Handle heading click - scroll to heading and update expand state with accordion behavior
-  const handleHeadingClick = useHeadingClickHandler({ headings, setExpandedIds });
+  const handleHeadingClick = useHeadingClickHandler({
+    headings,
+    setExpandedIds,
+  });
 
   // Empty state - only show if we've checked and found nothing
   // Don't show immediately on first render to avoid flash
   if (headings.length === 0) {
-    ;
     // Return null instead of empty message to avoid showing "暂无目录" during loading
     return null;
   }
@@ -58,8 +62,7 @@ export function TableOfContents({
   return (
     <nav
       className={`toc-container max-h-[90dvh] overflow-auto ${enableNumbering ? '' : 'toc-no-numbering'}`}
-      aria-label="文章目录"
-    >
+      aria-label="文章目录">
       <div className="space-y-1 pr-2">
         <HeadingList
           headings={headings}

@@ -85,4 +85,7 @@ export const blogSeoConfig = {
   url: blogLayoutConfig.site,
 };
 
-export const defaultCoverList = Array.from({ length: 13 }, (_, index) => index + 1).map((item) => `/img/cover/${item}.webp`);
+export const defaultCoverList = Array.from(
+  { length: 13 },
+  (_, index) => index + 1,
+).map((item) => `/img/cover/${item}.webp`);

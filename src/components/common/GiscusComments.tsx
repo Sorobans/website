@@ -4,14 +4,19 @@ import { useEffect, useState } from 'react';
 export default function GiscusComments() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof document === 'undefined') return 'light';
-    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    return document.documentElement.classList.contains('dark')
+      ? 'dark'
+      : 'light';
   });
 
   useEffect(() => {
     // 监听主题变化
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'class'
+        ) {
           const isDark = document.documentElement.classList.contains('dark');
           setTheme(isDark ? 'dark' : 'light');
         }

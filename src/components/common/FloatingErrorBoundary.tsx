@@ -28,7 +28,9 @@ export interface FloatingErrorBoundaryProps extends PropsWithChildren {
  * Fallback component that renders nothing by default
  * Floating UI components failing should not block the main content
  */
-const FloatingFallback: FC<FallbackProps & { fallback?: ReactNode }> = ({ fallback }) => {
+const FloatingFallback: FC<FallbackProps & { fallback?: ReactNode }> = ({
+  fallback,
+}) => {
   return fallback ? <>{fallback}</> : null;
 };
 
@@ -36,20 +38,30 @@ const FloatingFallback: FC<FallbackProps & { fallback?: ReactNode }> = ({ fallba
  * Error boundary for floating UI components.
  * Gracefully handles errors without breaking the main UI.
  */
-const FloatingErrorBoundary: FC<FloatingErrorBoundaryProps> = ({ children, fallback, onError, componentName }) => {
+const FloatingErrorBoundary: FC<FloatingErrorBoundaryProps> = ({
+  children,
+  fallback,
+  onError,
+  componentName,
+}) => {
   return (
     <ErrorBoundary
-      fallbackRender={(props) => <FloatingFallback {...props} fallback={fallback} />}
+      fallbackRender={(props) => (
+        <FloatingFallback {...props} fallback={fallback} />
+      )}
       onError={(error, info) => {
         if (import.meta.env.DEV) {
-          console.error('[FloatingErrorBoundary] caught an error:', error, info);
+          console.error(
+            '[FloatingErrorBoundary] caught an error:',
+            error,
+            info,
+          );
           if (componentName) {
             console.error(`Component: ${componentName}`);
           }
         }
         onError?.(error, info);
-      }}
-    >
+      }}>
       {children}
     </ErrorBoundary>
   );
@@ -64,7 +76,10 @@ const FloatingErrorBoundary: FC<FloatingErrorBoundaryProps> = ({ children, fallb
  * <SafePopover>...</SafePopover>
  * ```
  */
-export function withFloatingErrorBoundary<P extends object>(Component: React.ComponentType<P>, componentName?: string): FC<P> {
+export function withFloatingErrorBoundary<P extends object>(
+  Component: React.ComponentType<P>,
+  componentName?: string,
+): FC<P> {
   const WrappedComponent: FC<P> = (props) => (
     <FloatingErrorBoundary componentName={componentName}>
       <Component {...props} />

@@ -6,7 +6,15 @@
  * 支持 prefers-reduced-motion 可访问性
  */
 
-import { useState, useEffect, useCallback, useRef, memo, type ReactNode, type RefObject } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  memo,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { cn } from '@lib/utils';
 import { usePrefersReducedMotion } from '@hooks/index';
 import { ErrorBoundary, InlineErrorFallback } from '@components/common';
@@ -31,8 +39,7 @@ const SummaryPanelContent = memo(
       <div
         id="summary-panel-content"
         className="grid transition-[grid-template-rows] duration-300 ease-out"
-        style={{ gridTemplateRows: isExpanded ? '1fr' : '0fr' }}
-      >
+        style={{ gridTemplateRows: isExpanded ? '1fr' : '0fr' }}>
         <div className="overflow-hidden">
           <div className="bg-foreground/5 text-muted-foreground rounded-b-lg px-4 py-4 text-sm leading-relaxed">
             {/* 屏幕阅读器专用 */}
@@ -62,32 +69,37 @@ export interface SummaryPanelProps {
   className?: string;
 }
 
-const SOURCE_CONFIG: Record<SummarySource, { label: string; icon: ReactNode }> = {
-  description: {
-    label: '人工摘要',
-    icon: <RiBook2Fill className="text-primary size-4" />,
-  },
-  ai: {
-    label: 'AI 摘要',
-    icon: <MingcuteAiFillSvg className="text-primary size-4" />,
-  },
-  auto: {
-    label: '摘要',
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="text-primary size-4"
-        aria-hidden="true"
-      >
-        <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z" />
-      </svg>
-    ),
-  },
-};
+const SOURCE_CONFIG: Record<SummarySource, { label: string; icon: ReactNode }> =
+  {
+    description: {
+      label: '人工摘要',
+      icon: <RiBook2Fill className="text-primary size-4" />,
+    },
+    ai: {
+      label: 'AI 摘要',
+      icon: <MingcuteAiFillSvg className="text-primary size-4" />,
+    },
+    auto: {
+      label: '摘要',
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="text-primary size-4"
+          aria-hidden="true">
+          <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM7 6H11V10H7V6ZM7 12H17V14H7V12ZM7 16H17V18H7V16ZM13 7H17V9H13V7Z" />
+        </svg>
+      ),
+    },
+  };
 
-export function SummaryPanel({ summary, source = 'ai', typingSpeed = 25, className }: SummaryPanelProps) {
+export function SummaryPanel({
+  summary,
+  source = 'ai',
+  typingSpeed = 25,
+  className,
+}: SummaryPanelProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -173,10 +185,13 @@ export function SummaryPanel({ summary, source = 'ai', typingSpeed = 25, classNa
             !isExpanded && 'rounded-lg',
           )}
           aria-expanded={isExpanded}
-          aria-controls="summary-panel-content"
-        >
+          aria-controls="summary-panel-content">
           <div className="text-muted-foreground flex items-center gap-1.5 text-sm font-medium">
-            <span className={cn('transition-transform duration-300', isExpanded && source === 'ai' && 'rotate-10')}>
+            <span
+              className={cn(
+                'transition-transform duration-300',
+                isExpanded && source === 'ai' && 'rotate-10',
+              )}>
               {config.icon}
             </span>
             {config.label}
@@ -185,13 +200,20 @@ export function SummaryPanel({ summary, source = 'ai', typingSpeed = 25, classNa
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className={cn('text-muted-foreground size-4 transition-transform duration-300', isExpanded && 'rotate-180')}
-            aria-hidden="true"
-          >
+            className={cn(
+              'text-muted-foreground size-4 transition-transform duration-300',
+              isExpanded && 'rotate-180',
+            )}
+            aria-hidden="true">
             <path d="M12 16L6 10H18L12 16Z" />
           </svg>
         </button>
-        <SummaryPanelContent isExpanded={isExpanded} summary={summary} isTyping={isTyping} textRef={textRef} />
+        <SummaryPanelContent
+          isExpanded={isExpanded}
+          summary={summary}
+          isTyping={isTyping}
+          textRef={textRef}
+        />
       </div>
     </ErrorBoundary>
   );

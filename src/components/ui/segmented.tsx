@@ -29,7 +29,9 @@ export const Segmented = <T extends string | number = string | number>({
   itemClass,
   value,
 }: SegmentedProps<T>) => {
-  const [uncontrolledValue, setUncontrolledValue] = useState<T>(() => (value ?? defaultValue ?? options[0]?.value ?? '') as T);
+  const [uncontrolledValue, setUncontrolledValue] = useState<T>(
+    () => (value ?? defaultValue ?? options[0]?.value ?? '') as T,
+  );
   const shouldReduceMotion = useReducedMotion();
 
   const select = useCallback(
@@ -42,15 +44,17 @@ export const Segmented = <T extends string | number = string | number>({
     [onChange, value],
   );
   const currentValue = value ?? uncontrolledValue;
-  const isSelected = useCallback((selectedValue: T) => currentValue === selectedValue, [currentValue]);
+  const isSelected = useCallback(
+    (selectedValue: T) => currentValue === selectedValue,
+    [currentValue],
+  );
 
   return (
     <div
       className={cn(
         'bg-muted flex w-fit cursor-pointer rounded-sm p-1 text-xs font-semibold backdrop-blur-lg select-none',
         className,
-      )}
-    >
+      )}>
       {options.map((option) => {
         if (!option) return null;
         const { label, value, icon } = option;
@@ -66,18 +70,29 @@ export const Segmented = <T extends string | number = string | number>({
             onClick={() => select(value)}
             key={value}
             layout={shouldReduceMotion ? false : true}
-            transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 30 }}
-          >
+            transition={
+              shouldReduceMotion
+                ? { duration: 0 }
+                : { type: 'spring', stiffness: 400, damping: 30 }
+            }>
             {/* 图标 */}
-            {icon && <span className="flex-center shrink-0">{React.createElement(icon, { className: 'w-4 h-4' })}</span>}
+            {icon && (
+              <span className="flex-center shrink-0">
+                {React.createElement(icon, { className: 'w-4 h-4' })}
+              </span>
+            )}
 
             {/* 文字标签 - 只在选中时显示 */}
             <AnimatePresence initial={false} mode="wait">
               {selected && label && (
                 <motion.span
-                  initial={shouldReduceMotion ? undefined : { width: 0, opacity: 0 }}
+                  initial={
+                    shouldReduceMotion ? undefined : { width: 0, opacity: 0 }
+                  }
                   animate={{ width: 'auto', opacity: 1 }}
-                  exit={shouldReduceMotion ? undefined : { width: 0, opacity: 0 }}
+                  exit={
+                    shouldReduceMotion ? undefined : { width: 0, opacity: 0 }
+                  }
                   transition={
                     shouldReduceMotion
                       ? { duration: 0 }
@@ -86,8 +101,7 @@ export const Segmented = <T extends string | number = string | number>({
                           opacity: { duration: 0.15, ease: 'easeInOut' },
                         }
                   }
-                  className="overflow-hidden whitespace-nowrap"
-                >
+                  className="overflow-hidden whitespace-nowrap">
                   {label}
                 </motion.span>
               )}
@@ -97,9 +111,18 @@ export const Segmented = <T extends string | number = string | number>({
             {selected && (
               <motion.div
                 layoutId={`segmented_selected_bg_${id ?? 'default'}`}
-                className={cn('bg-gradient-shoka-button absolute inset-0 -z-10 rounded-sm', indicateClass)}
-                transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 30 }}
-                style={{ willChange: shouldReduceMotion ? 'auto' : 'transform' }}
+                className={cn(
+                  'bg-gradient-shoka-button absolute inset-0 -z-10 rounded-sm',
+                  indicateClass,
+                )}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : { type: 'spring', stiffness: 400, damping: 30 }
+                }
+                style={{
+                  willChange: shouldReduceMotion ? 'auto' : 'transform',
+                }}
               />
             )}
           </motion.div>

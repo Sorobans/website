@@ -1,5 +1,6 @@
 name: astro-tailwind-postcss
 description: Configure and maintain TailwindCSS + PostCSS in Astro projects. Use when adding or troubleshooting @astrojs/tailwind integration, adjusting tailwind.config.mjs/postcss.config.cjs, or wiring Tailwind styles into pages/components.
+
 ---
 
 # Astro Tailwind Postcss
@@ -13,16 +14,20 @@ Wire TailwindCSS into Astro with PostCSS/autoprefixer, keep configs aligned with
 - Ensure deps exist: `@astrojs/tailwind`, `tailwindcss`, `postcss`, `autoprefixer` (already in package.json).
 - Astro integration (astro.config.mjs): keep `tailwind({ config: './tailwind.config.mjs' })` alongside other integrations.
 - PostCSS config (`postcss.config.cjs`): minimal setup
+
 ```js
 module.exports = { plugins: { tailwindcss: {}, autoprefixer: {} } };
 ```
+
 - Tailwind config (`tailwind.config.mjs`): include Astro file globs `./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}`; set darkMode if needed (`['class', '[data-theme=\"dark\"]']` pattern works with data attributes); extend theme (fonts/colors) under `theme.extend`.
 - Base CSS (e.g., `src/styles/global.css`): include
+
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
+
 and import once in the root layout/page.
 
 ## Common Tasks

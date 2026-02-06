@@ -1,6 +1,12 @@
 import { microDampingPreset } from '@constants/anim/spring';
 import type { FriendLink } from '@config/friends-config';
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'motion/react';
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import { useRef, type MouseEvent } from 'react';
 
 interface FriendCardProps {
@@ -34,8 +40,14 @@ export default function FriendCard({ friend, index }: FriendCardProps) {
   const y = useMotionValue(0);
 
   // Spring animation for smooth magnetic effect
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), microDampingPreset);
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), microDampingPreset);
+  const rotateX = useSpring(
+    useTransform(y, [-0.5, 0.5], [15, -15]),
+    microDampingPreset,
+  );
+  const rotateY = useSpring(
+    useTransform(x, [-0.5, 0.5], [-15, 15]),
+    microDampingPreset,
+  );
 
   // Spotlight effect
   const sheenX = useTransform(x, [-0.5, 0.5], ['0%', '100%']);
@@ -82,22 +94,22 @@ export default function FriendCard({ friend, index }: FriendCardProps) {
         ...microDampingPreset,
       }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
+      onMouseLeave={handleMouseLeave}>
       <motion.div
         className="relative h-full w-full rounded-2xl bg-white p-3 shadow-xl ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-white/10"
         style={{
           transformStyle: 'preserve-3d',
           rotateX,
           rotateY,
-        }}
-      >
+        }}>
         {/* Inner Card Container */}
         <div className="relative h-full w-full overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900">
           {/* Background Image / Color */}
           <div
             className="absolute inset-0 h-16 w-full"
-            style={{ background: `linear-gradient(to bottom right, ${cardColor}, ${cardColor}80)` }}
+            style={{
+              background: `linear-gradient(to bottom right, ${cardColor}, ${cardColor}80)`,
+            }}
           />
 
           {/* Avatar */}
@@ -116,12 +128,15 @@ export default function FriendCard({ friend, index }: FriendCardProps) {
           <div className="mt-24 flex h-full flex-col px-2 pb-3 text-center">
             <h3
               className="truncate text-sm font-bold text-gray-900 transition-colors group-hover:text-(--card-color) dark:text-white"
-              style={{ '--card-color': cardColor } as CSSCustomProperties}
-            >
+              style={{ '--card-color': cardColor } as CSSCustomProperties}>
               {friend.owner}
             </h3>
-            <p className="mb-1 truncate text-[10px] font-medium tracking-wider text-gray-400 uppercase">{friend.site}</p>
-            <p className="line-clamp-2 text-[10px] text-gray-600 dark:text-gray-300">{friend.desc}</p>
+            <p className="mb-1 truncate text-[10px] font-medium tracking-wider text-gray-400 uppercase">
+              {friend.site}
+            </p>
+            <p className="line-clamp-2 text-[10px] text-gray-600 dark:text-gray-300">
+              {friend.desc}
+            </p>
           </div>
         </div>
 

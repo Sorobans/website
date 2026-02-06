@@ -14,14 +14,29 @@ interface Props {
   tocHeadings?: MarkdownHeading[];
 }
 
-export default function Header({ isPostPage = false, tocNumbering = true, tocHeadings }: Props) {
+export default function Header({
+  isPostPage = false,
+  tocNumbering = true,
+  tocHeadings,
+}: Props) {
   const { alternate, title, showLogo } = blogLayoutConfig;
   const subscribe = useCallback(() => () => {}, []);
-  const isClient = useSyncExternalStore(subscribe, () => true, () => false);
+  const isClient = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
 
   const mobileLogo = useMemo(() => {
     if (showLogo) {
-      return <img src={logoSrc} alt={alternate || title} className="h-8" height={32} />;
+      return (
+        <img
+          src={logoSrc}
+          alt={alternate || title}
+          className="h-8"
+          height={32}
+        />
+      );
     }
     return <span className="logo-text text-primary">{alternate || title}</span>;
   }, [alternate, showLogo, title]);
@@ -32,12 +47,10 @@ export default function Header({ isPostPage = false, tocNumbering = true, tocHea
       <div
         id="site-header"
         className="shadow-text fixed inset-x-0 top-0 z-10 gap-4 py-2.5 text-white select-none tablet:backdrop-blur tablet:py-2 tablet:pl-3 tablet:pr-3"
-        style={{ viewTransitionName: 'site-header' }}
-      >
+        style={{ viewTransitionName: 'site-header' }}>
         <div className="site-header-bg pointer-events-none absolute inset-0"></div>
         <div
-          className={`relative z-10 mx-auto flex items-center justify-between px-6 tablet:w-full tablet:px-0 ${MAX_WIDTH.content}`}
-        >
+          className={`relative z-10 mx-auto flex items-center justify-between px-6 tablet:w-full tablet:px-0 ${MAX_WIDTH.content}`}>
           <a
             className="tablet:hidden -my-4 mr-4 flex cursor-pointer items-center justify-center gap-1 whitespace-nowrap"
             href={Routes.Home}
@@ -45,10 +58,13 @@ export default function Header({ isPostPage = false, tocNumbering = true, tocHea
             title={alternate || title}
             aria-label={alternate || title}
             data-astro-transition-persist="page-header-avatar"
-            style={{ viewTransitionName: 'page-header-avatar' }}
-          >
+            style={{ viewTransitionName: 'page-header-avatar' }}>
             {showLogo ? (
-              <img src={logoSrc} alt={alternate || title} className="mt-2 mb-2 h-16" />
+              <img
+                src={logoSrc}
+                alt={alternate || title}
+                className="mt-2 mb-2 h-16"
+              />
             ) : (
               <p className="logo-text text-primary">{alternate || title}</p>
             )}

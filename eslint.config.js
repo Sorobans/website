@@ -1,4 +1,4 @@
-import  js from '@eslint/js';
+import js from '@eslint/js';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
@@ -45,7 +45,13 @@ const commonReactConfig = {
 
 export default tseslint.config(
   {
-    ignores: ['.astro/**', 'dist/**', 'logs/**', 'node_modules/**', 'public/**'],
+    ignores: [
+      '.astro/**',
+      'dist/**',
+      'logs/**',
+      'node_modules/**',
+      'public/**',
+    ],
   },
   {
     files: ['**/*.{js,jsx}'],
@@ -54,7 +60,10 @@ export default tseslint.config(
   },
   {
     files: ['**/*.{ts,tsx}'],
-    extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
+    ],
     ...commonReactConfig,
     languageOptions: {
       ...commonReactConfig.languageOptions,

@@ -38,7 +38,10 @@ export function useIsDarkTheme(): boolean {
     // Watch for class changes on documentElement
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'class'
+        ) {
           updateTheme();
           break;
         }
