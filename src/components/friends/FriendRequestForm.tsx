@@ -2,14 +2,42 @@ import { friendsIntro } from '@config/friends-config';
 import { useState } from 'react';
 import { useClipboard } from 'foxact/use-clipboard';
 import SakuraSVG from '../svg/SakuraSvg';
+import { generateFriendYaml, type FormData } from './friend-request/yaml';
+import { INPUT_CLASS, LABEL_CLASS } from './friend-request/styles';
 
-interface FormData {
-  site: string;
-  owner: string;
-  url: string;
-  desc: string;
-  image: string;
-  color: string;
+function Field({
+  id,
+  name,
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
+}: {
+  id: string;
+  name: keyof FormData;
+  label: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  type?: React.HTMLInputTypeAttribute;
+}) {
+  return (
+    <div className="group relative">
+      <label htmlFor={id} className={LABEL_CLASS}>
+        {label}
+      </label>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        className={INPUT_CLASS}
+        placeholder={placeholder}
+      />
+    </div>
+  );
 }
 
 export default function FriendRequestForm() {
@@ -23,18 +51,9 @@ export default function FriendRequestForm() {
   });
 
   const { copied, copy } = useClipboard({ timeout: 2000 });
-
-  const generateText = () => {
-    return `site: ${formData.site || '站点名称'}
-url: ${formData.url || 'https://example.com'}
-owner: ${formData.owner || '您的昵称'}
-desc: ${formData.desc || '站点描述'}
-image: ${formData.image || 'https://example.com/avatar.jpg'}
-color: "${formData.color || '#ffc0cb'}"`;
-  };
+  const yaml = generateFriendYaml(formData);
 
   const handleCopy = () => {
-    const yaml = generateText();
     void copy(yaml);
   };
 
@@ -42,21 +61,16 @@ color: "${formData.color || '#ffc0cb'}"`;
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <div className="mb-4 w-full">
       <div className="relative overflow-hidden rounded-3xl border-2 border-gray-100 bg-white p-6 shadow-sm md:p-3 dark:border-gray-800 dark:bg-gray-900">
-        {/* Cute Corner Decor */}
         <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-pink-100/50 dark:bg-pink-900/20" />
         <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-blue-100/50 dark:bg-blue-900/20" />
 
         <div className="grid grid-cols-2 gap-12 md:grid-cols-1 md:gap-8">
-          {/* Left Side: Form */}
           <div className="relative">
             <div className="mb-6">
               <h2 className="mb-2 flex items-center gap-2 text-2xl font-black text-gray-800 dark:text-white">
@@ -70,61 +84,36 @@ color: "${formData.color || '#ffc0cb'}"`;
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="group relative">
-                  <label
-                    htmlFor="friend-site"
-                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
-                    站点名称
-                  </label>
-                  <input
-                    type="text"
-                    id="friend-site"
-                    name="site"
-                    value={formData.site}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
-                    placeholder="我的博客"
-                  />
-                </div>
-                <div className="group relative">
-                  <label
-                    htmlFor="friend-owner"
-                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
-                    昵称
-                  </label>
-                  <input
-                    type="text"
-                    id="friend-owner"
-                    name="owner"
-                    value={formData.owner}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
-                    placeholder="您的昵称"
-                  />
-                </div>
-              </div>
-
-              <div className="group relative">
-                <label
-                  htmlFor="friend-url"
-                  className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
-                  站点链接
-                </label>
-                <input
-                  type="url"
-                  id="friend-url"
-                  name="url"
-                  value={formData.url}
+                <Field
+                  id="friend-site"
+                  name="site"
+                  label="站点名称"
+                  value={formData.site}
                   onChange={handleChange}
-                  className="w-full rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
-                  placeholder="https://your-site.com"
+                  placeholder="我的博客"
+                />
+                <Field
+                  id="friend-owner"
+                  name="owner"
+                  label="昵称"
+                  value={formData.owner}
+                  onChange={handleChange}
+                  placeholder="您的昵称"
                 />
               </div>
 
+              <Field
+                id="friend-url"
+                name="url"
+                label="站点链接"
+                value={formData.url}
+                onChange={handleChange}
+                placeholder="https://your-site.com"
+                type="url"
+              />
+
               <div className="group relative">
-                <label
-                  htmlFor="friend-desc"
-                  className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                <label htmlFor="friend-desc" className={LABEL_CLASS}>
                   站点描述
                 </label>
                 <textarea
@@ -133,32 +122,23 @@ color: "${formData.color || '#ffc0cb'}"`;
                   value={formData.desc}
                   onChange={handleChange}
                   rows={2}
-                  className="w-full resize-none rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
+                  className={`${INPUT_CLASS} resize-none`}
                   placeholder="一句话描述..."
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
+                <Field
+                  id="friend-image"
+                  name="image"
+                  label="头像链接"
+                  value={formData.image}
+                  onChange={handleChange}
+                  placeholder="https://..."
+                  type="url"
+                />
                 <div className="group relative">
-                  <label
-                    htmlFor="friend-image"
-                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
-                    头像链接
-                  </label>
-                  <input
-                    type="url"
-                    id="friend-image"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleChange}
-                    className="w-full relative rounded-xl border-2 border-gray-100 z-10 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
-                    placeholder="https://..."
-                  />
-                </div>
-                <div className="group relative">
-                  <label
-                    htmlFor="friend-color-picker"
-                    className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400 uppercase">
+                  <label htmlFor="friend-color-picker" className={LABEL_CLASS}>
                     主题色
                   </label>
                   <div className="flex items-center gap-3">
@@ -180,7 +160,7 @@ color: "${formData.color || '#ffc0cb'}"`;
                       onChange={(e) =>
                         setFormData({ ...formData, color: e.target.value })
                       }
-                      className="flex-1 rounded-xl border-2 border-gray-100 bg-gray-50/50 px-4 py-2.5 text-sm font-bold text-gray-700 transition-all focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-100 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200 dark:focus:border-pink-700 dark:focus:bg-gray-800 dark:focus:ring-pink-900/30"
+                      className={`${INPUT_CLASS} flex-1`}
                     />
                   </div>
                 </div>
@@ -188,7 +168,6 @@ color: "${formData.color || '#ffc0cb'}"`;
             </div>
           </div>
 
-          {/* Right Side: Preview / Code */}
           <div className="relative flex flex-col justify-center rounded-xl bg-gray-50 p-6 md:p-3 dark:bg-gray-800/50">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-xl font-bold tracking-wider uppercase">
@@ -197,14 +176,14 @@ color: "${formData.color || '#ffc0cb'}"`;
               <button
                 onClick={handleCopy}
                 className="group relative px-3 py-2 text-base font-bold transition-transform hover:-translate-y-1 dark:text-white">
-                <div className="border-foreground absolute inset-0 rotate-[1deg] rounded-lg border-2 border-dashed transition-all group-hover:rotate-0 dark:border-white"></div>
+                <div className="border-foreground absolute inset-0 rotate-[1deg] rounded-lg border-2 border-dashed transition-all group-hover:rotate-0 dark:border-white" />
                 {copied ? '已复制!' : '复制配置'}
               </button>
             </div>
 
             <div className="relative flex-1 overflow-hidden rounded-xl border-2 border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-950/50">
               <pre className="font-mono text-xs leading-relaxed whitespace-pre-wrap text-gray-600 dark:text-gray-300">
-                {generateText()}
+                {yaml}
               </pre>
             </div>
 

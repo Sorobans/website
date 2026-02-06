@@ -1,52 +1,8 @@
-import { expect, test, type Page } from '@playwright/test';
-
-const NOISY_CONSOLE_PATTERNS = [
-  /Failed to load resource/i,
-  /giscus/i,
-  /cdn\.jsdelivr\.net/i,
-  /Error while running audit's match function: TypeError: Failed to fetch/i,
-];
-
-function setupRuntimeErrorCollector(page: Page) {
-  const pageErrors: string[] = [];
-  const consoleErrors: string[] = [];
-
-  page.on('pageerror', (error) => {
-    pageErrors.push(error.message);
-  });
-
-  page.on('console', (msg) => {
-    if (msg.type() !== 'error') return;
-    const text = msg.text();
-    const isNoise = NOISY_CONSOLE_PATTERNS.some((pattern) =>
-      pattern.test(text),
-    );
-    if (!isNoise) {
-      consoleErrors.push(text);
-    }
-  });
-
-  return {
-    assertClean: () => {
-      expect(pageErrors, `page errors:\n${pageErrors.join('\n')}`).toEqual([]);
-      expect(
-        consoleErrors,
-        `console errors:\n${consoleErrors.join('\n')}`,
-      ).toEqual([]);
-    },
-  };
-}
+import { expect, test } from '@playwright/test';
+import { BLOG_ROUTES } from './helpers/blog-routes';
+import { setupRuntimeErrorCollector } from './helpers/runtime-errors';
 
 test.describe('Blog e2e regression suite', () => {
-  const routes = [
-    '/blog/about',
-    '/blog/friends',
-    '/blog/tags',
-    '/blog/categories',
-    '/blog/archives',
-    '/blog/weekly',
-  ];
-
   test('home blog page should render and expose post links', async ({
     page,
   }) => {
@@ -66,7 +22,7 @@ test.describe('Blog e2e regression suite', () => {
     runtime.assertClean();
   });
 
-  for (const path of routes) {
+  for (const path of BLOG_ROUTES) {
     test(`route should be accessible: ${path}`, async ({ page }) => {
       const runtime = setupRuntimeErrorCollector(page);
       const response = await page.goto(path, {
