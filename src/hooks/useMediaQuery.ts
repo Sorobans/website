@@ -1,21 +1,4 @@
-/**
- * useMediaQuery Hook
- *
- * Hook for responding to media query changes (responsive breakpoints).
- *
- * @example
- * ```tsx
- * function Component() {
- *   const isMobile = useMediaQuery('(max-width: 768px)');
- *   const isDesktop = useMediaQuery('(min-width: 1024px)');
- *   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
- *
- *   return <div>{isMobile ? 'Mobile' : 'Desktop'}</div>;
- * }
- * ```
- */
-
-import { useSyncExternalStore } from 'react';
+import { useMediaQuery as useCoreMediaQuery } from '@reactuses/core';
 
 /**
  * Hook for media query matching
@@ -24,40 +7,8 @@ import { useSyncExternalStore } from 'react';
  * @returns Whether the media query matches
  */
 export function useMediaQuery(query: string): boolean {
-  const getSnapshot = () => {
-    if (typeof window === 'undefined' || !window.matchMedia) {
-      return false;
-    }
-    return window.matchMedia(query).matches;
-  };
-
-  const subscribe = (callback: () => void) => {
-    if (typeof window === 'undefined' || !window.matchMedia) {
-      return () => {};
-    }
-
-    const mediaQuery = window.matchMedia(query);
-    const handleChange = () => callback();
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => {
-        mediaQuery.removeEventListener('change', handleChange);
-      };
-    }
-
-    mediaQuery.addListener(handleChange);
-    return () => {
-      mediaQuery.removeListener(handleChange);
-    };
-  };
-
-  return useSyncExternalStore(subscribe, getSnapshot, () => false);
+  return useCoreMediaQuery(query, false);
 }
-
-/**
- * Predefined breakpoint hooks based on Tailwind defaults
- */
 
 /** Mobile (max-width: 768px) */
 export function useIsMobile(): boolean {

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useLocalStorage } from '@reactuses/core';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const LIGHT_STYLE = {
@@ -23,25 +24,32 @@ const DARK_STYLE_SHOWN = {
 
 export default function ThemeToggle() {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [, setThemeStorage] = useLocalStorage<'dark' | 'light'>(
+    'theme',
+    'light',
+  );
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof document === 'undefined') return false;
     return document.documentElement.classList.contains('dark');
   });
 
-  const applyTheme = useCallback((isDark: boolean) => {
-    const rootElement = document.documentElement;
-    if (isDark) {
-      rootElement.classList.add('dark');
-      rootElement.classList.remove('light');
-      rootElement.dataset.theme = 'dark';
-      localStorage.setItem('theme', 'dark');
-    } else {
-      rootElement.classList.remove('dark');
-      rootElement.classList.add('light');
-      rootElement.dataset.theme = 'light';
-      localStorage.setItem('theme', 'light');
-    }
-  }, []);
+  const applyTheme = useCallback(
+    (isDark: boolean) => {
+      const rootElement = document.documentElement;
+      if (isDark) {
+        rootElement.classList.add('dark');
+        rootElement.classList.remove('light');
+        rootElement.dataset.theme = 'dark';
+        setThemeStorage('dark');
+      } else {
+        rootElement.classList.remove('dark');
+        rootElement.classList.add('light');
+        rootElement.dataset.theme = 'light';
+        setThemeStorage('light');
+      }
+    },
+    [setThemeStorage],
+  );
 
   const toggleTheme = useCallback(() => {
     const rootElement = document.documentElement;
@@ -80,7 +88,7 @@ export default function ThemeToggle() {
       | { ready: Promise<void>; finished: Promise<void> }
       | undefined;
     try {
-      transition = startViewTransition(() => {
+      transition = startViewTransition.call(document, () => {
         applyTheme(willBeDark);
         setIsDarkMode(willBeDark);
       });

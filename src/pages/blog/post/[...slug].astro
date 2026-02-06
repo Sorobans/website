@@ -106,7 +106,7 @@ const summaryData = getPostSummaryData(post);
       <article class="prose md:prose-sm dark:prose-invert">
         <CustomContent Content={Content} />
       </article>
-      <GiscusComments client:load />
+      <GiscusComments client:visible />
     </div>
   </TwoColumnLayout>
 </Layout>

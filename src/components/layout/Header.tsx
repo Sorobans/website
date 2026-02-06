@@ -5,7 +5,6 @@ import { Routes } from '@constants/router';
 import { blogLayoutConfig } from '@/config/blogLayoutConfig';
 import Navigator from './Navigator';
 import type { MarkdownHeading } from '@/types/markdown';
-import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import { useHeaderScroll } from '@hooks/useHeaderScroll.ts';
 
 interface Props {
@@ -20,26 +19,6 @@ export default function Header({
   tocHeadings,
 }: Props) {
   const { alternate, title, showLogo } = blogLayoutConfig;
-  const subscribe = useCallback(() => () => {}, []);
-  const isClient = useSyncExternalStore(
-    subscribe,
-    () => true,
-    () => false,
-  );
-
-  const mobileLogo = useMemo(() => {
-    if (showLogo) {
-      return (
-        <img
-          src={logoSrc}
-          alt={alternate || title}
-          className="h-8"
-          height={32}
-        />
-      );
-    }
-    return <span className="logo-text text-primary">{alternate || title}</span>;
-  }, [alternate, showLogo, title]);
   useHeaderScroll();
 
   return (
@@ -57,6 +36,7 @@ export default function Header({
             target="_self"
             title={alternate || title}
             aria-label={alternate || title}
+            suppressHydrationWarning
             data-astro-transition-persist="page-header-avatar"
             style={{ viewTransitionName: 'page-header-avatar' }}>
             {showLogo ? (
@@ -70,20 +50,14 @@ export default function Header({
             )}
           </a>
           <div className="tablet:flex w-full h-full tablet:grow hidden items-center justify-center">
-            {isClient ? (
-              <MobilePostHeader
-                isPostPage={isPostPage}
-                enableNumbering={tocNumbering}
-                sourceHeadings={tocHeadings}
-                logoElement={showLogo ? 'svg' : 'text'}
-                logoText={alternate || title}
-                logoSrc={logoSrc}
-              />
-            ) : (
-              <a href={Routes.Home} className="flex items-center gap-1">
-                {mobileLogo}
-              </a>
-            )}
+            <MobilePostHeader
+              isPostPage={isPostPage}
+              enableNumbering={tocNumbering}
+              sourceHeadings={tocHeadings}
+              logoElement={showLogo ? 'svg' : 'text'}
+              logoText={alternate || title}
+              logoSrc={logoSrc}
+            />
           </div>
           <Navigator />
         </div>

@@ -1,0 +1,212 @@
+import { expect, test, type Page } from '@playwright/test';
+
+const NOISY_CONSOLE_PATTERNS = [
+  /Failed to load resource/i,
+  /giscus/i,
+  /cdn\.jsdelivr\.net/i,
+  /Error while running audit's match function: TypeError: Failed to fetch/i,
+];
+
+function setupRuntimeErrorCollector(page: Page) {
+  const pageErrors: string[] = [];
+  const consoleErrors: string[] = [];
+
+  page.on('pageerror', (error) => {
+    pageErrors.push(error.message);
+  });
+
+  page.on('console', (msg) => {
+    if (msg.type() !== 'error') return;
+    const text = msg.text();
+    const isNoise = NOISY_CONSOLE_PATTERNS.some((pattern) =>
+      pattern.test(text),
+    );
+    if (!isNoise) {
+      consoleErrors.push(text);
+    }
+  });
+
+  return {
+    assertClean: () => {
+      expect(pageErrors, `page errors:\n${pageErrors.join('\n')}`).toEqual([]);
+      expect(
+        consoleErrors,
+        `console errors:\n${consoleErrors.join('\n')}`,
+      ).toEqual([]);
+    },
+  };
+}
+
+test.describe('Blog e2e regression suite', () => {
+  const routes = [
+    '/blog/about',
+    '/blog/friends',
+    '/blog/tags',
+    '/blog/categories',
+    '/blog/archives',
+    '/blog/weekly',
+  ];
+
+  test('home blog page should render and expose post links', async ({
+    page,
+  }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    const response = await page.goto('/blog', {
+      waitUntil: 'domcontentloaded',
+    });
+    expect(response?.status()).toBe(200);
+
+    await expect(page.locator('main')).toBeVisible();
+    await expect(
+      page.locator('a[aria-label="post-link"]').first(),
+    ).toBeVisible();
+    await page.waitForTimeout(1200);
+
+    runtime.assertClean();
+  });
+
+  for (const path of routes) {
+    test(`route should be accessible: ${path}`, async ({ page }) => {
+      const runtime = setupRuntimeErrorCollector(page);
+      const response = await page.goto(path, {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      });
+      expect(response?.status(), `route ${path}`).toBe(200);
+      await expect(page.locator('main')).toBeVisible();
+      await page.waitForTimeout(600);
+      runtime.assertClean();
+    });
+  }
+
+  test('should navigate from list page to a post detail page', async ({
+    page,
+  }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+    const firstPostLink = page.locator('a[aria-label="post-link"]').first();
+    await expect(firstPostLink).toBeVisible();
+
+    const href = await firstPostLink.getAttribute('href');
+    expect(href).toBeTruthy();
+    await Promise.all([
+      page.waitForURL(/\/blog\/post\//, { timeout: 30000 }),
+      firstPostLink.click(),
+    ]);
+
+    await expect(page.locator('article')).toBeVisible();
+    await page.waitForTimeout(1200);
+
+    runtime.assertClean();
+  });
+
+  test('search dialog should open and close via keyboard', async ({ page }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+    const trigger = page.locator('#search-trigger');
+    await expect(trigger).toBeVisible();
+    await trigger.click();
+
+    const dialog = page.locator('#search-dialog');
+    await expect(dialog).toBeVisible();
+    await expect(
+      page.locator('#search-dialog-container .pagefind-ui__search-input'),
+    ).toBeVisible({ timeout: 15000 });
+
+    const searchInput = page.locator('.pagefind-ui__search-input').first();
+    await expect(searchInput).toBeVisible();
+    await searchInput.fill('react');
+    await page.waitForTimeout(600);
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await page.waitForTimeout(600);
+
+    runtime.assertClean();
+  });
+
+  test('theme toggle should switch html theme state', async ({ page }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+    const toggle = page.locator('#theme-toggle-btn');
+    await expect(toggle).toBeVisible();
+
+    const beforeTheme = await page.evaluate(
+      () => document.documentElement.dataset.theme ?? '',
+    );
+    await toggle.click();
+    await page.waitForTimeout(300);
+    const afterTheme = await page.evaluate(
+      () => document.documentElement.dataset.theme ?? '',
+    );
+
+    expect(afterTheme).toBeTruthy();
+    expect(afterTheme).not.toBe(beforeTheme);
+
+    runtime.assertClean();
+  });
+
+  test('floating group controls should work on desktop', async ({ page }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await page.waitForTimeout(300);
+
+    const toTop = page.locator('#scroll-to-top');
+    await expect(toTop).toBeVisible();
+    await toTop.click();
+    await page.waitForTimeout(600);
+
+    const scrollY = await page.evaluate(() => window.scrollY);
+    expect(scrollY).toBeLessThan(50);
+
+    runtime.assertClean();
+  });
+
+  test('mobile drawer should open and close', async ({ page }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+
+    const openBtn = page.locator('[aria-label="打开菜单"]').first();
+    await expect(openBtn).toBeVisible();
+    await openBtn.click();
+
+    const drawer = page.locator('#mobile-drawer');
+    await expect(drawer).toBeVisible();
+    await expect(page.locator('#drawer-overlay')).toBeVisible();
+
+    await page.locator('[aria-label="关闭菜单"]').first().click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#drawer-overlay')).toBeHidden();
+
+    runtime.assertClean();
+  });
+
+  test('post sidebar should not create nested scrollbars in toc container', async ({
+    page,
+  }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/blog/post/30', { waitUntil: 'domcontentloaded' });
+
+    const tocContainer = page.locator('.toc-container:visible').first();
+    await expect(tocContainer).toBeVisible();
+
+    const tocOverflowY = await tocContainer.evaluate(
+      (el) => window.getComputedStyle(el).overflowY,
+    );
+    expect(tocOverflowY).not.toBe('auto');
+    expect(tocOverflowY).not.toBe('scroll');
+
+    runtime.assertClean();
+  });
+});

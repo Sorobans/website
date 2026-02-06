@@ -29,7 +29,7 @@ const layoutFooterData = await getLayoutFooterData();
       <div class=`prose md:prose-sm dark:prose-invert`>
         <slot />
       </div>
-      <GiscusComments client:load />
+      <GiscusComments client:visible />
     </div>
   </TwoColumnLayout>
 </Layout>

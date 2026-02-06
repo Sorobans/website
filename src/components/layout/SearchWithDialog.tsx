@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useEventListener } from '@reactuses/core';
 import { openSearch } from '@store/ui';
 import '@pagefind/default-ui/css/ui.css';
@@ -84,20 +84,19 @@ export default function SearchWithDialog() {
   }, []);
 
   const handleDialogOpen = useCallback(() => {
-    requestAnimationFrame(() => {
-      moveSearchToDialog();
+    void initPagefind().then(() => {
+      requestAnimationFrame(() => {
+        moveSearchToDialog();
+      });
     });
-  }, [moveSearchToDialog]);
+  }, [initPagefind, moveSearchToDialog]);
 
   const handleDialogClose = useCallback(() => {
     moveSearchBack();
   }, [moveSearchBack]);
 
   const handleAstroPageLoad = useCallback(() => {
-    void initPagefind();
-  }, [initPagefind]);
-
-  useEffect(() => {
+    if (!initializedRef.current) return;
     void initPagefind();
   }, [initPagefind]);
 
@@ -112,6 +111,7 @@ export default function SearchWithDialog() {
         className="group cursor-pointer transition duration-300 hover:scale-125"
         aria-label="搜索"
         title="搜索 (⌘K)"
+        suppressHydrationWarning
         onClick={openSearch}>
         <i
           className="fa-solid fa-magnifying-glass text-2xl"

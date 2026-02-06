@@ -61,7 +61,7 @@ export function TableOfContents({
 
   return (
     <nav
-      className={`toc-container max-h-[90dvh] overflow-auto ${enableNumbering ? '' : 'toc-no-numbering'}`}
+      className={`toc-container ${enableNumbering ? '' : 'toc-no-numbering'}`}
       aria-label="文章目录">
       <div className="space-y-1 pr-2">
         <HeadingList

@@ -14,7 +14,7 @@ interface Props {
 const { type = HomeSiderType.HOME, post, tocHeadings } = Astro.props;
 ---
 
-<MobileDrawerPanel client:load>
+<MobileDrawerPanel client:media="(max-width: 992px)">
   <HomeSider
     className="tablet:flex mt-4 hidden w-full min-w-full p-0"
     isDrawer

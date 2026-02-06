@@ -9,6 +9,11 @@ import { copyToClipboard } from './code-block-enhancer';
 let activeObservers: MutationObserver[] = [];
 let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
 let mermaidRenderedHandler: (() => void) | null = null;
+let mermaidModule: typeof import('mermaid').default | null = null;
+let navFixSetup = false;
+let themeObserver: MutationObserver | null = null;
+
+type MermaidTheme = 'default' | 'dark';
 
 /**
  * Create toolbar HTML for mermaid diagram
@@ -172,6 +177,81 @@ function cleanup(): void {
   }
 }
 
+function getCurrentTheme(): MermaidTheme {
+  const dataTheme =
+    document.documentElement.getAttribute('data-theme') ??
+    document.body?.getAttribute('data-theme');
+  return dataTheme === 'dark' ? 'dark' : 'default';
+}
+
+async function renderUnprocessedMermaidDiagrams(): Promise<void> {
+  const diagrams = document.querySelectorAll<HTMLElement>(
+    'pre.mermaid:not([data-processed])',
+  );
+
+  if (diagrams.length === 0) return;
+
+  if (!mermaidModule) {
+    const { default: mermaid } = await import('mermaid');
+    mermaidModule = mermaid;
+  }
+
+  mermaidModule.initialize({
+    startOnLoad: false,
+    theme: getCurrentTheme(),
+    gitGraph: {
+      mainBranchName: 'main',
+      showCommitLabel: true,
+      showBranches: true,
+      rotateCommitLabel: true,
+    },
+  });
+
+  for (const pre of diagrams) {
+    if (!pre.hasAttribute('data-diagram')) {
+      pre.setAttribute('data-diagram', pre.textContent || '');
+    }
+
+    const definition = pre.getAttribute('data-diagram') || '';
+    const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
+
+    try {
+      const { svg } = await mermaidModule.render(id, definition);
+      pre.innerHTML = svg;
+    } catch (error) {
+      console.error('[mermaid-nav-fix] Error:', error);
+    } finally {
+      pre.setAttribute('data-processed', 'true');
+    }
+  }
+
+  window.dispatchEvent(new CustomEvent('mermaid:rendered'));
+}
+
+function setupMermaidNavFix(): void {
+  if (navFixSetup) return;
+
+  document.addEventListener('astro:after-swap', () => {
+    requestAnimationFrame(() => {
+      void renderUnprocessedMermaidDiagrams();
+    });
+  });
+
+  themeObserver = new MutationObserver(() => {
+    document
+      .querySelectorAll<HTMLElement>('pre.mermaid[data-processed]')
+      .forEach((diagram) => diagram.removeAttribute('data-processed'));
+    void renderUnprocessedMermaidDiagrams();
+  });
+
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+
+  navFixSetup = true;
+}
+
 /**
  * Wait for mermaid diagrams to be processed and enhance them
  */
@@ -252,8 +332,12 @@ function waitAndEnhance(): void {
  * Initialize mermaid enhancer
  */
 export function initMermaidEnhancer(): void {
+  setupMermaidNavFix();
+
   // Clean up any previous observers/timeouts
   cleanup();
+
+  void renderUnprocessedMermaidDiagrams();
 
   // Small delay to let astro-mermaid start processing
   const timeout = setTimeout(waitAndEnhance, 100);

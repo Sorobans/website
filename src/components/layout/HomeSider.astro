@@ -50,7 +50,7 @@ const currentPostSlug = postSeriesData?.currentPostSlug ?? undefined;
   {...!isDrawer && { 'transition:name': 'page-home-sider' }}
 >
   <HomeSiderPanel
-    client:load
+    client:media="(min-width: 993px)"
     type={type}
     defaultSegmentType={defaultSegmentType}
     homeInfo={homeInfo}
