@@ -14,16 +14,16 @@ categories: 技术教程
 
 ## 一、硬件与系统环境
 
-| 项目 | 配置 |
-| --- | --- |
-| SoC | Rockchip RK3528（四核 ARM Cortex-A53） |
-| 内存 | 4GB DDR4 |
-| 存储 | 64GB eMMC |
-| 系统 | Armbian 25.11.0-trunk (Ubuntu 24.04 Noble) |
-| 内核 | Linux 6.1.115-vendor-rk35xx aarch64 |
-| Python | 3.12.3 |
-| Node.js | v24.11.1（通过 nvm） |
-| 网络 | Clash TUN 模式全局代理 |
+| 项目    | 配置                                       |
+| ------- | ------------------------------------------ |
+| SoC     | Rockchip RK3528（四核 ARM Cortex-A53）     |
+| 内存    | 4GB DDR4                                   |
+| 存储    | 64GB eMMC                                  |
+| 系统    | Armbian 25.11.0-trunk (Ubuntu 24.04 Noble) |
+| 内核    | Linux 6.1.115-vendor-rk35xx aarch64        |
+| Python  | 3.12.3                                     |
+| Node.js | v24.11.1（通过 nvm）                       |
+| 网络    | Clash TUN 模式全局代理                     |
 
 这块板子原本用于轻量服务。实测下来，4GB 内存跑这种“网络请求驱动型”AI Bot 完全够用，瓶颈主要不在算力，而在网络质量和 API 稳定性。
 
@@ -219,7 +219,7 @@ export default {
     const url = new URL(request.url);
     url.hostname = 'generativelanguage.googleapis.com';
     return fetch(new Request(url, request));
-  }
+  },
 };
 ```
 
@@ -288,15 +288,15 @@ response = requests.post(
 
 ### 基础命令
 
-| 命令 | 功能                      |
-| --- |-------------------------|
-| `/ping` | 返回 pong + 主机名 + 时间      |
-| `/chat` | 进入 AI 聊天模式              |
-| `/agent` | 进入代理模式（AI 操作系统OpenClaw） |
-| `/model` | 查看/切换模型                 |
-| `/setkey gemini <key>` | 设置 API Key              |
-| `/clear` | 清空对话历史                  |
-| `/help` | 显示帮助                    |
+| 命令                   | 功能                                |
+| ---------------------- | ----------------------------------- |
+| `/ping`                | 返回 pong + 主机名 + 时间           |
+| `/chat`                | 进入 AI 聊天模式                    |
+| `/agent`               | 进入代理模式（AI 操作系统OpenClaw） |
+| `/model`               | 查看/切换模型                       |
+| `/setkey gemini <key>` | 设置 API Key                        |
+| `/clear`               | 清空对话历史                        |
+| `/help`                | 显示帮助                            |
 
 ### 主要能力
 
@@ -326,17 +326,18 @@ response = requests.post(
 
 ## 七、踩坑速查表
 
-| 问题 | 症状 | 解决 |
-| --- | --- | --- |
-| 旧 SDK 废弃 | `google.generativeai has ended` | 切换 `google-genai` |
-| `configure()` 不存在 | `AttributeError` | `Client(api_key=key)` |
-| 地理限制 | `User location is not supported` | Cloudflare Worker 中转 |
-| Markdown 失败 | Telegram 400 | 降级纯文本重试 |
-| 图片参数异常 | 空响应或报错 | 固定 `temperature=1.0` |
-| GPT-5 参数不兼容 | `max_tokens` 无效 | 改 `max_completion_tokens` |
+| 问题                 | 症状                             | 解决                       |
+| -------------------- | -------------------------------- | -------------------------- |
+| 旧 SDK 废弃          | `google.generativeai has ended`  | 切换 `google-genai`        |
+| `configure()` 不存在 | `AttributeError`                 | `Client(api_key=key)`      |
+| 地理限制             | `User location is not supported` | Cloudflare Worker 中转     |
+| Markdown 失败        | Telegram 400                     | 降级纯文本重试             |
+| 图片参数异常         | 空响应或报错                     | 固定 `temperature=1.0`     |
+| GPT-5 参数不兼容     | `max_tokens` 无效                | 改 `max_completion_tokens` |
 
 ## 八、结语
- 个人感觉, openClaw 还是挺好用的。
+
+个人感觉, openClaw 还是挺好用的。
 如果你能忽略它以下几个缺点
 
 - 不能开箱即用(指写完配置就能跑)
@@ -346,4 +347,3 @@ response = requests.post(
 最后放上使用截图啦！
 ![部署完成](/img/img_11.png)
 ![开始使用](/img/img_12.png)
-

@@ -30,6 +30,8 @@ type SocialConfig = {
   github?: SocialPlatform;
   x?: SocialPlatform;
   email?: SocialPlatform;
+  telegram?: SocialPlatform;
+  bilibili?: SocialPlatform;
 };
 
 export const blogLayoutConfig: BlogLayoutConfig = {
@@ -73,6 +75,20 @@ export const blogSocialConfig: SocialConfig = {
     iconText: '@',
     iconClass: 'fa-regular fa-envelope',
     color: '#55acd5',
+  },
+  telegram: {
+    url: 'https://t.me/litleSnow',
+    label: 'Telegram',
+    iconText: 'TG',
+    iconClass: 'fa-brands fa-telegram',
+    color: '#229ed9',
+  },
+  bilibili: {
+    url: 'https://space.bilibili.com/158525031',
+    label: '哔哩哔哩',
+    iconText: 'B',
+    iconClass: 'fa-brands fa-bilibili',
+    color: '#00a1d6',
   },
 };
 

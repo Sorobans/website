@@ -55,16 +55,20 @@ test.describe('Blog e2e regression suite', () => {
     await expect
       .poll(
         async () =>
-          page.locator(
-            '.custom-content .markdown-image.loaded, .custom-content .markdown-image.error',
-          ).count(),
+          page
+            .locator(
+              '.custom-content .markdown-image.loaded, .custom-content .markdown-image.error',
+            )
+            .count(),
         { timeout: 15000 },
       )
       .toBeGreaterThanOrEqual(7);
 
     await expect(
       page
-        .locator('.custom-content .markdown-image.loaded, .custom-content .markdown-image.error')
+        .locator(
+          '.custom-content .markdown-image.loaded, .custom-content .markdown-image.error',
+        )
         .first(),
     ).toBeVisible();
 

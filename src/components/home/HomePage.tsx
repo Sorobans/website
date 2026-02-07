@@ -45,6 +45,28 @@ const HomePage = ({
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a
+                className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#00a1d6] to-[#0086b3] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(0,161,214,0.35)] transition hover:-translate-y-0.5"
+                href={links.bilibiliUrl}
+                target="_blank"
+                rel="noreferrer">
+                <i
+                  className="fa-brands fa-bilibili text-base"
+                  aria-hidden="true"
+                />
+                哔哩哔哩
+              </a>
+              <a
+                className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#229ed9] to-[#1b84b4] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(34,158,217,0.35)] transition hover:-translate-y-0.5"
+                href={links.telegramUrl}
+                target="_blank"
+                rel="noreferrer">
+                <i
+                  className="fa-brands fa-telegram text-base"
+                  aria-hidden="true"
+                />
+                Telegram
+              </a>
+              <a
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-[25px] bg-gradient-to-r from-[#111111] to-[#2a2a2a] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(17,17,17,0.3)] transition hover:-translate-y-0.5"
                 href={links.xUrl}
                 target="_blank"
