@@ -259,14 +259,14 @@
       "similarity": 0.467
     },
     {
+      "slug": "rk3528开发板部署openclaw-telegram-bot全记录",
+      "title": "在 RK3528 ARM 开发板上部署 OpenClaw + Telegram Bot 全记录",
+      "similarity": 0.462
+    },
+    {
       "slug": "element-plus表格隐藏行数功能",
       "title": "element-plus表格隐藏行数功能",
       "similarity": 0.457
-    },
-    {
-      "slug": "three.js学习小记",
-      "title": "three.js学习小记",
-      "similarity": 0.451
     }
   ],
   "不到半个月就要变猫了": [
@@ -728,6 +728,33 @@
       "similarity": 0.554
     }
   ],
+  "rk3528开发板部署openclaw-telegram-bot全记录": [
+    {
+      "slug": "es2025-javascript新特性速览",
+      "title": "ES2025 JavaScript新特性速览",
+      "similarity": 0.56
+    },
+    {
+      "slug": "c语言学习小记",
+      "title": "C学习笔记",
+      "similarity": 0.522
+    },
+    {
+      "slug": "博客迁移过程",
+      "title": "Astro博客升级记录",
+      "similarity": 0.521
+    },
+    {
+      "slug": "react18学习笔记",
+      "title": "React18学习笔记",
+      "similarity": 0.507
+    },
+    {
+      "slug": "three.js学习小记",
+      "title": "three.js学习小记",
+      "similarity": 0.501
+    }
+  ],
   "nuxt3学习笔记": [
     {
       "slug": "vue3笔记",
@@ -934,14 +961,14 @@
       "similarity": 0.527
     },
     {
+      "slug": "rk3528开发板部署openclaw-telegram-bot全记录",
+      "title": "在 RK3528 ARM 开发板上部署 OpenClaw + Telegram Bot 全记录",
+      "similarity": 0.499
+    },
+    {
       "slug": "nuxt3学习笔记",
       "title": "Nuxt3学习笔记",
       "similarity": 0.49
-    },
-    {
-      "slug": "c语言学习小记",
-      "title": "C学习笔记",
-      "similarity": 0.488
     }
   ],
   "feday2025参会笔记": [
