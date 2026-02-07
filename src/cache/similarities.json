@@ -53,7 +53,39 @@
       "similarity": 0.409
     }
   ],
+  "周刊-2026-02-07": [
+    {
+      "slug": "rk3528开发板部署openclaw-telegram-bot全记录",
+      "title": "在 RK3528 ARM 开发板上部署 OpenClaw + Telegram Bot 全记录",
+      "similarity": 0.632
+    },
+    {
+      "slug": "c语言学习小记",
+      "title": "C学习笔记",
+      "similarity": 0.591
+    },
+    {
+      "slug": "three.js学习小记",
+      "title": "three.js学习小记",
+      "similarity": 0.57
+    },
+    {
+      "slug": "2025-个人年终总结",
+      "title": "写在 2025 年末：歪歪扭扭，但我还在往前走",
+      "similarity": 0.555
+    },
+    {
+      "slug": "javascript-es5笔记",
+      "title": "JavaScript-ES5笔记",
+      "similarity": 0.542
+    }
+  ],
   "周刊-2026-01-18": [
+    {
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.454
+    },
     {
       "slug": "typescript项目经验笔记",
       "title": "TypeScript项目经验笔记",
@@ -73,11 +105,6 @@
       "slug": "feday2025参会笔记",
       "title": "Feday 2025参会笔记",
       "similarity": 0.418
-    },
-    {
-      "slug": "cenos-7-6搭建pptp服务",
-      "title": "CenOS-7.6搭建pptp服务",
-      "similarity": 0.417
     }
   ],
   "发烧了呜呜呜": [
@@ -102,9 +129,9 @@
       "similarity": 0.395
     },
     {
-      "slug": "博客迁移过程",
-      "title": "Astro博客升级记录",
-      "similarity": 0.362
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.364
     }
   ],
   "博客迁移过程": [
@@ -291,9 +318,9 @@
       "similarity": 0.52
     },
     {
-      "slug": "vue3笔记",
-      "title": "Vue3学习笔记",
-      "similarity": 0.506
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.51
     }
   ],
   "three.js学习小记": [
@@ -384,6 +411,11 @@
       "similarity": 0.559
     },
     {
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.541
+    },
+    {
       "slug": "关于vue3如何判断父组件给子组件传了插槽",
       "title": "关于Vue3如何判断父组件给子组件传了插槽",
       "similarity": 0.537
@@ -397,11 +429,6 @@
       "slug": "javascript-es5笔记",
       "title": "JavaScript-ES5笔记",
       "similarity": 0.537
-    },
-    {
-      "slug": "three.js学习小记",
-      "title": "three.js学习小记",
-      "similarity": 0.52
     }
   ],
   "c语言学习小记": [
@@ -546,6 +573,11 @@
       "similarity": 0.486
     },
     {
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.449
+    },
+    {
       "slug": "css-break-word导致的诡异换行问题排查记",
       "title": "CSS break-word导致的诡异换行问题排查记",
       "similarity": 0.447
@@ -559,11 +591,6 @@
       "slug": "typescript小试牛刀",
       "title": "Typescript小试牛刀",
       "similarity": 0.43
-    },
-    {
-      "slug": "rust-trait-为泛型类型的具体实例实现特征",
-      "title": "Rust Trait：为泛型类型的具体实例实现特征",
-      "similarity": 0.417
     }
   ],
   "rust引用生命周期-不只是切片": [
@@ -730,6 +757,11 @@
   ],
   "rk3528开发板部署openclaw-telegram-bot全记录": [
     {
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.632
+    },
+    {
       "slug": "es2025-javascript新特性速览",
       "title": "ES2025 JavaScript新特性速览",
       "similarity": 0.56
@@ -748,11 +780,6 @@
       "slug": "react18学习笔记",
       "title": "React18学习笔记",
       "similarity": 0.507
-    },
-    {
-      "slug": "three.js学习小记",
-      "title": "three.js学习小记",
-      "similarity": 0.501
     }
   ],
   "nuxt3学习笔记": [
@@ -1064,6 +1091,11 @@
       "similarity": 0.506
     },
     {
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.487
+    },
+    {
       "slug": "hexo博客github-actions自动部署配置",
       "title": "Hexo博客GitHub Actions自动部署配置",
       "similarity": 0.457
@@ -1072,11 +1104,6 @@
       "slug": "three.js学习小记",
       "title": "three.js学习小记",
       "similarity": 0.452
-    },
-    {
-      "slug": "nuxt3学习笔记",
-      "title": "Nuxt3学习笔记",
-      "similarity": 0.427
     }
   ],
   "css3布局笔记": [
@@ -1167,6 +1194,11 @@
       "similarity": 0.572
     },
     {
+      "slug": "周刊-2026-02-07",
+      "title": "周刊：编辑器模型对齐与 RK3528 部署 OpenClaw 记录",
+      "similarity": 0.555
+    },
+    {
       "slug": "feday2025参会笔记",
       "title": "Feday 2025参会笔记",
       "similarity": 0.522
@@ -1180,11 +1212,6 @@
       "slug": "typescript项目经验笔记",
       "title": "TypeScript项目经验笔记",
       "similarity": 0.503
-    },
-    {
-      "slug": "javascript-es5笔记",
-      "title": "JavaScript-ES5笔记",
-      "similarity": 0.497
     }
   ]
 }
