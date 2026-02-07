@@ -156,5 +156,5 @@ export async function saveResults(
 ): Promise<void> {
   const dir = path.dirname(outputPath);
   await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(outputPath, JSON.stringify(data, null, 2));
+  await fs.writeFile(outputPath, JSON.stringify(data, null, 2) + '\n');
 }

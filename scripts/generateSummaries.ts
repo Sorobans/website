@@ -162,7 +162,7 @@ async function main() {
 
     const outputDir = path.dirname(OUTPUT_FILE);
     await fs.mkdir(outputDir, { recursive: true });
-    await fs.writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2));
+    await fs.writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2) + '\n');
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log(

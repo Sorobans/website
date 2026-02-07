@@ -65,7 +65,7 @@ export async function loadOutputSummaries(): Promise<Record<
 export async function saveCache(cache: SummariesCache): Promise<void> {
   const dir = path.dirname(CACHE_FILE);
   await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(CACHE_FILE, JSON.stringify(cache, null, 2));
+  await fs.writeFile(CACHE_FILE, JSON.stringify(cache, null, 2) + '\n');
 }
 
 export function isCacheValid(cache: SummariesCache, model: string): boolean {
