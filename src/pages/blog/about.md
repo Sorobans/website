@@ -34,7 +34,7 @@ description: '关于我？'
   React / Electron / Tauri / Zustand
 
 - **后端 / 工具链**  
-  NestJS / Actix-Web / SQLite / Active-Web / mupdf
+  NestJS / Actix-Web / SQLite / mupdf
 
 - **构建 & 打包**  
   Vite / Tsup
