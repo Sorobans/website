@@ -36,6 +36,41 @@ test.describe('Blog e2e regression suite', () => {
     });
   }
 
+  test('about page should render github section markdown images', async ({
+    page,
+  }) => {
+    const runtime = setupRuntimeErrorCollector(page);
+
+    const response = await page.goto('/blog/about', {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
+    });
+    expect(response?.status()).toBe(200);
+
+    await expect(page.getByRole('heading', { name: 'Github' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: '📌 Featured Repositories' }),
+    ).toBeVisible();
+
+    await expect
+      .poll(
+        async () =>
+          page.locator(
+            '.custom-content .markdown-image.loaded, .custom-content .markdown-image.error',
+          ).count(),
+        { timeout: 15000 },
+      )
+      .toBeGreaterThanOrEqual(7);
+
+    await expect(
+      page
+        .locator('.custom-content .markdown-image.loaded, .custom-content .markdown-image.error')
+        .first(),
+    ).toBeVisible();
+
+    runtime.assertClean();
+  });
+
   test('should navigate from list page to a post detail page', async ({
     page,
   }) => {
