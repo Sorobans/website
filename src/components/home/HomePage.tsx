@@ -95,7 +95,7 @@ const HomePage = ({
                   className="fa-solid fa-pen-nib text-base"
                   aria-hidden="true"
                 />
-                进入博客
+                Enter Website
               </a>
             </div>
           </div>
@@ -104,7 +104,7 @@ const HomePage = ({
         <div className="fixed bottom-6 right-6 z-20 flex flex-col items-start gap-2">
           <div className="w-[86px] h-[86px] overflow-hidden rounded-[14px] border border-pink-border/60 bg-white/80 shadow-[0_8px_18px_rgba(255,105,180,0.2)] backdrop-blur">
             <iframe
-              title="网易云音乐播放器"
+              title="Music"
               frameBorder="no"
               marginWidth={0}
               marginHeight={0}
