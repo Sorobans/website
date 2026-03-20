@@ -23,19 +23,19 @@ export default function Footer({ className, stats }: Props) {
         <div className="text-muted-foreground flex flex-wrap items-center justify-center gap-6 text-sm md:gap-4">
           <button
             className="flex items-center gap-2 opacity-75 transition-opacity duration-300 hover:opacity-100"
-            title="站点总字数">
+            title="Total Word Count">
             <i
               className="fa-regular fa-file-lines text-sm"
               aria-hidden="true"></i>
             <span className="font-medium">{stats.formattedWords}</span>
-            <span className="text-xs">字</span>
+            <span className="text-xs">words</span>
           </button>
 
           <div className="bg-muted-foreground/30 h-4 w-px"></div>
 
           <button
             className="flex items-center gap-2 opacity-75 transition-opacity duration-300 hover:opacity-100"
-            title="站点阅读时长">
+            title="Total Reading Time">
             <i className="fa-regular fa-clock text-sm" aria-hidden="true"></i>
             <span className="font-medium">{stats.formattedTime}</span>
           </button>
@@ -44,17 +44,17 @@ export default function Footer({ className, stats }: Props) {
 
           <button
             className="flex items-center gap-2 opacity-75 transition-opacity duration-300 hover:opacity-100"
-            title="文章总数">
+            title="Total Posts">
             <i
               className="fa-regular fa-newspaper text-sm"
               aria-hidden="true"></i>
             <span className="font-medium">{stats.postCount}</span>
-            <span className="text-xs">篇</span>
+            <span className="text-xs">posts</span>
           </button>
         </div>
 
         <div className="text-muted-foreground flex items-center gap-0.5 text-sm">
-          <span className="opacity-75">Â©</span>
+          <span className="opacity-75">©</span>
           <span className="font-medium opacity-75">{startYear}</span>
           {startYear !== currentYear && (
             <>
@@ -76,22 +76,22 @@ export default function Footer({ className, stats }: Props) {
         </div>
 
         <div className="text-muted-foreground/80 flex items-center gap-2 text-xs">
-          <span className="opacity-75">Powered by theme</span>
+          <span className="opacity-75">Powered by</span>
           <a
-            href="https://github.com/XueHua-s/astro-snow"
+            href="https://youtube.com/@Sorobans"
             target="_blank"
             rel="noreferrer"
             className="footer-link font-medium transition-all duration-300">
-            snow-koharu
+            humanmade code.
           </a>
-          <span className="opacity-50">In·</span>
-          <span className="opacity-75">From by</span>
+          <span className="opacity-50">|</span>
+          <span className="opacity-75">Theme by</span>
           <a
             href="https://github.com/amehime/hexo-theme-shoka"
             target="_blank"
             rel="noreferrer"
             className="footer-link font-medium transition-all duration-300">
-            astro-koharu
+              Amehime
           </a>
         </div>
       </div>
