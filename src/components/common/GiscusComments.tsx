@@ -9,17 +9,17 @@ export default function GiscusComments() {
     <div className="w-full pb-12">
       <Giscus
         id="comments"
-        repo="XueHua-s/astro-snow"
-        repoId="R_kgDOQtSVXw"
+        repo="Sorobans/website"
+        repoId="R_kgDORr5w2g"
         category="General"
-        categoryId="DIC_kwDOQtSVX84C0M1B"
+        categoryId="DIC_kwDORr5w2s4C44Vb"
         mapping="pathname"
         strict="0"
         reactionsEnabled="1"
         emitMetadata="0"
-        inputPosition="top"
+        inputPosition="bottom" // Changed to bottom as per your script
         theme={theme}
-        lang="zh-CN"
+        lang="en"              // Changed to English
         loading="lazy"
       />
     </div>
