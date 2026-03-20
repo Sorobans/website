@@ -8,8 +8,8 @@ export type WeeklyConfig = {
 
 export const weeklyConfig: WeeklyConfig = {
   slug: 'weekly',
-  categoryName: '周刊',
-  title: '周刊',
-  description: '记录每周值得回顾的技术与生活碎片。',
+  categoryName: 'Weekly',
+  title: 'Weekly Newsletter',
+  description: 'A weekly review of tech insights and life fragments worth remembering.',
   cover: '/img/weekly_header.webp',
 };
