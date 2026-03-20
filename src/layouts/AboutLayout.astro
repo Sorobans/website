@@ -24,7 +24,7 @@ const layoutFooterData = await getLayoutFooterData();
 
 <Layout title={`${frontmatter.title} | ${blogSeoConfig.title}`}>
   <TwoColumnLayout>
-    <Cover slot="cover" title="关于我" />
+    <Cover slot="cover" title="About" />
     <HomeSider slot="sider" />
     <LayoutFooter slot="footer" {...layoutFooterData} />
     <div class={`shadow-box bg-gradient-start mx-0 flex w-full flex-col gap-8 ${CONTENT_PADDING.standard}`}>
