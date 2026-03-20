@@ -41,7 +41,7 @@ export const blogLayoutConfig: BlogLayoutConfig = {
   description: 'ACG / Retro Tech / Vintage / Developer',
   avatar: '/img/724d7fb480c8ac0db472ca5c7e36d239.jpg',
   showLogo: true,
-  author: 'snow',
+  author: 'Soroban',
   site: 'https://sorobans.github.io/',
   startYear: 2022,
   keywords: ['Soroban', 'Soroban Developer', 'Developer Soroban', 'Sorobans Website', 'Sorobans', 'Soro'],
@@ -55,31 +55,31 @@ export const blogLayoutConfig: BlogLayoutConfig = {
 
 export const blogSocialConfig: SocialConfig = {
   github: {
-    url: 'https://github.com/XueHua-s',
+    url: 'https://github.com/Sorobans',
     label: 'GitHub',
     iconText: 'GH',
     iconClass: 'fa-brands fa-github',
     color: '#191717',
   },
   x: {
-    url: 'https://x.com/xiaoxueljx?s=21',
+    url: 'https://x.com/ImSoroban',
     label: 'X (推特)',
     iconText: 'X',
     iconClass: 'fa-brands fa-x-twitter',
     color: '#4b9ae4',
   },
   email: {
-    url: 'mailto:xuehualjx@gmail.com',
+    url: 'mailto:vallunacys@gmail.com',
     label: 'Email',
     iconText: '@',
     iconClass: 'fa-regular fa-envelope',
     color: '#55acd5',
   },
-  telegram: {
-    url: 'https://t.me/litleSnow',
-    label: 'Telegram',
-    iconText: 'TG',
-    iconClass: 'fa-brands fa-telegram',
+  youtube: {
+    url: 'https://youtube.com/Sorobans',
+    label: 'YouTube',
+    iconText: 'YT',
+    iconClass: 'fa-brands fa-youtube',
     color: '#229ed9',
   },
   bilibili: {
