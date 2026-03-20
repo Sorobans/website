@@ -27,20 +27,20 @@ export enum Routes {
 }
 
 export const routers: Router[] = [
-  { name: '首页', path: Routes.Home, icon: 'fa-solid fa-house-chimney' },
+  { name: 'Home', path: Routes.Home, icon: 'fa-solid fa-house-chimney' },
   {
-    name: '文章',
+    name: 'Articles',
     icon: 'fa-solid fa-pen-nib',
     children: [
       {
-        name: '分类',
+        name: 'Catagories',
         path: Routes.Categories,
         icon: 'fa-solid fa-layer-group',
       },
-      { name: '标签', path: Routes.Tags, icon: 'fa-solid fa-tags' },
-      { name: '周刊', path: Routes.Weekly, icon: 'fa-regular fa-newspaper' },
+      { name: 'Tags', path: Routes.Tags, icon: 'fa-solid fa-tags' },
+      { name: 'Weekly', path: Routes.Weekly, icon: 'fa-regular fa-newspaper' },
     ],
   },
   { name: '友链', path: Routes.Friends, icon: 'fa-solid fa-link' },
-  { name: '关于', path: Routes.About, icon: 'fa-regular fa-circle-user' },
+  { name: 'About', path: Routes.About, icon: 'fa-regular fa-circle-user' },
 ];
