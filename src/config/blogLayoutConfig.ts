@@ -63,7 +63,7 @@ export const blogSocialConfig: SocialConfig = {
   },
   x: {
     url: 'https://x.com/ImSoroban',
-    label: 'X (推特)',
+    label: 'X (Twitter)',
     iconText: 'X',
     iconClass: 'fa-brands fa-x-twitter',
     color: '#4b9ae4',
