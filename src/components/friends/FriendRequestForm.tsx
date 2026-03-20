@@ -75,7 +75,7 @@ export default function FriendRequestForm() {
             <div className="mb-6">
               <h2 className="mb-2 flex items-center gap-2 text-2xl font-black text-gray-800 dark:text-white">
                 <SakuraSVG className="size-6 animate-spin text-[#FFC0CB] duration-10000" />
-                申请友链
+                Apply for Link
               </h2>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 {friendsIntro.applyDesc}
@@ -87,25 +87,25 @@ export default function FriendRequestForm() {
                 <Field
                   id="friend-site"
                   name="site"
-                  label="站点名称"
+                  label="Site Name"
                   value={formData.site}
                   onChange={handleChange}
-                  placeholder="我的博客"
+                  placeholder="My Awesome Blog"
                 />
                 <Field
                   id="friend-owner"
                   name="owner"
-                  label="昵称"
+                  label="Nickname"
                   value={formData.owner}
                   onChange={handleChange}
-                  placeholder="您的昵称"
+                  placeholder="Your Name"
                 />
               </div>
 
               <Field
                 id="friend-url"
                 name="url"
-                label="站点链接"
+                label="Site URL"
                 value={formData.url}
                 onChange={handleChange}
                 placeholder="https://your-site.com"
@@ -114,7 +114,7 @@ export default function FriendRequestForm() {
 
               <div className="group relative">
                 <label htmlFor="friend-desc" className={LABEL_CLASS}>
-                  站点描述
+                  Description
                 </label>
                 <textarea
                   id="friend-desc"
@@ -123,7 +123,7 @@ export default function FriendRequestForm() {
                   onChange={handleChange}
                   rows={2}
                   className={`${INPUT_CLASS} resize-none`}
-                  placeholder="一句话描述..."
+                  placeholder="A short sentence about your site..."
                 />
               </div>
 
@@ -131,7 +131,7 @@ export default function FriendRequestForm() {
                 <Field
                   id="friend-image"
                   name="image"
-                  label="头像链接"
+                  label="Avatar URL"
                   value={formData.image}
                   onChange={handleChange}
                   placeholder="https://..."
@@ -139,7 +139,7 @@ export default function FriendRequestForm() {
                 />
                 <div className="group relative">
                   <label htmlFor="friend-color-picker" className={LABEL_CLASS}>
-                    主题色
+                    Theme Color
                   </label>
                   <div className="flex items-center gap-3">
                     <div className="relative h-10 w-10 overflow-hidden rounded-xl border-2 border-gray-100 shadow-sm transition-transform hover:scale-105 dark:border-gray-700">
@@ -156,7 +156,7 @@ export default function FriendRequestForm() {
                       type="text"
                       id="friend-color-text"
                       value={formData.color}
-                      aria-label="主题色值"
+                      aria-label="Theme color value"
                       onChange={(e) =>
                         setFormData({ ...formData, color: e.target.value })
                       }
@@ -171,13 +171,13 @@ export default function FriendRequestForm() {
           <div className="relative flex flex-col justify-center rounded-xl bg-gray-50 p-6 md:p-3 dark:bg-gray-800/50">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-xl font-bold tracking-wider uppercase">
-                配置预览
+                Preview Config
               </h3>
               <button
                 onClick={handleCopy}
                 className="group relative px-3 py-2 text-base font-bold transition-transform hover:-translate-y-1 dark:text-white">
                 <div className="border-foreground absolute inset-0 rotate-[1deg] rounded-lg border-2 border-dashed transition-all group-hover:rotate-0 dark:border-white" />
-                {copied ? '已复制!' : '复制配置'}
+                {copied ? 'Copied!' : 'Copy Config'}
               </button>
             </div>
 
@@ -188,7 +188,7 @@ export default function FriendRequestForm() {
             </div>
 
             <div className="mt-6 flex items-center gap-3 rounded-xl bg-pink-50 p-4 text-xs font-medium text-pink-600 dark:bg-pink-900/20 dark:text-pink-300">
-              提示: 复制上方代码并在下方评论区粘贴发送即可，我会收到的～
+              Tip: Copy the code above and paste it in the comments below. I will see it!
             </div>
           </div>
         </div>
