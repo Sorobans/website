@@ -8,10 +8,10 @@ export interface FormData {
 }
 
 export function generateFriendYaml(formData: FormData): string {
-  return `site: ${formData.site || '站点名称'}
+  return `site: ${formData.site || 'Site Name'}
 url: ${formData.url || 'https://example.com'}
-owner: ${formData.owner || '您的昵称'}
-desc: ${formData.desc || '站点描述'}
+owner: ${formData.owner || 'Your Nickname'}
+desc: ${formData.desc || 'Site Description'}
 image: ${formData.image || 'https://example.com/avatar.jpg'}
 color: "${formData.color || '#ffc0cb'}"`;
 }
