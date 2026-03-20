@@ -139,14 +139,14 @@ export const friendsData: FriendLink[] = [
 ];
 
 export const friendsIntro = {
-  title: '小伙伴们',
-  subtitle: '改了一下,有时间顺序从新到旧排列～',
-  applyTitle: '欢迎加友链',
-  applyDesc: '在本页留言,格式如下',
+  title: 'Friends',
+  subtitle: 'Updated: Sorted from newest to oldest by date～',
+  applyTitle: 'Welcome to exchange links!',
+  applyDesc: 'Leave a comment on this page using this format:',
   exampleYaml: `- site: snowの博客 # 站点名称
-  url: https://xhblog.top/ # 站点网址
-  owner: snow # 昵称
-  desc: 爬起仅仅是因为不想输 # 站点简介
+  url: https://sorobans.github.io
+  owner: Soroban's Blog
+  desc: Being bald
   image: https://xhblog.top/img/avatar.jpg
   color: "#ffc0cb" # 图标色`,
 };
