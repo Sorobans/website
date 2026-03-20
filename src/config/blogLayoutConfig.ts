@@ -82,13 +82,6 @@ export const blogSocialConfig: SocialConfig = {
     iconClass: 'fa-brands fa-youtube',
     color: '#229ed9',
   },
-  bilibili: {
-    url: 'https://space.bilibili.com/158525031',
-    label: '哔哩哔哩',
-    iconText: 'B',
-    iconClass: 'fa-brands fa-bilibili',
-    color: '#00a1d6',
-  },
 };
 
 const { title, alternate, subtitle } = blogLayoutConfig;
