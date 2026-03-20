@@ -24,7 +24,7 @@ const pageTitle = weeklyConfig.title || weeklyConfig.categoryName;
     <div class={`shadow-box bg-gradient-start mx-0 flex w-full flex-col gap-4 ${CONTENT_PADDING.standard}`}>
       <Divider>{pageTitle}</Divider>
       {weeklyConfig.description && <p class="text-muted-foreground text-sm">{weeklyConfig.description}</p>}
-      <div class="text-muted-foreground text-sm">共 {posts.length} 篇文章</div>
+      <div class="text-muted-foreground text-sm">Total {posts.length} Articles</div>
       <PostList posts={posts} showPaginator={false} isSimple={true} />
     </div>
   </TwoColumnLayout>
