@@ -41,6 +41,6 @@ export const routers: Router[] = [
       { name: 'Weekly', path: Routes.Weekly, icon: 'fa-regular fa-newspaper' },
     ],
   },
-  { name: '友链', path: Routes.Friends, icon: 'fa-solid fa-link' },
+  { name: 'Friends', path: Routes.Friends, icon: 'fa-solid fa-link' },
   { name: 'About', path: Routes.About, icon: 'fa-regular fa-circle-user' },
 ];
