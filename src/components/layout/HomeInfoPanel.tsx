@@ -62,16 +62,16 @@ export function HomeInfoPanel({
           href={Routes.Home}
           className="hover:text-blue flex cursor-pointer flex-col gap-2 p-1 transition">
           <span className="text-lg/5 font-bold">{postCount}</span>
-          文章
+          Posts
         </a>
         <div className="bg-muted-foreground mx-3 w-px"></div>
         <a
           href={Routes.Categories}
-          aria-label="分类"
+          aria-label="Categories"
           className="hover:text-blue">
           <p className="flex cursor-pointer flex-col gap-2 p-1 transition">
             <span className="text-lg/5 font-bold">{categoryCount}</span>
-            分类
+            Categories
           </p>
         </a>
         <div className="bg-muted-foreground mx-3 w-px"></div>
@@ -79,7 +79,7 @@ export function HomeInfoPanel({
           href={Routes.Tags}
           className="hover:text-blue flex cursor-pointer flex-col gap-2 p-1 transition">
           <span className="text-lg/5 font-bold">{tagCount}</span>
-          标签
+          Tags
         </a>
       </div>
       <div className="mt-6 flex w-full flex-col items-center gap-2.5">
@@ -96,7 +96,7 @@ export function HomeInfoPanel({
                   className="flex-center hover:bg-foreground/5 h-12 w-full cursor-pointer rounded-xl transition-colors"
                   aria-expanded={isExpanded}
                   aria-controls={collapseId}
-                  aria-label={`${routeName}菜单`}
+                  aria-label={`${routeName} Menu`}
                   type="button"
                   onClick={() => toggleExpanded(collapseId)}>
                   {icon && (
