@@ -9,7 +9,7 @@ interface Props {
 export default function RandomPostList({ posts, postIndexMap }: Props) {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-foreground/80 text-2xl font-semibold">推荐文章</h2>
+      <h2 className="text-foreground/80 text-2xl font-semibold">Recommended Posts</h2>
       {posts && posts.length > 0 && (
         <div className="flex flex-col gap-2">
           {posts.map((post, index) => {
