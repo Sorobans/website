@@ -35,9 +35,9 @@ type SocialConfig = {
 };
 
 export const blogLayoutConfig: BlogLayoutConfig = {
-  title: '雪花の博客',
-  alternate: 'snow',
-  subtitle: '爬起仅仅只是因为不想输。',
+  title: 'Soroban',
+  alternate: 'Soro',
+  subtitle: 'Developer Blog And Updates',
   name: 'snow',
   description: 'ACG / 养猫人 / 菜逼 / 前端什锦',
   avatar: '/img/724d7fb480c8ac0db472ca5c7e36d239.jpg',
