@@ -36,7 +36,6 @@ type SocialConfig = {
 
 export const blogLayoutConfig: BlogLayoutConfig = {
   title: 'Soroban',
-  alternate: 'Soro',
   subtitle: 'Developer Blog And Updates',
   name: 'Soroban',
   description: 'ACG / Retro Tech / Vintage / Developer',
