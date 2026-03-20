@@ -25,9 +25,9 @@ const { tag, posts } = Astro.props;
 const [postIndexMap, layoutFooterData] = await Promise.all([getPostIndexMap(), getLayoutFooterData()]);
 ---
 
-<Layout title={`标签:${tag} | ${blogLayoutConfig.title}`} description={`标签 ${tag} 下的所有文章`}>
+<Layout title={`Tag: ${tag} | ${blogLayoutConfig.title}`} description={`All posts under the tag: ${tag}`}>
   <TwoColumnLayout>
-    <Cover slot="cover" title={`包含标签"${tag}"的文章`} />
+    <Cover slot="cover" title={`Posts tagged with "${tag}"`} />
     <HomeSider slot="sider" />
     <LayoutFooter slot="footer" {...layoutFooterData} />
     <div class={`shadow-box mx-0 flex w-full flex-col bg-gradient-start ${CONTENT_PADDING.standard}`}>
@@ -36,11 +36,11 @@ const [postIndexMap, layoutFooterData] = await Promise.all([getPostIndexMap(), g
           href={Routes.Tags}
           class="dashed-border text-muted-foreground group-hover:border-blue group-hover:text-blue border-b"
         >
-          全部
+          All Tags
         </a>
         <span class="text-muted-foreground text-lg"> / </span>
         <span class="text-muted-foreground">{tag}</span>
-        <span class="text-muted-foreground text-lg">({posts.length} 篇文章)</span>
+        <span class="text-muted-foreground text-lg"> ({posts.length} Posts)</span>
       </h2>
       {
         posts?.length && (

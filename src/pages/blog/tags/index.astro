@@ -21,24 +21,24 @@ const [posts, layoutFooterData] = await Promise.all([getSortedPosts(), getLayout
 const sortedTags = getSortedTagsWithCount(posts);
 ---
 
-<Layout title={`标签 | ${blogLayoutConfig.title}`} description="所有文章标签">
+<Layout title={`Tags | ${blogLayoutConfig.title}`} description="All Article Tags">
   <TwoColumnLayout>
-    <Cover slot="cover" title="全部标签" />
+    <Cover slot="cover" title="All Tags" />
     <HomeSider slot="sider" />
     <LayoutFooter slot="footer" {...layoutFooterData} />
     <div class={`shadow-box bg-gradient-start mx-0 flex w-full flex-col ${CONTENT_PADDING.normal}`}>
       <h2 class="shoka-decoration-circle group relative h-19 px-6 py-5 text-2xl/9 font-bold md:text-xl/9">
         <a href={Routes.Home} class="dashed-border text-muted-foreground group-hover:border-blue group-hover:text-blue border-b">
-          首页
+          Home
         </a>
         <span class="text-muted-foreground text-lg md:text-base"> / </span>
-        共 {sortedTags.length} 个标签
+        Total {sortedTags.length} Tags
       </h2>
       <div class="flex flex-wrap gap-3 px-4 md:px-0">
         {
           sortedTags.map(({ name, count }, index) => (
             <div class="group relative">
-              {/* 防止闪烁 */}
+              {/* Prevent flickering */}
               <a
                 href={`${Routes.Tags}/${toTagParam(name)}`}
                 class={`group relative flex items-center rounded-lg bg-gradient-to-r px-3 py-1.5 text-sm transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-lg ${
