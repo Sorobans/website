@@ -12,7 +12,6 @@ export const homePageLinks = {
   xUrl: 'https://x.com/xiaoxueljx?s=21',
   githubUrl: 'https://github.com/XueHua-s',
   telegramUrl: 'https://t.me/litleSnow',
-  bilibiliUrl: 'https://space.bilibili.com/158525031',
 };
 
 export async function getHomePageProfile() {
