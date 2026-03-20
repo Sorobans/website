@@ -1,5 +1,5 @@
 // Home Index Config
 export const baseLayoutConfig = {
-  title: '雪花の博客',
-  description: '爬起仅仅是因为不想输',
+  title: 'Sorobans Blog',
+  description: 'I prefer the depth of the ocean to the noise of the waves',
 };
