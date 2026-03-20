@@ -13,9 +13,9 @@ interface Props {
   posts?: BlogPost[];
   page?: Page<BlogPost>;
   showPaginator?: boolean;
-  baseUrl?: string; // 分页基础路径
-  isHomePage?: boolean; // 是否是首页
-  isSimple?: boolean; // 是否隐藏封面
+  baseUrl?: string; // Base path for pagination
+  isHomePage?: boolean; // Is home page
+  isSimple?: boolean; // Hide cover
 }
 
 const { posts, page, showPaginator = true, baseUrl, isHomePage = false, isSimple = false } = Astro.props;
@@ -25,9 +25,9 @@ const covers = shuffle(backgroundImages.length ? backgroundImages : defaultCover
 
 {
   !posts?.length && (
-    <div class="text-foreground/30 flex flex-col items-center gap-2">
+    <div class="text-foreground/30 flex flex-col items-center gap-2 py-20">
       <EmptySvg className="fill-foreground/20" />
-      <span>还没有发表文章哦～</span>
+      <span>No posts published yet ~</span>
     </div>
   )
 }
