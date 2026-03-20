@@ -9,9 +9,9 @@ export const homePageProfile = {
 };
 
 export const homePageLinks = {
-  xUrl: 'https://x.com/xiaoxueljx?s=21',
-  githubUrl: 'https://github.com/XueHua-s',
-  telegramUrl: 'https://t.me/litleSnow',
+  xUrl: 'https://x.com/ImSoroban',
+  githubUrl: 'https://github.com/Sorobans',
+  telegramUrl: 'https://youtube.com/@Sorobans',
 };
 
 export async function getHomePageProfile() {
